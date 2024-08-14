@@ -11,7 +11,9 @@
     "test:e2e": "cypress open",
     "test:e2e:headless": "cypress run --headless",
     "lint": "eslint .",
-    "format": "prettier .  --write"
+    "format": "prettier .  --write",
+    "prepare": "node .husky/install.mjs",
+    "pre-commit": "lint-staged"
   },
   "dependencies": {
     "vue": "^3.4.35"
@@ -22,7 +24,11 @@
     "eslint": "^9.9.0",
     "eslint-plugin-vue": "^9.27.0",
     "globals": "^15.9.0",
+    "lint-staged": "^15.2.9",
     "prettier": "^3.3.3",
     "vite": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
