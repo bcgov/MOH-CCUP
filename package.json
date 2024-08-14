@@ -13,8 +13,7 @@
     "test:e2e:headless": "start-server-and-test 'vite --host' 5173 'cypress run --headless'",
     "lint": "eslint .",
     "format": "prettier .  --write",
-    "prepare": "node .husky/install.mjs",
-    "pre-commit": "lint-staged"
+    "prepare": "node .husky/install.mjs"
   },
   "dependencies": {
     "vue": "^3.4.35"
