@@ -1,0 +1,19 @@
+{
+  "name": "ccup",
+  "version": "0.0.0",
+  "description": "Ministry of Health Claims Correspondence Upload Portal",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcgov/MOH-CCUP.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bcgov/MOH-CCUP/issues"
+  },
+  "homepage": "https://github.com/bcgov/MOH-CCUP#readme"
+}
