@@ -1,10 +1,11 @@
 import Page from "@/App.vue";
 import { shallowMount } from "@vue/test-utils";
-import { it, describe, expect, beforeEach, afterEach, vi } from "vitest";
+import { it, describe, expect } from "vitest";
+//beforeEach, afterEach, vi
 
 describe("DefaultPage.vue", () => {
   let wrapper = null;
-  let store = null;
+  // let store = null;
 
   // beforeEach(async () => {
   //   let tempForm = cloneDeep(formTemplate);

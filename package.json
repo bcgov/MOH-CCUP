@@ -24,6 +24,7 @@
     "@vue/test-utils": "^2.4.6",
     "cypress": "^13.13.3",
     "eslint": "^9.9.0",
+    "eslint-plugin-compat": "^6.0.0",
     "eslint-plugin-cypress": "^3.5.0",
     "eslint-plugin-vue": "^9.27.0",
     "globals": "^15.9.0",
@@ -37,5 +38,12 @@
   },
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not Opera > 0",
+    "not op_mini all"
+  ]
 }
