@@ -16,6 +16,7 @@
     "prepare": "node .husky/install.mjs"
   },
   "dependencies": {
+    "pinia": "^2.2.2",
     "vue": "^3.4.35",
     "vue-router": "^4.4.3"
   },
