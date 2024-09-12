@@ -1,19 +1,21 @@
 <template>
   <div>
     <div :aria-hidden="isModalOpen">
-      <HeaderComponent :title="pageTitle" image-path="/ccup/images/" />
+      <HeaderComponent
+      :title="pageTitle" 
+      image-path="/ccup/images/"
+      />
 
       <HelloWorld msg="Vite + Vue" />
 
       <RouterView />
-      <FooterComponent :version='version' />
+      <FooterComponent :version="version" />
     </div>
   </div>
 </template>
 
 
 <script>
-import { RouterLink, RouterView } from "vue-router";
 import project from '/package.json';
 import "@bcgov/bootstrap-v5-theme/css/bootstrap-theme.min.css";
 import 'common-lib-vue/dist/common-lib-vue.css'
