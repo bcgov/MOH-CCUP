@@ -1,8 +1,10 @@
 <template>
   <main>
     <PageContent>
-      <main>
-        <h1>Welcome to the Practitioner Upload Tool!</h1>
+      <main class="container pt-3 pt-sm-5 mb-5">
+        <h1>Get started</h1>
+        <hr />
+        <h2>Welcome</h2>
         <p>
           Our e-form simplifies the process of submitting essential documents for your
           Pre-authorizations or Claims. To ensure efficient processing, please select whether the
@@ -22,13 +24,14 @@
           If you have any questions or need assistance, please don't hesitate to contact our support
           team.
         </p>
-        <h1>Documents to be uploaded</h1>
+        <h2>Documents to be uploaded</h2>
         <p>
           Could you please specify what type of documents need to be uploaded by indicating which
           category they belong to? Once you select a category and start providing the needed
           information for your upload, the category cannot be changed; make sure you select the
           right category for your document upload.
         </p>
+        <hr />
         <RadioComponent
           id="documents-category"
           v-model="documentsCategory"
