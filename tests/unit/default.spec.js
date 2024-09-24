@@ -1,9 +1,20 @@
 import Page from "@/App.vue";
 import { shallowMount } from "@vue/test-utils";
 import { it, describe, expect } from "vitest";
+import { createRouter, createWebHistory } from "vue-router";
 //beforeEach, afterEach, vi
 
-describe("DefaultPage.vue", () => {
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [],
+});
+
+describe("DefaultPage.vue", async () => {
+  router.push("/");
+
+  // After this line, router is ready
+  await router.isReady();
+
   let wrapper = null;
   // let store = null;
 
@@ -13,9 +24,12 @@ describe("DefaultPage.vue", () => {
   //   store = createStore(tempForm);
 
   wrapper = shallowMount(Page, {
-    //     global: {
-    //       plugins: [store, router],
-    //     },
+    global: {
+      plugins: [
+        // store,
+        router,
+      ],
+    },
   });
   // });
 
