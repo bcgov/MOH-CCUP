@@ -86,13 +86,7 @@
 // import { useFormStore } from "@/stores/formData";
 import { PageContent, ContinueBar, InputComponent, PractitionerNumberInput } from "common-lib-vue";
 // const store = useFormStore();
-import {
-  extraSmallStyles,
-  smallStyles,
-  mediumStyles,
-  largeStyles,
-  extraLargeStyles,
-} from "@/constants/input-styles";
+import { smallStyles, mediumStyles } from "@/constants/input-styles";
 </script>
 
 <script>
