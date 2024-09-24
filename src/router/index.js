@@ -22,6 +22,11 @@ const router = createRouter({
       name: "GetStarted",
       component: () => import("../views/GetStarted.vue"),
     },
+    {
+      path: "/practitioner-info",
+      name: "PractitionerInfo",
+      component: () => import("../views/PractitionerInfo.vue"),
+    },
   ],
 });
 
