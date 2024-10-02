@@ -3,7 +3,7 @@
     <PageContent>
       <main class="container pt-3 pt-sm-5 mb-5">
         <h1>Confirmation of submission</h1>
-        <p>Date submitted: {insert date here}</p>
+        <p>Date submitted: {insert date here} {insert print page button here}</p>
         <!-- make date submitted bold-->
 
         <h2>Next steps</h2>
@@ -36,7 +36,7 @@
         <CheckboxComponent
           id="patient-name"
           v-model="patientName"
-          :label="'insert firstname/lastname here'"
+          :label="'{insert firstname/lastname here}'"
           :disabled="true"
           @blur="handleBlurField(v$.isAuthorizedFPCAH)"
         />
