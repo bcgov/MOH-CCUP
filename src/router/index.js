@@ -27,6 +27,11 @@ const router = createRouter({
       name: "PractitionerInfo",
       component: () => import("../views/PractitionerInfo.vue"),
     },
+    {
+      path: "/submission-page",
+      name: "SubmissionPage",
+      component: () => import("../views/SubmissionPage.vue"),
+    },
   ],
 });
 
