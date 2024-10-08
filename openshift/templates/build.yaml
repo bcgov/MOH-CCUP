@@ -106,13 +106,13 @@ objects:
       source:
         type: Dockerfile
         dockerfile: |-
-          FROM registry.redhat.io/ubi8/nginx-118:latest
+          FROM registry.redhat.io/ubi8/nginx-124:latest
           COPY dist /opt/app-root/src
           CMD nginx -g "daemon off;"
         images:
           - from:
               kind: ImageStreamTag
-              name: jha-web-artifacts:latest
+              name: ccup-web-artifacts:latest
             paths:
               - sourcePath: /opt/app-root/src/dist/
                 destinationDir: "."
@@ -132,7 +132,7 @@ parameters:
     displayName: Name
     name: NAME
     required: true
-    value: jha
+    value: ccup
   - description: |
       The URL to your GIT repo, don't use the this default unless
       your just experimenting.
@@ -149,7 +149,7 @@ parameters:
     displayName: Source Context Directory
     name: SOURCE_CONTEXT_DIR
     required: false
-    value: "jha"
+    value: "ccup"
   - description: The tag given to the built image.
     displayName: Output Image Tag
     name: OUTPUT_IMAGE_TAG

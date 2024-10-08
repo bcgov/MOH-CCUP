@@ -20,14 +20,14 @@ metadata:
     description: |
       This configmap is used internally by NGINX
       to store config.
-  name: jha-web-config
+  name: ccup-web-config
 objects:
   - apiVersion: v1
     kind: ConfigMap
     metadata:
-      name: jha-web-config
+      name: ccup-web-config
       labels:
-        app: jha-web
+        app: ccup-web
     data:
       nginx.conf: |
         worker_processes auto;
@@ -111,9 +111,9 @@ objects:
             # uncomment for test2
             # index index.html index.htm;
 
-            # serve our angular app here
+            # serve our app here
             location / {
-              rewrite ^/ahdc(/.*)$ $1;
+              rewrite ^/ccup(/.*)$ $1;
 
               root /opt/app-root/src;
 
@@ -235,8 +235,8 @@ parameters:
   - description: SPA_ENV_AUTH_TOKEN
     name: SPA_ENV_AUTH_TOKEN
     required: true
-  - description: JHA_ENV
-    name: JHA_ENV
+  - description: CCUP_ENV
+    name: CCUP_ENV
     required: true
   - description: SOURCE_IMAGE_TAG
     name: SOURCE_IMAGE_TAG
