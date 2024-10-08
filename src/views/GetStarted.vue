@@ -1,5 +1,9 @@
 <template>
   <main>
+    <ProgressBar
+      :routes="stepRoutes"
+      :current-path="$route.path"
+    />
     <PageContent>
       <main class="container pt-3 pt-sm-5 mb-5">
         <h1>Get started</h1>
@@ -55,11 +59,18 @@
 <script setup>
 // import { useFormStore } from "@/stores/formData";
 import { PageContent, ContinueBar, RadioComponent } from "common-lib-vue";
+import ProgressBar from "../components/ProgressBar.vue";
+import { stepRoutes, routes } from "../router/index.js";
+import pageStateService from "../services/page-state-service.js";
 // const store = useFormStore();
 </script>
 
 <script>
 export default {
+  name: "GetStartedPage",
+  components: {
+    ProgressBar,
+  },
   data() {
     return {
       documentsCategory: null,
@@ -86,6 +97,11 @@ export default {
   methods: {
     nextPage() {
       console.log("nextPage function called");
+      // Navigate to next path.
+      const toPath = routes.PRACTITIONER_INFO.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
     },
   },
 };

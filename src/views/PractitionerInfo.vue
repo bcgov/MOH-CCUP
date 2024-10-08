@@ -1,5 +1,9 @@
 <template>
   <main>
+    <ProgressBar
+      :routes="stepRoutes"
+      :current-path="$route.path"
+    />
     <PageContent>
       <main class="container pt-3 pt-sm-5 mb-5">
         <h1>Claims: Practitioner information</h1>
@@ -87,6 +91,9 @@
 import { PageContent, ContinueBar, InputComponent, PractitionerNumberInput } from "common-lib-vue";
 // const store = useFormStore();
 import { smallStyles, mediumStyles } from "@/constants/input-styles";
+import ProgressBar from "../components/ProgressBar.vue";
+import { stepRoutes, routes } from "../router/index.js";
+import pageStateService from "../services/page-state-service.js";
 </script>
 
 <script>
@@ -117,6 +124,11 @@ export default {
   methods: {
     nextPage() {
       console.log("nextPage function called");
+      // Navigate to next path.
+      const toPath = routes.PATIENT_INFO.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
     },
   },
 };
