@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import IconChevronSingleLeft from "../assets/IconChevronSingleLeft.vue";
+import { IconChevronSingleLeft } from "common-lib-vue";
 
 export default {
   name: "ProgressBar",
