@@ -197,8 +197,8 @@
         </div>
         <div class="row px-3">
           <CheckboxComponent
-            label="Jane Doe"
             id="pratitioner-declaration-accuracy"
+            label="Jane Doe"
           />
         </div>
       </main>
