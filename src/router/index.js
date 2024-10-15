@@ -5,6 +5,7 @@ import PatientInfo from "../views/PatientInfo.vue";
 import UploadDocuments from "../views/UploadDocuments.vue";
 import ReviewPage from "../views/ReviewPage.vue";
 import SubmissionPage from "../views/SubmissionPage.vue";
+import PractitionerUploadTool from "../views/PractitionerUploadTool.vue";
 
 export const routes = {
   GET_STARTED: {
@@ -18,6 +19,12 @@ export const routes = {
     title: "Practitioner Info",
     name: "PractitionerInfo",
     component: PractitionerInfo,
+  },
+  PRACTITIONER_UPLOAD_TOOL: {
+    path: "/practitioner-upload-tool",
+    title: "Practitioner Upload Tool",
+    name: "PractitionerUploadTool",
+    component: PractitionerUploadTool,
   },
   PATIENT_INFO: {
     path: "/patient-info",
@@ -48,6 +55,7 @@ export const routes = {
 export const stepRoutes = [
   { ...routes.GET_STARTED },
   { ...routes.PRACTITIONER_INFO },
+  { ...routes.PRACTITIONER_UPLOAD_TOOL },
   { ...routes.PATIENT_INFO },
   { ...routes.UPLOAD_DOCUMENTS },
   { ...routes.REVIEW_PAGE },
@@ -57,6 +65,7 @@ export const stepRoutes = [
 export const routeStepOrder = [
   routes.GET_STARTED,
   routes.PRACTITIONER_INFO,
+  routes.PRACTITIONER_UPLOAD_TOOL,
   routes.PATIENT_INFO,
   routes.UPLOAD_DOCUMENTS,
   routes.REVIEW_PAGE,
@@ -88,6 +97,11 @@ const router = createRouter({
       path: "/practitioner-info",
       name: "PractitionerInfo",
       component: () => import("../views/PractitionerInfo.vue"),
+    },
+    {
+      path: "/practitioner-upload-tool",
+      name: "PractitionerUploadTool",
+      component: () => import("../views/PractitionerUploadTool.vue"),
     },
     {
       path: "/patient-info",
