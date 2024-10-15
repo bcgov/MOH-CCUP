@@ -11,7 +11,14 @@
         <div class="m-0 row">
           <div class="col-sm-6">
             <div class="card border-0">
-              <div class="card-header fw-bold px-0">Practitioner information</div>
+              <div class="card-header fw-bold px-0 py-0">
+                <div class="row">
+                  <div class="col-6">Practitioner information</div>
+                  <div class="col-6 icon-align-right">
+                    edit&nbsp;&nbsp;<IconPencil class="icon-style" />
+                  </div>
+                </div>
+              </div>
               <div class="card-body bg-gray">
                 <div>
                   <h5 class="row-title">Document Type</h5>
@@ -93,7 +100,14 @@
           <div class="col-sm-6">
             <div class="row h-50">
               <div class="px-0 card border-0">
-                <div class="px-0 card-header fw-bold">Patient information</div>
+                <div class="card-header fw-bold px-0 py-0">
+                  <div class="row">
+                    <div class="col-6">Patient information</div>
+                    <div class="col-6 icon-align-right">
+                      edit&nbsp;&nbsp;<IconPencil class="icon-style" />
+                    </div>
+                  </div>
+                </div>
                 <div class="card-body bg-gray">
                   <div class="row row-details">
                     <div class="col-6">
@@ -132,7 +146,14 @@
             </div>
             <div class="py-3 row pb-0 h-50">
               <div class="px-0 card border-0">
-                <div class="px-0 card-header fw-bold">Document upload</div>
+                <div class="card-header fw-bold px-0 py-0">
+                  <div class="row">
+                    <div class="col-6">Documents upload</div>
+                    <div class="col-6 icon-align-right">
+                      edit&nbsp;&nbsp;<IconPencil class="icon-style" />
+                    </div>
+                  </div>
+                </div>
                 <div class="card-body bg-gray">
                   <div>
                     <div class="row">
@@ -174,6 +195,12 @@
             promptly.
           </p>
         </div>
+        <div class="row px-3">
+          <CheckboxComponent
+            label="Jane Doe"
+            id="pratitioner-declaration-accuracy"
+          />
+        </div>
       </main>
     </PageContent>
   </main>
@@ -187,8 +214,8 @@
 // import { smallStyles, mediumStyles } from "@/constants/input-styles";
 // import { useFormStore } from "@/stores/formData";
 // const store = useFormStore();
-
-import { PageContent, ContinueBar, RadioComponent } from "common-lib-vue";
+import { IconPencil } from "common-lib-vue";
+import { PageContent, ContinueBar, RadioComponent, CheckboxComponent } from "common-lib-vue";
 import { stepRoutes, routes } from "../router/index.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import pageStateService from "../services/page-state-service.js";
@@ -236,6 +263,9 @@ export default {
 </script>
 
 <style>
+.icon-style {
+  width: 16px;
+}
 .row-details {
   height: 30px;
   padding-bottom: 0.5rem !important;
@@ -256,5 +286,10 @@ div.card-header {
 
 hr {
   background-color: #313132;
+}
+
+.icon-align-right {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
