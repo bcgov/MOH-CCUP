@@ -205,7 +205,7 @@
     </PageContent>
   </main>
   <ContinueBar
-    :button-label="'Continue'"
+    :button-label="'Submit'"
     cypress-id="continue-bar"
     @continue="nextPage()"
   />
