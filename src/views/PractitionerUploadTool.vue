@@ -13,8 +13,8 @@
             <div class="card border-0">
               <div class="card-header fw-bold px-0 py-0">
                 <div class="row">
-                  <div class="col-6">Practitioner information</div>
-                  <div class="col-6 icon-align-right">
+                  <div class="col-8">Practitioner information</div>
+                  <div class="col-4 icon-align-right">
                     edit&nbsp;&nbsp;<IconPencil class="icon-style" />
                   </div>
                 </div>
@@ -111,34 +111,34 @@
                 <div class="card-body bg-gray">
                   <div class="row row-details">
                     <div class="col-6">
-                      <p class="fs-5">First Initial</p>
+                      <span class="fs-5">First Initial</span>
                     </div>
                     <div class="col-6 mb-3">
-                      <p class="text-muted fs-5">S</p>
+                      <span class="text-muted fs-5">S</span>
                     </div>
                   </div>
                   <div class="row row-details">
                     <div class="col-6">
-                      <p class="fs-5">Last name</p>
+                      <span class="fs-5">Last name</span>
                     </div>
                     <div class="mb-3 col-6">
-                      <p class="text-muted fs-5">Jones</p>
+                      <span class="text-muted fs-5">Jones</span>
                     </div>
                   </div>
                   <div class="row row-details">
                     <div class="col-6">
-                      <p class="fs-5">Birthdate</p>
+                      <span class="fs-5">Birthdate</span>
                     </div>
                     <div class="col-6">
-                      <p class="text-muted fs-5">September 7, 1979</p>
+                      <span class="text-muted fs-5">September 7, 1979</span>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-6">
-                      <p class="fs-5">PHN (Personal Health Number)</p>
+                      <span class="fs-5">PHN (Personal Health Number)</span>
                     </div>
                     <div class="col-6">
-                      <p class="text-muted fs-5">9999999998</p>
+                      <span class="text-muted fs-5">9999999998</span>
                     </div>
                   </div>
                 </div>
