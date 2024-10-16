@@ -125,8 +125,7 @@ export default {
     nextPage() {
       console.log("nextPage function called");
       // Navigate to next path.
-      // const toPath = routes.PATIENT_INFO.path;
-      const toPath = routes.PRACTITIONER_UPLOAD_TOOL.path;
+      const toPath = routes.REVIEW_PAGE.path;
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
