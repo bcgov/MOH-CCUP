@@ -20,14 +20,14 @@ metadata:
     description: |
       This configmap is used internally by NGINX
       to store config.
-  name: ccup-web-config
+  name: ${NAME}-web-config
 objects:
   - apiVersion: v1
     kind: ConfigMap
     metadata:
-      name: ccup-web-config
+      name: ${NAME}-web-config
       labels:
-        app: ccup-web
+        app: ${NAME}-web
     data:
       nginx.conf: |
         worker_processes auto;
@@ -113,7 +113,7 @@ objects:
 
             # serve our app here
             location / {
-              rewrite ^/ccup(/.*)$ $1;
+              rewrite ^/${NAME}(/.*)$ $1;
 
               root /opt/app-root/src;
 
@@ -143,13 +143,13 @@ objects:
               proxy_send_timeout 300;
 
               location /api/logging {
-                if ( $request_method !~ ^(POST|HEAD|OPTIONS)$ ) {
+                if ( $request_method !~ ^(GET|POST|HEAD|OPTIONS)$ ) {
                   return 405;
                 }
                 if ( $request_method ~ ^(HEAD|OPTIONS)$ ) {
                   return 200;
                 }
-                proxy_set_header Authorization "Splunk ${SPLUNK_AUTH_TOKEN}";
+                # proxy_set_header Authorization "Api-Token ${SPLUNK_AUTH_TOKEN}";
                 proxy_set_header http_host ${HOSTNAME};
                 proxy_pass_header Authorization;
                 proxy_pass_header http_host;
@@ -159,7 +159,7 @@ objects:
               }
 
               location /api/env {
-                if ( $request_method !~ ^(POST|HEAD|OPTIONS)$ ) {
+                if ( $request_method !~ ^(GET|POST|HEAD|OPTIONS)$ ) {
                   return 405;
                 }
                 if ( $request_method ~ ^(HEAD|OPTIONS)$ ) {
@@ -223,40 +223,28 @@ objects:
           }
         }
 parameters:
+  - description: |
+      Project name/acronym
+    displayName: Name
+    name: NAME
+    required: true
+    value: ccup
   - description: RealIpFrom
     name: RealIpFrom
     required: true
+    value: "142.34.194.118"
   - description: IpFilterRules
     name: IpFilterRules
     required: true
-  - description: SPLUNK_AUTH_TOKEN
-    name: SPLUNK_AUTH_TOKEN
-    required: true
+    value: "allow 0.0.0.0/0; deny all;"
+  # - description: SPLUNK_AUTH_TOKEN
+  #   name: SPLUNK_AUTH_TOKEN
+  #   required: true
+  #   value:
   - description: SPA_ENV_AUTH_TOKEN
     name: SPA_ENV_AUTH_TOKEN
     required: true
-  - description: CCUP_ENV
-    name: CCUP_ENV
-    required: true
-  - description: SOURCE_IMAGE_TAG
-    name: SOURCE_IMAGE_TAG
-    required: true
-  - description: SOURCE_IMAGE_NAMESPACE
-    name: SOURCE_IMAGE_NAMESPACE
-    required: true
-  - description: ROUTER_DEFAULT_CLIENT_TIMEOUT
-    name: ROUTER_DEFAULT_CLIENT_TIMEOUT
-    value: "60s"
-    required: false
-  - description: ROUTER_DEFAULT_SERVER_TIMEOUT
-    name: ROUTER_DEFAULT_SERVER_TIMEOUT
-    value: "60s"
-    required: false
-  - description: LOG_LEVEL
-    name: LOG_LEVEL
-    value: "info"
-    required: true
-  - description: USE_SPLUNK_FORWARDER
-    name: USE_SPLUNK_FORWARDER
-    value: "true"
-    required: false
+    valueFrom:
+      secretKeyRef:
+        name: spa-env-auth-token
+        key: token
