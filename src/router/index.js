@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import GetStarted from "../views/GetStarted.vue";
 import PractitionerInfo from "../views/PractitionerInfo.vue";
 import PatientInfo from "../views/PatientInfo.vue";
 import UploadDocuments from "../views/UploadDocuments.vue";
@@ -7,15 +6,9 @@ import ReviewPage from "../views/ReviewPage.vue";
 import SubmissionPage from "../views/SubmissionPage.vue";
 
 export const routes = {
-  GET_STARTED: {
-    path: "/",
-    title: "Get Started",
-    name: "GetStarted",
-    component: GetStarted,
-  },
   PRACTITIONER_INFO: {
-    path: "/practitioner-info",
-    title: "Practitioner Info",
+    path: "/",
+    title: "Practitioner information",
     name: "PractitionerInfo",
     component: PractitionerInfo,
   },
@@ -46,7 +39,6 @@ export const routes = {
 };
 
 export const stepRoutes = [
-  { ...routes.GET_STARTED },
   { ...routes.PRACTITIONER_INFO },
   { ...routes.PATIENT_INFO },
   { ...routes.UPLOAD_DOCUMENTS },
@@ -55,7 +47,6 @@ export const stepRoutes = [
 ];
 
 export const routeStepOrder = [
-  routes.GET_STARTED,
   routes.PRACTITIONER_INFO,
   routes.PATIENT_INFO,
   routes.UPLOAD_DOCUMENTS,
@@ -81,11 +72,6 @@ const router = createRouter({
     // },
     {
       path: "/",
-      name: "GetStarted",
-      component: () => import("../views/GetStarted.vue"),
-    },
-    {
-      path: "/practitioner-info",
       name: "PractitionerInfo",
       component: () => import("../views/PractitionerInfo.vue"),
     },
