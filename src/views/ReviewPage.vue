@@ -4,6 +4,7 @@
       :routes="stepRoutes"
       :current-path="$route.path"
     />
+
     <PageContent>
       <main class="container mb-5">
         <h2 class="my-0">Review</h2>
@@ -13,19 +14,26 @@
             <div class="card border-0">
               <div class="card-header fw-bold px-0 py-0">
                 <div class="row">
-                  <div class="col-8">Practitioner information</div>
+                  <div class="col-8">Patient information</div>
                   <div class="col-4 icon-align-right">
-                    edit&nbsp;&nbsp;<IconPencil class="icon-style" />
+                    <a
+                      href="javascript:void(0)"
+                      class="link-icon"
+                      @click.prevent="Edit(routes.PATIENT_INFO.path)"
+                      >edit&nbsp;&nbsp;<IconPencil
+                        class="icon-style"
+                        color="#1a5a96"
+                    /></a>
                   </div>
                 </div>
               </div>
               <div class="card-body bg-gray">
-                <div>
+                <div class="row">
                   <h5 class="row-title">Document Type</h5>
 
                   <div class="row h-100">
-                    <div class="col-6 py-2">
-                      <span class="px-2 text-muted fs-5">Document</span>
+                    <div class="col-6 pt-2">
+                      <span class="px-2 fs-5">Document</span>
                     </div>
                     <div class="col-6">
                       <RadioComponent
@@ -42,55 +50,57 @@
                     </div>
                   </div>
                 </div>
-                <div>
-                  <h5 class="row-title">Practitioner</h5>
-                  <div class="row px-2">
+                <div class="row">
+                  <h5 class="row-title">Adjudicator</h5>
+                  <div class="row row-details">
                     <div class="col-6">
-                      <span class="fs-5">First name</span>
+                      <span class="fs-5 px-2">First name</span>
                     </div>
                     <div class="col-6">
-                      <span class="text-muted fs-5">Jane</span>
-                    </div>
-                  </div>
-                  <div class="row px-2">
-                    <div class="col-6">
-                      <span class="fs-5">Last name</span>
-                    </div>
-                    <div class="col-6">
-                      <span class="text-muted fs-5">Doe</span>
+                      <span class="fs-5">Jane</span>
                     </div>
                   </div>
-                  <div class="row px-2">
+                  <div class="row row-details">
                     <div class="col-6">
-                      <span class="fs-5">Practitioner number</span>
+                      <span class="fs-5 px-2">Last name</span>
                     </div>
                     <div class="col-6">
-                      <span class="text-muted fs-5">A8546</span>
-                    </div>
-                  </div>
-                  <div class="row px-2">
-                    <div class="col-6">
-                      <span class="fs-5">Payee number</span>
-                    </div>
-                    <div class="col-6">
-                      <span class="text-muted fs-5">87546</span>
+                      <span class="fs-5">Doe</span>
                     </div>
                   </div>
-                  <h5 class="row-title mt-3">Adjudicator</h5>
-                  <div class="row px-2">
+                </div>
+                <div class="row mt-3 mb-3">
+                  <h5 class="row-title">Patient</h5>
+                  <div class="row row-details">
                     <div class="col-6">
-                      <span class="fs-5">First name</span>
+                      <span class="fs-5 px-2">First initial</span>
                     </div>
                     <div class="col-6">
-                      <span class="text-muted fs-5">James</span>
+                      <span class="fs-5">S</span>
                     </div>
                   </div>
-                  <div class="row px-2">
+                  <div class="row row-details">
                     <div class="col-6">
-                      <span class="fs-5">Last name</span>
+                      <span class="fs-5 px-2">Last name</span>
                     </div>
                     <div class="col-6">
-                      <span class="text-muted fs-5">Smith</span>
+                      <span class="fs-5">Jones</span>
+                    </div>
+                  </div>
+                  <div class="row row-details">
+                    <div class="col-6">
+                      <span class="fs-5 px-2">Birthdate</span>
+                    </div>
+                    <div class="col-6">
+                      <span class="fs-5">September 7, 1979</span>
+                    </div>
+                  </div>
+                  <div class="row row-details">
+                    <div class="col-6">
+                      <p class="fs-5 px-2">PHN (Personal Health Number)</p>
+                    </div>
+                    <div class="col-6">
+                      <span class="fs-5">9999999998</span>
                     </div>
                   </div>
                 </div>
@@ -100,22 +110,30 @@
 
           <div class="col-sm-6">
             <div class="row h-50">
-              <div class="px-0 card border-0">
+              <div class="card border-0">
                 <div class="card-header fw-bold px-0 py-0">
                   <div class="row">
-                    <div class="col-6">Patient information</div>
-                    <div class="col-6 icon-align-right">
-                      edit&nbsp;&nbsp;<IconPencil class="icon-style" />
+                    <div class="col-8">Practitioner information</div>
+                    <div class="col-4 icon-align-right">
+                      <a
+                        href="/ccup/practitioner-info"
+                        class="link-icon"
+                        @click.prevent="Edit(routes.PRACTITIONER_INFO.path)"
+                      >
+                        edit&nbsp;&nbsp;<IconPencil
+                          class="icon-style"
+                          color="#1a5a96"
+                      /></a>
                     </div>
                   </div>
                 </div>
                 <div class="card-body bg-gray">
                   <div class="row row-details">
                     <div class="col-6">
-                      <span class="fs-5">First Initial</span>
+                      <span class="fs-5">First name</span>
                     </div>
                     <div class="col-6 mb-3">
-                      <span class="text-muted fs-5">S</span>
+                      <span class="fs-5">Jane</span>
                     </div>
                   </div>
                   <div class="row row-details">
@@ -123,35 +141,42 @@
                       <span class="fs-5">Last name</span>
                     </div>
                     <div class="mb-3 col-6">
-                      <span class="text-muted fs-5">Jones</span>
+                      <span class="fs-5">Doe</span>
                     </div>
                   </div>
                   <div class="row row-details">
                     <div class="col-6">
-                      <span class="fs-5">Birthdate</span>
+                      <span class="fs-5">Practitioner number</span>
                     </div>
                     <div class="col-6">
-                      <span class="text-muted fs-5">September 7, 1979</span>
+                      <span class="fs-5">A8765</span>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="row row-details">
                     <div class="col-6">
-                      <span class="fs-5">PHN (Personal Health Number)</span>
+                      <span class="fs-5">Payee number</span>
                     </div>
                     <div class="col-6">
-                      <span class="text-muted fs-5">9999999998</span>
+                      <span class="fs-5">87546</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="py-3 row pb-0 h-50">
-              <div class="px-0 card border-0">
+              <div class="card border-0">
                 <div class="card-header fw-bold px-0 py-0">
                   <div class="row">
-                    <div class="col-6">Documents upload</div>
-                    <div class="col-6 icon-align-right">
-                      edit&nbsp;&nbsp;<IconPencil class="icon-style" />
+                    <div class="col-8">Documents upload</div>
+                    <div class="col-4 icon-align-right">
+                      <a
+                        href="javascript:void(0)"
+                        class="link-icon"
+                        @click.prevent="Edit(routes.UPLOAD_DOCUMENTS.path)"
+                        >edit&nbsp;&nbsp;<IconPencil
+                          class="icon-style"
+                          color="#1a5a96"
+                      /></a>
                     </div>
                   </div>
                 </div>
@@ -162,15 +187,17 @@
                         <span class="fs-5">Document uploaded</span>
                       </div>
                       <div class="col-6">
-                        <span class="text-muted fs-5">1</span>
+                        <span class="fs-5">1</span>
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-6">
                         <span class="fs-5">Note</span>
                       </div>
-                      <div class="col-6 col-6 text-muted fs-5">
-                        Included is a description document of the procedure performed by the Dr.
+                      <div class="col-6 col-6 fs-5">
+                        <p>
+                          Included is a description document of the procedure performed by the Dr.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -196,7 +223,7 @@
             promptly.
           </p>
         </div>
-        <div class="row px-3">
+        <div class="row px-3 fs-5">
           <CheckboxComponent
             id="pratitioner-declaration-accuracy"
             label="Jane Doe"
@@ -252,9 +279,14 @@ export default {
 
   methods: {
     nextPage() {
-      console.log("nextPage function called");
       // Navigate to next path.
       const toPath = routes.SUBMISSION_PAGE.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+    },
+    Edit(toPath) {
+      //Navigate to path.
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
@@ -292,5 +324,9 @@ hr {
 .icon-align-right {
   display: flex;
   justify-content: flex-end;
+}
+
+a.link-icon {
+  text-decoration: none;
 }
 </style>

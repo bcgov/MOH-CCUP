@@ -125,7 +125,7 @@ export default {
     nextPage() {
       console.log("nextPage function called");
       // Navigate to next path.
-      const toPath = routes.REVIEW_PAGE.path;
+      const toPath = routes.PATIENT_INFO.path;
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
