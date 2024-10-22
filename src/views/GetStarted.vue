@@ -10,41 +10,76 @@
         <hr />
         <h2>Welcome</h2>
         <p>
-          Our e-form simplifies the process of submitting essential documents for your
-          Pre-authorizations or Claims. To ensure efficient processing, please select whether the
-          documents pertain to a claim or a pre-authorization.
+          Welcome to the Claims Correspondence Upload Portal. This form simplifies the submission of
+          documents to support pre-authorization and claims.
         </p>
+        <p>Before you begin:</p>
+        <ul>
+          <li>
+            Please submit documents for one individual (Personal Health Number (PHN)) at a time.
+            Submitting for more than one individual may delay the processing of your submission.
+          </li>
+          <li>
+            If you are submitting documents in response to a request letter from Health Insurance BC
+            (HIBC): for the quickest possible processing include all requested documents in your
+            submission.
+          </li>
+          <li>
+            Ensure that each document is in one of the following formats: JPG, PNG, GIF, BMP, or
+            PDF.
+          </li>
+          <li>
+            Ensure that each file or image displays the entire document from corner to corner; is
+            oriented correctly (not upside down or sideways); and is in focus and readable.
+          </li>
+        </ul>
         <p>
-          Please note that information will be submitted for one individual's personal health number
-          (PHN) at a time. Unless specified as optional, all fields in the form are mandatory.
+          If you have any questions or need assistance, please contact the HIBC practitioner claim
+          support team. (Vancouver: (604) 456-6950, Elsewhere in B.C.: 1-866-456-6950)
         </p>
-        <p>
-          When uploading documents, ensure they are in one of the following formats: JPG, PNG, GIF,
-          BMP, or PDF. For optimal processing, please include the entire document, from corner to
-          corner, rotated correctly (not upside down or sideways), in focus, and easy to read.
-        </p>
-        <p>
-          Thank you for using the Practitioner Upload Tool to streamline your document submissions.
-          If you have any questions or need assistance, please don't hesitate to contact our support
-          team.
-        </p>
-        <h2>Documents to be uploaded</h2>
-        <p>
-          Could you please specify what type of documents need to be uploaded by indicating which
-          category they belong to? Once you select a category and start providing the needed
-          information for your upload, the category cannot be changed; make sure you select the
-          right category for your document upload.
-        </p>
+        <h1 class="mt-5">Practitioner information</h1>
         <hr />
-        <RadioComponent
-          id="documents-category"
-          v-model="documentsCategory"
-          :label="'Documents category'"
-          aria-labelledby="documentsCategory"
-          name="documents-category"
+        <h2>Practitioner</h2>
+        <p>Please provide the necessary information about the practitioner.</p>
+        <hr />
+        <InputComponent
+          id="prac-first-name"
+          v-model="pracFirstName"
+          label="First name"
+          :maxlength="firstNameMaxLength"
           :required="true"
-          :items="radioOptionsDocumentsCategory"
-          cypress-id="documents-category"
+          class="mt-3"
+          :input-style="mediumStyles"
+          @blur="handleBlurField(v$.pracFirstName)"
+        />
+        <InputComponent
+          id="prac-last-name"
+          v-model="pracLastName"
+          label="Last name"
+          :maxlength="lastNameMaxLength"
+          :required="true"
+          class="mt-3"
+          :input-style="mediumStyles"
+          @blur="handleBlurField(v$.pracLastName)"
+        />
+        <PractitionerNumberInput
+          id="prac-number"
+          v-model="pracNumber"
+          label="Practitioner number"
+          cypress-id="pracNumber"
+          class="mt-3"
+          :input-style="extraSmallStyles"
+          @blur="handleBlurField(v$.pracNumber)"
+        />
+        <!-- Using PractitionerNumberInput because payee number has the same format as a practitioner number -->
+        <PractitionerNumberInput
+          id="payee-number"
+          v-model="payeeNumber"
+          label="Payee number"
+          cypress-id="payeeNumber"
+          class="mt-3"
+          :input-style="extraSmallStyles"
+          @blur="handleBlurField(v$.pracNumber)"
         />
       </main>
     </PageContent>
@@ -58,7 +93,9 @@
 
 <script setup>
 // import { useFormStore } from "@/stores/formData";
-import { PageContent, ContinueBar, RadioComponent } from "common-lib-vue";
+import { PageContent, ContinueBar, InputComponent, PractitionerNumberInput } from "common-lib-vue";
+import { extraSmallStyles, mediumStyles } from "@/constants/input-styles";
+import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
@@ -98,7 +135,7 @@ export default {
     nextPage() {
       console.log("nextPage function called");
       // Navigate to next path.
-      const toPath = routes.PRACTITIONER_INFO.path;
+      const toPath = routes.PATIENT_INFO.path;
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);

@@ -21,7 +21,7 @@
           label="First initial"
           :disabled="true"
           class="mt-3"
-          :input-style="smallStyles"
+          :input-style="extraSmallStyles"
           @blur="handleBlurField(v$.patientFirstInitial)"
         />
         <InputComponent
@@ -47,7 +47,7 @@
           label="PHN (Personal Health Number)"
           :disabled="true"
           class="mt-3"
-          :input-style="mediumStyles"
+          :input-style="smallStyles"
           @blur="handleBlurField(v$.patientPhn)"
         />
         <h2 class="mt-5">Upload tool</h2>
@@ -89,7 +89,14 @@
             </div>
           </div>
         </div>
-        <hr />
+        <InputComponent
+          id="upload-note"
+          v-model="uploadNote"
+          label="Note (optional)"
+          class="mt-3"
+          :input-style="extraLargeStyles"
+          @blur="handleBlurField(v$.uploadNote)"
+        />
       </main>
     </PageContent>
   </main>
@@ -103,11 +110,16 @@
 <script setup>
 // import { useFormStore } from "@/stores/formData";
 import { PageContent, ContinueBar, InputComponent, DateInput, FileUploader } from "common-lib-vue";
-import { smallStyles, mediumStyles } from "@/constants/input-styles";
-// const store = useFormStore();
+import {
+  extraSmallStyles,
+  smallStyles,
+  mediumStyles,
+  extraLargeStyles,
+} from "@/constants/input-styles";
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
+// const store = useFormStore();
 </script>
 
 <script>
