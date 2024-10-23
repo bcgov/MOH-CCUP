@@ -174,8 +174,7 @@
                       <span class="fs-5 px-2 fw-bold">First initial</span>
                     </div>
                     <div class="col-6">
-                      F
-                      <span class="fs-5"></span>
+                      <span class="fs-5">F</span>
                     </div>
                   </div>
                   <div class="row row-details">
@@ -243,8 +242,13 @@
 // import { smallStyles, mediumStyles } from "@/constants/input-styles";
 // import { useFormStore } from "@/stores/formData";
 // const store = useFormStore();
-import { IconPencil } from "common-lib-vue";
-import { PageContent, ContinueBar, RadioComponent, CheckboxComponent } from "common-lib-vue";
+import {
+  PageContent,
+  ContinueBar,
+  RadioComponent,
+  CheckboxComponent,
+  IconPencil,
+} from "common-lib-vue";
 import { stepRoutes, routes } from "../router/index.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import pageStateService from "../services/page-state-service.js";
