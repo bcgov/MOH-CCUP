@@ -118,7 +118,6 @@ export default {
   data() {
     return {
       documentsCategory: null,
-      showConsentModal: true,
     };
   },
 
