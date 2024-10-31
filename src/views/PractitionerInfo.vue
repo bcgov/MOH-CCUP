@@ -89,17 +89,24 @@
     cypress-id="continue-bar"
     @continue="nextPage()"
   />
+  <Teleport
+    v-if="isShowConsentModal"
+    to="#modal-target"
+  >
+    <ConsentModal @close="handleCloseConsentModal" />
+  </Teleport>
 </template>
 
 <script setup>
-// import { useFormStore } from "@/stores/formData";
+import { useFormStore } from "@/stores/formData";
 import { PageContent, ContinueBar, InputComponent, PractitionerNumberInput } from "common-lib-vue";
 import { extraSmallStyles, mediumStyles } from "@/constants/input-styles";
 import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
-// const store = useFormStore();
+import ConsentModal from "../components/ConsentModal.vue";
+const store = useFormStore();
 </script>
 
 <script>
@@ -111,6 +118,7 @@ export default {
   data() {
     return {
       documentsCategory: null,
+      showConsentModal: true,
     };
   },
 
@@ -132,6 +140,9 @@ export default {
   },
 
   methods: {
+    isShowConsentModal() {
+      return store.isShowConsentModal;
+    },
     nextPage() {
       console.log("nextPage function called");
       // Navigate to next path.
@@ -139,6 +150,9 @@ export default {
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
+    },
+    handleCloseConsentModal() {
+      store.isShowConsentModal = false;
     },
   },
 };
