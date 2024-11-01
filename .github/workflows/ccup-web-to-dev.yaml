@@ -1,13 +1,15 @@
 name: ccup-web-to-dev
 on:
   push:
-    paths:
-      - "ccup/src/**/*.html"
-      - "ccup/src/**/*.ts"
-      - "ccup/src/**/*.js"
-      - "ccup/src/**/*.scss"
-      - "ccup/src/**/*.vue"
-      - "ccup/package*.json"
+    branches:
+      - "*"
+    # paths:
+    #   - "ccup/src/**/*.html"
+    #   - "ccup/src/**/*.ts"
+    #   - "ccup/src/**/*.js"
+    #   - "ccup/src/**/*.scss"
+    #   - "ccup/src/**/*.vue"
+    #   - "ccup/package*.json"
   workflow_dispatch:
     # inputs:
     #   force-image-build:
