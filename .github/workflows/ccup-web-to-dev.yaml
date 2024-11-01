@@ -1,4 +1,4 @@
-name: ccup-web build
+name: ccup-web-to-dev
 on:
   push:
     paths:
@@ -9,14 +9,14 @@ on:
       - "ccup/src/**/*.vue"
       - "ccup/package*.json"
   workflow_dispatch:
-    inputs:
-      force-image-build:
-        description: "The default behavior of this workflow is to only build a new image + deploy to DEV when a branch is pushed to main. To override this and deploy to DEV anyway, change this to true."
-        required: false
-        default: false
-        type: boolean
+    # inputs:
+    #   force-image-build:
+    #     description: "The default behavior of this workflow is to only build a new image + deploy to DEV when a branch is pushed to main. To override this and deploy to DEV anyway, change this to true."
+    #     required: false
+    #     default: false
+    #     type: boolean
 env:
-  #   NAMESPACE: ######-tools
+  NAMESPACE: be8465-tools
   ARTIFACT_BUILD_NAME: ccup-web-artifact-build
   ARTIFACT_IMAGE_NAME: ccup-web-artifacts
   BUILD_NAME: ccup-web-image-build
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@main
       - uses: actions/setup-node@main
         with:
-          node-version: "18"
+          node-version: "22"
       - name: Install dependencies
         run: npm ci
       - name: Unit tests
@@ -44,7 +44,7 @@ jobs:
     needs: [test]
     strategy:
       matrix:
-        node-version: [18.x, 22.x]
+        node-version: [22.x]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
