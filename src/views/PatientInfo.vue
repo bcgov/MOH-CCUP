@@ -22,6 +22,7 @@
           :required="true"
           :items="radioOptionsDocumentsCategory"
           cypress-id="documents-category"
+          @change="getDocTypeSelected"
         />
         <h2 class="mt-5">Adjudicator</h2>
         <p>
@@ -99,7 +100,7 @@
 </template>
 
 <script setup>
-// import { useFormStore } from "@/stores/formData";
+import { useFormStore } from "@/stores/formData";
 import {
   PageContent,
   ContinueBar,
@@ -117,13 +118,13 @@ import {
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
-// const store = useFormStore();
 </script>
 
 <script>
 export default {
   data() {
     return {
+      store: useFormStore(),
       documentsCategory: null,
     };
   },
@@ -146,6 +147,9 @@ export default {
   },
 
   methods: {
+    getDocTypeSelected(e) {
+      this.store.handleDocumentTypeChange(e.target.value);
+    },
     nextPage() {
       console.log("nextPage function called");
       // Navigate to next path.

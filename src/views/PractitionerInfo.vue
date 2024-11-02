@@ -90,7 +90,7 @@
     @continue="nextPage()"
   />
   <Teleport
-    v-if="isShowConsentModal"
+    v-if="store.isShowConsentModal"
     to="#modal-target"
   >
     <ConsentModal @close="handleCloseConsentModal" />

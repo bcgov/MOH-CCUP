@@ -143,7 +143,7 @@
                         :items="radioOptionsDocumentsCategory"
                         cypress-id="documents-category"
                         :disabled="true"
-                        :model-value="pre - auth"
+                        :model-value="documentTypeSelected"
                       />
                     </div>
                   </div>
@@ -240,8 +240,8 @@
 </template>
 <script setup>
 // import { smallStyles, mediumStyles } from "@/constants/input-styles";
-// import { useFormStore } from "@/stores/formData";
-// const store = useFormStore();
+import { useFormStore } from "@/stores/formData";
+
 import {
   PageContent,
   ContinueBar,
@@ -258,6 +258,7 @@ import pageStateService from "../services/page-state-service.js";
 export default {
   data() {
     return {
+      store: useFormStore(),
       documentsCategory: null,
     };
   },
@@ -266,12 +267,15 @@ export default {
     pageTitle: function () {
       return this.$route.title;
     },
+    documentTypeSelected: function () {
+      return this.store.documentTypeSelected;
+    },
     radioOptionsDocumentsCategory() {
       return [
         {
           id: "documents-category-claim",
           label: "Claims document(s)",
-          value: "claim",
+          value: "claims",
         },
         {
           id: "documents-category-pre-auth",
