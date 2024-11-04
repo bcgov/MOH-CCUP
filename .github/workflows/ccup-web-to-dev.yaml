@@ -89,3 +89,4 @@ jobs:
         run: sleep 20s
       - name: Tag Image Build
         run: oc tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:${SOURCE_IMAGE_TAG} ${NAMESPACE}/${IMAGE_NAME}:${TARGET_IMAGE_TAG}
+        # temporarily commiting a comment to trigger the build workflow
