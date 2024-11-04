@@ -11,12 +11,12 @@ on:
     #   - "ccup/src/**/*.vue"
     #   - "ccup/package*.json"
   workflow_dispatch:
-    # inputs:
-    #   force-image-build:
-    #     description: "The default behavior of this workflow is to only build a new image + deploy to DEV when a branch is pushed to main. To override this and deploy to DEV anyway, change this to true."
-    #     required: false
-    #     default: false
-    #     type: boolean
+    inputs:
+      force-image-build:
+        description: "The default behavior of this workflow is to only build a new image + deploy to DEV when a branch is pushed to main. To override this and deploy to DEV anyway, change this to true."
+        required: false
+        default: false
+        type: boolean
 env:
   NAMESPACE: be8465-tools
   ARTIFACT_BUILD_NAME: ccup-web-artifact-build
