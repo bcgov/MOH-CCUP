@@ -1,5 +1,8 @@
 name: ccup-web deploy to test
 on:
+  push:
+    branches:
+      - "*"
   workflow_dispatch:
 defaults:
   run:
