@@ -5,6 +5,12 @@ export const useFormStore = defineStore("formStore", {
     phn: null,
     pracNumber: null,
     testField: "asdf",
+    formFields: {
+      pracFirstName: "",
+      pracLastName: "",
+      pracNumber: "",
+      payeeNumber: "",
+    },
   }),
   getters: {
     phnGetter() {
@@ -17,10 +23,20 @@ export const useFormStore = defineStore("formStore", {
         this.testField = `${this.testField.toString()} ${object}`;
       }
     },
+    updateFormField(fieldName, fieldValue) {
+      this.formFields[fieldName] = fieldValue;
+    },
     clearData() {
       this.phn = null;
       this.pracNumber = null;
       this.testField = "";
+
+      this.formFields = {
+        pracFirstName: "",
+        pracLastName: "",
+        pracNumber: "",
+        payeeNumber: "",
+      };
     },
   },
 });
