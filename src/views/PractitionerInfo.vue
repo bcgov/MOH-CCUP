@@ -171,6 +171,7 @@ export default {
     return {
       v$: useVuelidate(),
       store: useFormStore(),
+      formFieldParent: "practitioner",
       documentsCategory: null,
       pracFirstName: null,
       pracLastName: null,
@@ -195,10 +196,10 @@ export default {
     },
   },
   created() {
-    this.pracFirstName = this.store.formFields["pracFirstName"];
-    this.pracLastName = this.store.formFields["pracLastName"];
-    this.pracNumber = this.store.formFields["pracNumber"];
-    this.payeeNumber = this.store.formFields["payeeNumber"];
+    this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
+    this.pracLastName = this.store.formFields[this.formFieldParent]["pracLastName"];
+    this.pracNumber = this.store.formFields[this.formFieldParent]["pracNumber"];
+    this.payeeNumber = this.store.formFields[this.formFieldParent]["payeeNumber"];
   },
   validations() {
     return {
@@ -240,7 +241,11 @@ export default {
         validationObject.$touch();
 
         // update pinia store
-        this.store.updateFormField(validationObject.$path, event.target.value);
+        this.store.updateFormField(
+          this.formFieldParent,
+          validationObject.$path,
+          event.target.value
+        );
       }
     },
   },
