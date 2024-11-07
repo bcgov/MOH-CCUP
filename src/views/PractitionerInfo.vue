@@ -167,7 +167,6 @@ export default {
   components: {
     ProgressBar,
   },
-  //setup () { return { v$: useVuelidate() } },
   data() {
     return {
       v$: useVuelidate(),
