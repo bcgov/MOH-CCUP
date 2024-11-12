@@ -22,7 +22,17 @@
           :required="true"
           :items="radioOptionsDocumentsCategory"
           cypress-id="documents-category"
+          :model-value="documentsCategory"
+          @change="handleChangeField(v$.documentsCategory, $event)"
         />
+
+        <div
+          v-if="v$.documentsCategory.$errors.length > 0"
+          class="text-danger"
+          aria-live="assertive"
+        >
+          Select a document type.
+        </div>
         <h2 class="mt-5">Adjudicator</h2>
         <p>
           Please provide, if possible, the adjudicator’s name, which is included in your letter.
@@ -36,7 +46,7 @@
           :maxlength="firstNameMaxLength"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.adjFirstName)"
+          @blur="handleBlurField(v$.adjFirstName, $event)"
         />
         <InputComponent
           id="adj-last-name"
@@ -45,10 +55,10 @@
           :maxlength="lastNameMaxLength"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.adjLastName)"
+          @blur="handleBlurField(v$.adjLastName, $event)"
         />
-        <h2 class="mt-5">Practitioner</h2>
-        <p>Please provide the necessary information about the practitioner.</p>
+        <h2 class="mt-5">Patient</h2>
+        <p>Please provide the necessary information about the patient.</p>
         <hr />
         <InputComponent
           id="patient-first-initial"
@@ -58,8 +68,26 @@
           :required="true"
           class="mt-3"
           :input-style="extraSmallStyles"
-          @blur="handleBlurField(v$.patientFirstInitial)"
+          @change="handleBlurField(v$.patientFirstInitial, $event)"
         />
+        <div
+          v-if="
+            v$.patientFirstInitial.$dirty &&
+            (v$.patientFirstInitial.required.$invalid ||
+              v$.patientFirstInitial.nameValidator.$invalid)
+          "
+          class="text-danger"
+          aria-live="assertive"
+        >
+          {{
+            v$.patientFirstInitial.required.$invalid
+              ? "First initial is required."
+              : v$.patientFirstInitial.nameValidator.$invalid
+                ? "First initial must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
+                : null
+          }}
+        </div>
+
         <InputComponent
           id="patient-last-name"
           v-model="patientLastName"
@@ -68,16 +96,46 @@
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.patientLastName)"
+          @blur="handleBlurField(v$.patientLastName, $event)"
         />
+        <div
+          v-if="v$.patientLastName.$dirty"
+          class="text-danger"
+          aria-live="assertive"
+        >
+          {{
+            v$.patientLastName.required.$invalid
+              ? "Last name is required."
+              : v$.patientLastName.nameValidator.$invalid
+                ? "Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
+                : null
+          }}
+        </div>
         <DateInput
           id="patient-birthdate"
           v-model="patientBirthdate"
           label="Patient birthdate"
           :required="true"
+          :use-invalid-state="true"
           class-name="mt-3"
+          @process-date="handleProcessBirthdate($event)"
           @blur="handleBlurField(v$.patientBirthdate)"
         />
+        <div
+          v-if="v$.patientBirthdate.$dirty"
+          class="text-danger"
+          aria-live="assertive"
+        >
+          {{
+            patientBirthdate == null && v$.patientBirthdate.required.$invalid
+              ? "Birthdate is required."
+              : v$.patientBirthdate.dateDataValidator.$invalid ||
+                  v$.patientBirthdate.distantPastValidator.$invalid ||
+                  !v$.patientBirthdate.futureDateValidator.$invalid
+                ? "Invalid birthdate."
+                : null
+          }}
+        </div>
         <PhnInput
           id="patient-phn"
           v-model="patientPhn"
@@ -86,8 +144,26 @@
           :required="true"
           class="mt-3"
           :input-style="smallStyles"
-          @blur="handleBlurField($v.patientPhn)"
+          @blur="handleBlurField(v$.patientPhn, $event)"
         />
+        <div
+          v-if="v$.patientPhn.$dirty && v$.patientPhn.required.$invalid"
+          class="text-danger"
+          aria-live="assertive"
+        >
+          Personal Health Number is required.
+        </div>
+        <div
+          v-if="
+            v$.patientPhn.$dirty &&
+            !v$.patientPhn.required.$invalid &&
+            (v$.patientPhn.phnValidator.$invalid || v$.patientPhn.phnFirstDigitValidator.$invalid)
+          "
+          class="text-danger"
+          aria-live="assertive"
+        >
+          Personal Health Number is not valid.
+        </div>
       </main>
     </PageContent>
   </main>
@@ -99,7 +175,6 @@
 </template>
 
 <script setup>
-// import { useFormStore } from "@/stores/formData";
 import {
   PageContent,
   ContinueBar,
@@ -107,6 +182,8 @@ import {
   InputComponent,
   DateInput,
   PhnInput,
+  phnValidator,
+  futureDateValidator,
 } from "common-lib-vue";
 import { extraSmallStyles, smallStyles, mediumStyles } from "@/constants/input-styles";
 import {
@@ -117,14 +194,27 @@ import {
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
-// const store = useFormStore();
+import { required } from "@vuelidate/validators";
+import { nameValidator, dateDataValidator, phnFirstDigitValidator } from "../helpers/validators.js";
+import { useVuelidate } from "@vuelidate/core";
+import { useFormStore } from "@/stores/formData";
+import { distantPastValidator } from "../helpers/date.js";
 </script>
 
 <script>
 export default {
   data() {
     return {
+      v$: useVuelidate(),
+      store: useFormStore(),
+      formFieldParent: "patient",
       documentsCategory: null,
+      patientBirthdate: null,
+      patientFirstInitial: null,
+      patientLastName: null,
+      patientPhn: null,
+      adjFirstName: null,
+      adjLastName: null,
     };
   },
 
@@ -144,15 +234,78 @@ export default {
       ];
     },
   },
-
+  created() {
+    this.documentsCategory = this.store.formFields[this.formFieldParent]["documentsCategory"];
+    this.patientLastName = this.store.formFields[this.formFieldParent]["patientLastName"];
+    this.patientFirstInitial = this.store.formFields[this.formFieldParent]["patientFirstInitial"];
+    this.patientBirthdate = this.store.formFields[this.formFieldParent]["patientBirthdate"];
+    this.patientPhn = this.store.formFields[this.formFieldParent]["patientPhn"];
+    this.adjFirstName = this.store.formFields[this.formFieldParent]["adjFirstName"];
+    this.adjLastName = this.store.formFields[this.formFieldParent]["adjLastName"];
+  },
+  validations() {
+    return {
+      documentsCategory: {
+        required,
+      },
+      patientLastName: {
+        required,
+        nameValidator,
+      },
+      adjFirstName: {},
+      adjLastName: {},
+      patientFirstInitial: {
+        required,
+        nameValidator,
+      },
+      patientBirthdate: {
+        required,
+        dateDataValidator,
+        distantPastValidator,
+        futureDateValidator,
+      },
+      patientPhn: {
+        required,
+        phnValidator,
+        phnFirstDigitValidator,
+      },
+    };
+  },
   methods: {
     nextPage() {
-      console.log("nextPage function called");
-      // Navigate to next path.
-      const toPath = routes.UPLOAD_DOCUMENTS.path;
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-      this.$router.push(toPath);
+      this.v$.$validate();
+
+      if (!this.v$.$error) {
+        console.log("nextPage function called");
+        // Navigate to next path.
+        const toPath = routes.UPLOAD_DOCUMENTS.path;
+        pageStateService.setPageComplete(toPath);
+        pageStateService.visitPage(toPath);
+        this.$router.push(toPath);
+      }
+    },
+    handleProcessBirthdate(data) {
+      this.store.updateFormField(this.formFieldParent, "patientBirthdate", data.date);
+    },
+    processChangeField(validationObject, event) {
+      if (validationObject) {
+        validationObject.$touch();
+
+        if (event != null) {
+          // update pinia store
+          this.store.updateFormField(
+            this.formFieldParent,
+            validationObject.$path,
+            event.target.value
+          );
+        }
+      }
+    },
+    handleChangeField(validationObject, event) {
+      this.processChangeField(validationObject, event);
+    },
+    handleBlurField(validationObject, event = null) {
+      this.processChangeField(validationObject, event);
     },
   },
 };

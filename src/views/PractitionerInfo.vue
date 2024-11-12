@@ -50,8 +50,22 @@
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.pracFirstName)"
+          @blur="handleBlurField(v$.pracFirstName, $event)"
         />
+        <div
+          v-if="v$.pracFirstName.$dirty"
+          class="text-danger"
+          aria-live="assertive"
+        >
+          {{
+            v$.pracFirstName.required.$invalid
+              ? "First name is required."
+              : v$.pracFirstName.nameValidator.$invalid
+                ? "First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
+                : null
+          }}
+        </div>
+
         <InputComponent
           id="prac-last-name"
           v-model="pracLastName"
@@ -60,8 +74,23 @@
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.pracLastName)"
+          @blur="handleBlurField(v$.pracLastName, $event)"
         />
+
+        <div
+          v-if="v$.pracLastName.$dirty"
+          class="text-danger"
+          aria-live="assertive"
+        >
+          {{
+            v$.pracLastName.required.$invalid
+              ? "Last name is required."
+              : v$.pracLastName.nameValidator.$invalid
+                ? "Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
+                : null
+          }}
+        </div>
+
         <PractitionerNumberInput
           id="prac-number"
           v-model="pracNumber"
@@ -69,8 +98,22 @@
           cypress-id="pracNumber"
           class="mt-3"
           :input-style="extraSmallStyles"
-          @blur="handleBlurField(v$.pracNumber)"
+          @blur="handleBlurField(v$.pracNumber, $event)"
         />
+        <div
+          v-if="v$.pracNumber.$dirty"
+          class="text-danger"
+          aria-live="assertive"
+        >
+          {{
+            v$.pracNumber.required.$invalid
+              ? "Practitioner number is required."
+              : v$.pracNumber.valueLengthValidator.$invalid
+                ? "Practitioner number must be 5 charactes long."
+                : null
+          }}
+        </div>
+
         <!-- Using PractitionerNumberInput because payee number has the same format as a practitioner number -->
         <PractitionerNumberInput
           id="payee-number"
@@ -79,8 +122,22 @@
           cypress-id="payeeNumber"
           class="mt-3"
           :input-style="extraSmallStyles"
-          @blur="handleBlurField(v$.pracNumber)"
+          @blur="handleBlurField(v$.payeeNumber, $event)"
         />
+
+        <div
+          v-if="v$.payeeNumber.$dirty"
+          class="text-danger"
+          aria-live="assertive"
+        >
+          {{
+            v$.payeeNumber.required.$invalid
+              ? "Payee number is required."
+              : v$.payeeNumber.valueLengthValidator.$invalid
+                ? "Payee number must be 5 charactes long."
+                : null
+          }}
+        </div>
       </main>
     </PageContent>
   </main>
@@ -92,14 +149,16 @@
 </template>
 
 <script setup>
-// import { useFormStore } from "@/stores/formData";
 import { PageContent, ContinueBar, InputComponent, PractitionerNumberInput } from "common-lib-vue";
 import { extraSmallStyles, mediumStyles } from "@/constants/input-styles";
 import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
-// const store = useFormStore();
+import { required } from "@vuelidate/validators";
+import { nameValidator, valueLengthValidator } from "../helpers/validators.js";
+import { useVuelidate } from "@vuelidate/core";
+import { useFormStore } from "@/stores/formData";
 </script>
 
 <script>
@@ -110,10 +169,15 @@ export default {
   },
   data() {
     return {
-      documentsCategory: null,
+      v$: useVuelidate(),
+      store: useFormStore(),
+      formFieldParent: "practitioner",
+      pracFirstName: null,
+      pracLastName: null,
+      pracNumber: null,
+      payeeNumber: null,
     };
   },
-
   computed: {
     radioOptionsDocumentsCategory() {
       return [
@@ -130,15 +194,57 @@ export default {
       ];
     },
   },
-
+  created() {
+    this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
+    this.pracLastName = this.store.formFields[this.formFieldParent]["pracLastName"];
+    this.pracNumber = this.store.formFields[this.formFieldParent]["pracNumber"];
+    this.payeeNumber = this.store.formFields[this.formFieldParent]["payeeNumber"];
+  },
+  validations() {
+    return {
+      pracFirstName: {
+        required,
+        nameValidator,
+      },
+      pracLastName: {
+        required,
+        nameValidator,
+      },
+      pracNumber: {
+        required,
+        valueLengthValidator,
+      },
+      payeeNumber: {
+        required,
+        valueLengthValidator,
+      },
+    };
+  },
   methods: {
     nextPage() {
-      console.log("nextPage function called");
-      // Navigate to next path.
-      const toPath = routes.PATIENT_INFO.path;
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-      this.$router.push(toPath);
+      // trigger validation
+      this.v$.$validate();
+
+      if (!this.v$.$error) {
+        console.log("nextPage function called");
+        //Navigate to next path.
+        const toPath = routes.PATIENT_INFO.path;
+        pageStateService.setPageComplete(toPath);
+        pageStateService.visitPage(toPath);
+        this.$router.push(toPath);
+      }
+    },
+    handleBlurField(validationObject, event) {
+      if (validationObject) {
+        validationObject.$touch();
+
+        // update pinia store
+        this.store.updateFormField(
+          this.formFieldParent,
+          validationObject.$path,
+          event.target.value
+        );
+      }
     },
   },
 };

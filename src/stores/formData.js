@@ -3,8 +3,23 @@ import { defineStore } from "pinia";
 export const useFormStore = defineStore("formStore", {
   state: () => ({
     phn: null,
-    pracNumber: null,
     testField: "asdf",
+    formFields: {
+      practitioner: {
+        pracFirstName: "",
+        pracLastName: "",
+        pracNumber: "",
+        payeeNumber: "",
+      },
+      patient: {
+        documentsCategory: null,
+        patientBirthdate: null,
+        patientFirstInitial: null,
+        patientPhn: null,
+        adjFirstName: null,
+        adjLastName: null,
+      },
+    },
   }),
   getters: {
     phnGetter() {
@@ -17,10 +32,30 @@ export const useFormStore = defineStore("formStore", {
         this.testField = `${this.testField.toString()} ${object}`;
       }
     },
+    updateFormField(parentName, fieldName, fieldValue) {
+      this.formFields[parentName][fieldName] = fieldValue;
+    },
     clearData() {
       this.phn = null;
       this.pracNumber = null;
       this.testField = "";
+
+      this.formFields = {
+        practitioner: {
+          pracFirstName: "",
+          pracLastName: "",
+          pracNumber: "",
+          payeeNumber: "",
+        },
+        patient: {
+          documentsCategory: null,
+          patientBirthdate: null,
+          patientFirstInitial: null,
+          patientPhn: null,
+          adjFirstName: null,
+          adjLastName: null,
+        },
+      };
     },
   },
 });
