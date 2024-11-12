@@ -57,8 +57,8 @@
           :input-style="mediumStyles"
           @blur="handleBlurField(v$.adjLastName, $event)"
         />
-        <h2 class="mt-5">Practitioner</h2>
-        <p>Please provide the necessary information about the practitioner.</p>
+        <h2 class="mt-5">Patient</h2>
+        <p>Please provide the necessary information about the patient.</p>
         <hr />
         <InputComponent
           id="patient-first-initial"
@@ -71,11 +71,21 @@
           @change="handleBlurField(v$.patientFirstInitial, $event)"
         />
         <div
-          v-if="v$.patientFirstInitial.$dirty && v$.patientFirstInitial.required.$invalid"
+          v-if="
+            v$.patientFirstInitial.$dirty &&
+            (v$.patientFirstInitial.required.$invalid ||
+              v$.patientFirstInitial.nameValidator.$invalid)
+          "
           class="text-danger"
           aria-live="assertive"
         >
-          First initial is required.
+          {{
+            v$.patientLastName.required.$invalid
+              ? "First initial is required."
+              : v$.patientLastName.nameValidator.$invalid
+                ? "First initial must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
+                : null
+          }}
         </div>
 
         <InputComponent
@@ -120,7 +130,8 @@
             patientBirthdate == null && v$.patientBirthdate.required.$invalid
               ? "Birthdate is required."
               : v$.patientBirthdate.dateDataValidator.$invalid ||
-                  v$.patientBirthdate.distantPastValidator.$invalid
+                  v$.patientBirthdate.distantPastValidator.$invalid ||
+                  !v$.patientBirthdate.futureDateValidator.$invalid
                 ? "Invalid birthdate."
                 : null
           }}
@@ -172,6 +183,7 @@ import {
   DateInput,
   PhnInput,
   phnValidator,
+  futureDateValidator,
 } from "common-lib-vue";
 import { extraSmallStyles, smallStyles, mediumStyles } from "@/constants/input-styles";
 import {
@@ -244,11 +256,13 @@ export default {
       adjLastName: {},
       patientFirstInitial: {
         required,
+        nameValidator,
       },
       patientBirthdate: {
         required,
         dateDataValidator,
         distantPastValidator,
+        futureDateValidator,
       },
       patientPhn: {
         required,
