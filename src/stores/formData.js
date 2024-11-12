@@ -11,6 +11,14 @@ export const useFormStore = defineStore("formStore", {
         pracNumber: "",
         payeeNumber: "",
       },
+      patient: {
+        documentsCategory: null,
+        patientBirthdate: null,
+        patientFirstInitial: null,
+        patientPhn: null,
+        adjFirstName: null,
+        adjLastName: null,
+      },
     },
   }),
   getters: {
@@ -38,6 +46,14 @@ export const useFormStore = defineStore("formStore", {
           pracLastName: "",
           pracNumber: "",
           payeeNumber: "",
+        },
+        patient: {
+          documentsCategory: null,
+          patientBirthdate: null,
+          patientFirstInitial: null,
+          patientPhn: null,
+          adjFirstName: null,
+          adjLastName: null,
         },
       };
     },

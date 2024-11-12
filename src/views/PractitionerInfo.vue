@@ -109,7 +109,7 @@
             v$.pracNumber.required.$invalid
               ? "Practitioner number is required."
               : v$.pracNumber.valueLengthValidator.$invalid
-                ? "Practitioner number is 5 characters."
+                ? "Practitioner number must be 5 charactes long."
                 : null
           }}
         </div>
@@ -134,7 +134,7 @@
             v$.payeeNumber.required.$invalid
               ? "Payee number is required."
               : v$.payeeNumber.valueLengthValidator.$invalid
-                ? "Payee number is 5 characters."
+                ? "Payee number must be 5 charactes long."
                 : null
           }}
         </div>
@@ -172,7 +172,6 @@ export default {
       v$: useVuelidate(),
       store: useFormStore(),
       formFieldParent: "practitioner",
-      documentsCategory: null,
       pracFirstName: null,
       pracLastName: null,
       pracNumber: null,
@@ -221,13 +220,12 @@ export default {
       },
     };
   },
-
   methods: {
     nextPage() {
       // trigger validation
       this.v$.$validate();
 
-      if (!this.v$.$invalid) {
+      if (!this.v$.$error) {
         console.log("nextPage function called");
         //Navigate to next path.
         const toPath = routes.PATIENT_INFO.path;

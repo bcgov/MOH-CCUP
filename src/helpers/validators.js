@@ -10,18 +10,13 @@ export const nameValidator = (value) => {
 };
 
 export const dateDataValidator = (_, vm) => {
-  const data = vm.birthdateData;
-  if (!data || (!data.year && typeof data.month !== "number" && !data.day)) {
+  const data = vm.patientBirthdate;
+
+  if (data instanceof Date && !isNaN(data)) {
     return true;
-  }
-  const year = data.year;
-  const month = data.month;
-  const day = data.day;
-  if (!(year && typeof month === "number" && day) && (year || typeof month === "number" || day)) {
+  } else {
     return false;
   }
-  const isoDateString = getISODateString(year, month + 1, day);
-  return isValidISODateString(isoDateString);
 };
 
 export const phnFirstDigitValidator = (value) => {

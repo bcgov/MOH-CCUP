@@ -1,5 +1,16 @@
-import { format as formatDateFns, getDaysInMonth, isValid } from "date-fns";
+import {
+  format as formatDateFns,
+  getDaysInMonth,
+  isValid,
+  startOfToday,
+  subYears,
+  isAfter,
+  isBefore,
+  isSameDay,
+} from "date-fns";
 import { padLeadingZeros } from "./string";
+
+const MAX_YEAR_RANGE = 120;
 
 export const formatDate = (date) => {
   if (date instanceof Date) {
@@ -42,4 +53,9 @@ export const isValidISODateString = (isoDateString) => {
     return isValid(new Date(isoDateString));
   }
   return false;
+};
+
+export const distantPastValidator = (date) => {
+  const distantPast = subYears(startOfToday(), MAX_YEAR_RANGE);
+  return isSameDay(date, distantPast) || isAfter(date, distantPast);
 };
