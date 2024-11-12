@@ -80,9 +80,9 @@
           aria-live="assertive"
         >
           {{
-            v$.patientLastName.required.$invalid
+            v$.patientFirstInitial.required.$invalid
               ? "First initial is required."
-              : v$.patientLastName.nameValidator.$invalid
+              : v$.patientFirstInitial.nameValidator.$invalid
                 ? "First initial must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
                 : null
           }}
