@@ -35,7 +35,7 @@
                       <span class="fs-5 fw-bold">First name</span>
                     </div>
                     <div class="col-6 mb-3">
-                      <span class="fs-5">Jane</span>
+                      <span class="fs-5">{{ practitioner.firstName }}</span>
                     </div>
                   </div>
                   <div class="row row-details">
@@ -43,7 +43,7 @@
                       <span class="fs-5 fw-bold">Last name</span>
                     </div>
                     <div class="mb-3 col-6">
-                      <span class="fs-5">Doe</span>
+                      <span class="fs-5">{{ practitioner.lastName }}</span>
                     </div>
                   </div>
                   <div class="mb-0 row">
@@ -51,7 +51,7 @@
                       <p class="mb-0 fs-5 fw-bold">Practitioner number</p>
                     </div>
                     <div class="col-6">
-                      <span class="fs-5">A8765</span>
+                      <span class="fs-5">{{ practitioner.number }}</span>
                     </div>
                   </div>
                   <div class="row row-details">
@@ -59,7 +59,7 @@
                       <span class="fs-5 fw-bold">Payee number</span>
                     </div>
                     <div class="col-6">
-                      <span class="fs-5">87546</span>
+                      <span class="fs-5">{{ practitioner.payeeNumber }}</span>
                     </div>
                   </div>
                 </div>
@@ -98,7 +98,7 @@
                       </div>
                       <div class="col-6 col-6 fs-5">
                         <p>
-                          Included is a description document of the procedure performed by the Dr.
+                          {{ upload.note }}
                         </p>
                       </div>
                     </div>
@@ -143,7 +143,7 @@
                         :items="radioOptionsDocumentsCategory"
                         cypress-id="documents-category"
                         :disabled="true"
-                        :model-value="pre - auth"
+                        :model-value="patient.documentsCategory"
                       />
                     </div>
                   </div>
@@ -155,7 +155,7 @@
                       <span class="fs-5 px-2 fw-bold">First name</span>
                     </div>
                     <div class="col-6">
-                      <span class="fs-5">Alice</span>
+                      <span class="fs-5">{{ patient.adjudicator.adjFirstName }}</span>
                     </div>
                   </div>
                   <div class="row row-details">
@@ -163,7 +163,7 @@
                       <span class="fs-5 px-2 fw-bold">Last name</span>
                     </div>
                     <div class="col-6">
-                      <span class="fs-5">Johnson</span>
+                      <span class="fs-5">{{ patient.adjudicator.adjLastName }}</span>
                     </div>
                   </div>
                 </div>
@@ -174,7 +174,7 @@
                       <span class="fs-5 px-2 fw-bold">First initial</span>
                     </div>
                     <div class="col-6">
-                      <span class="fs-5">F</span>
+                      <span class="fs-5">{{ patient.firstInitial }}</span>
                     </div>
                   </div>
                   <div class="row row-details">
@@ -182,7 +182,7 @@
                       <span class="fs-5 px-2 fw-bold">Last name</span>
                     </div>
                     <div class="col-6">
-                      <span class="fs-5">Martinez</span>
+                      <span class="fs-5">{{ patient.lastName }}</span>
                     </div>
                   </div>
                   <div class="row row-details">
@@ -190,7 +190,8 @@
                       <span class="fs-5 px-2 fw-bold">Birthdate</span>
                     </div>
                     <div class="col-6">
-                      <span class="fs-5">February 23, 1985</span>
+                      <span class="fs-5">{{ patient.birthdate }}</span>
+                      <!-- <span class="fs-5">February 23, 1985</span> -->
                     </div>
                   </div>
                   <div class="row row-details">
@@ -198,7 +199,7 @@
                       <p class="fs-5 px-2 fw-bold">PHN (Personal Health Number)</p>
                     </div>
                     <div class="col-6">
-                      <span class="fs-5">1234567890</span>
+                      <span class="fs-5">{{ patient.phn }}</span>
                     </div>
                   </div>
                 </div>
@@ -240,8 +241,7 @@
 </template>
 <script setup>
 // import { smallStyles, mediumStyles } from "@/constants/input-styles";
-// import { useFormStore } from "@/stores/formData";
-// const store = useFormStore();
+import { useFormStore } from "@/stores/formData";
 import {
   PageContent,
   ContinueBar,
@@ -252,16 +252,39 @@ import {
 import { stepRoutes, routes } from "../router/index.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import pageStateService from "../services/page-state-service.js";
+import { formatDateDisplay } from "../helpers/date.js";
 </script>
 
 <script>
 export default {
   data() {
     return {
-      documentsCategory: null,
+      store: useFormStore(),
+      formFieldPractitioner: "practitioner",
+      formFieldPatient: "patient",
+
+      practitioner: {
+        firstName: null,
+        lastName: null,
+        number: null,
+        payeeNumber: null,
+      },
+      patient: {
+        documentsCategory: null,
+        birthdate: null,
+        firstInitial: null,
+        lastName: null,
+        phn: null,
+        adjudicator: {
+          adjFirstName: null,
+          adjLastName: null,
+        },
+      },
+      upload: {
+        note: null,
+      },
     };
   },
-
   computed: {
     pageTitle: function () {
       return this.$route.title;
@@ -271,7 +294,7 @@ export default {
         {
           id: "documents-category-claim",
           label: "Claims document(s)",
-          value: "claim",
+          value: "claims",
         },
         {
           id: "documents-category-pre-auth",
@@ -280,6 +303,34 @@ export default {
         },
       ];
     },
+  },
+  created() {
+    //practitioner details
+    this.practitioner.firstName =
+      this.store.formFields[this.formFieldPractitioner]["pracFirstName"];
+    this.practitioner.lastName = this.store.formFields[this.formFieldPractitioner]["pracLastName"];
+    this.practitioner.number = this.store.formFields[this.formFieldPractitioner]["pracNumber"];
+    this.practitioner.payeeNumber =
+      this.store.formFields[this.formFieldPractitioner]["payeeNumber"];
+
+    // patient details
+    this.patient.documentsCategory =
+      this.store.formFields[this.formFieldPatient]["documentsCategory"];
+    this.patient.lastName = this.store.formFields[this.formFieldPatient]["patientLastName"];
+    this.patient.firstInitial = this.store.formFields[this.formFieldPatient]["patientFirstInitial"];
+    this.patient.birthdate = this.store.formFields[this.formFieldPatient]["patientBirthdate"];
+    this.patient.phn = this.store.formFields[this.formFieldPatient]["patientPhn"];
+    this.patient.birthdate = formatDateDisplay(
+      this.store.formFields[this.formFieldPatient]["patientBirthdate"]
+    );
+
+    // adjudicator details
+    this.patient.adjudicator.adjFirstName =
+      this.store.formFields[this.formFieldPatient]["adjFirstName"];
+    this.patient.adjudicator.adjLastName =
+      this.store.formFields[this.formFieldPatient]["adjLastName"];
+
+    this.upload.note = this.store.formFields["upload"]["uploadNote"];
   },
 
   methods: {

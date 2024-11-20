@@ -22,7 +22,6 @@
           :disabled="true"
           class="mt-3"
           :input-style="extraSmallStyles"
-          @blur="handleBlurField(v$.patientFirstInitial)"
         />
         <InputComponent
           id="patient-last-name"
@@ -31,7 +30,6 @@
           :disabled="true"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.patientLastName)"
         />
         <DateInput
           id="patient-birthdate"
@@ -39,7 +37,6 @@
           label="Patient birthdate"
           class-name="mt-3"
           :disabled="true"
-          @blur="handleBlurField(v$.patientBirthdate)"
         />
         <InputComponent
           id="patient-phn"
@@ -48,7 +45,6 @@
           :disabled="true"
           class="mt-3"
           :input-style="smallStyles"
-          @blur="handleBlurField(v$.patientPhn)"
         />
         <h2 class="mt-5">Upload tool</h2>
         <p>
@@ -95,7 +91,7 @@
           label="Note (optional)"
           class="mt-3"
           :input-style="extraLargeStyles"
-          @blur="handleBlurField(v$.uploadNote)"
+          @blur="handleBlurField"
         />
       </main>
     </PageContent>
@@ -108,7 +104,7 @@
 </template>
 
 <script setup>
-// import { useFormStore } from "@/stores/formData";
+import { useFormStore } from "@/stores/formData";
 import { PageContent, ContinueBar, InputComponent, DateInput, FileUploader } from "common-lib-vue";
 import {
   extraSmallStyles,
@@ -127,6 +123,24 @@ export default {
   components: {
     FileUploader,
   },
+  data() {
+    return {
+      store: useFormStore(),
+      formFieldParent: "patient",
+      patientBirthdate: null,
+      patientFirstInitial: null,
+      patientLastName: null,
+      patientPhn: null,
+      uploadNote: null,
+    };
+  },
+  created() {
+    this.patientFirstInitial = this.store.formFields[this.formFieldParent]["patientFirstInitial"];
+    this.patientLastName = this.store.formFields[this.formFieldParent]["patientLastName"];
+    this.patientBirthdate = this.store.formFields[this.formFieldParent]["patientBirthdate"];
+    this.patientPhn = this.store.formFields[this.formFieldParent]["patientPhn"];
+    this.uploadNote = this.store.formFields["upload"]["uploadNote"];
+  },
   methods: {
     nextPage() {
       console.log("nextPage function called");
@@ -135,6 +149,10 @@ export default {
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
+    },
+    handleBlurField(event) {
+      // update pinia store
+      this.store.updateFormField("upload", "uploadNote", event.target.value);
     },
   },
 };

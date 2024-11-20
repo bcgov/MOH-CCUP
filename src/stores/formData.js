@@ -19,6 +19,9 @@ export const useFormStore = defineStore("formStore", {
         adjFirstName: null,
         adjLastName: null,
       },
+      upload: {
+        uploadNote: null,
+      },
     },
   }),
   getters: {
@@ -54,6 +57,9 @@ export const useFormStore = defineStore("formStore", {
           patientPhn: null,
           adjFirstName: null,
           adjLastName: null,
+        },
+        upload: {
+          uploadNote: null,
         },
       };
     },
