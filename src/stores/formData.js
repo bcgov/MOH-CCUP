@@ -22,6 +22,9 @@ export const useFormStore = defineStore("formStore", {
       upload: {
         uploadNote: null,
       },
+      review: {
+        isDeclarationAccuracy: null,
+      },
     },
   }),
   getters: {
@@ -35,6 +38,12 @@ export const useFormStore = defineStore("formStore", {
         this.testField = `${this.testField.toString()} ${object}`;
       }
     },
+    /**
+     * Updates formFields store
+     * @param {*} parentName
+     * @param {*} fieldName
+     * @param {*} fieldValue
+     */
     updateFormField(parentName, fieldName, fieldValue) {
       this.formFields[parentName][fieldName] = fieldValue;
     },
@@ -60,6 +69,9 @@ export const useFormStore = defineStore("formStore", {
         },
         upload: {
           uploadNote: null,
+        },
+        review: {
+          isDeclarationAccuracy: null,
         },
       };
     },

@@ -227,7 +227,9 @@
         <div class="row px-3 fs-5">
           <CheckboxComponent
             id="pratitioner-declaration-accuracy"
-            label="Jane Doe"
+            v-model="review.isDeclarationAccuracy"
+            :label="pracFullName"
+            @change="handleCheckBoxChange"
           />
         </div>
       </main>
@@ -283,6 +285,9 @@ export default {
       upload: {
         note: null,
       },
+      review: {
+        isDeclarationAccuracy: null,
+      },
     };
   },
   computed: {
@@ -309,6 +314,12 @@ export default {
     this.practitioner.firstName =
       this.store.formFields[this.formFieldPractitioner]["pracFirstName"];
     this.practitioner.lastName = this.store.formFields[this.formFieldPractitioner]["pracLastName"];
+
+    this.pracFullName =
+      this.practitioner.firstName != null && this.practitioner.lastName != null
+        ? this.practitioner.firstName + " " + this.practitioner.lastName
+        : "";
+
     this.practitioner.number = this.store.formFields[this.formFieldPractitioner]["pracNumber"];
     this.practitioner.payeeNumber =
       this.store.formFields[this.formFieldPractitioner]["payeeNumber"];
@@ -331,6 +342,9 @@ export default {
       this.store.formFields[this.formFieldPatient]["adjLastName"];
 
     this.upload.note = this.store.formFields["upload"]["uploadNote"];
+
+    //revireview.isDeclarationAccuracyew
+    this.review.isDeclarationAccuracy = this.store.formFields["review"]["isDeclarationAccuracy"];
   },
 
   methods: {
@@ -340,6 +354,9 @@ export default {
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
+    },
+    handleCheckBoxChange(e) {
+      this.store.updateFormField("review", "isDeclarationAccuracy", e.target.checked);
     },
     Edit(toPath) {
       //Navigate to path.
