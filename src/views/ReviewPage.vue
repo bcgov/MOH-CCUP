@@ -89,7 +89,7 @@
                         <span class="fs-5 fw-bold">Document uploaded</span>
                       </div>
                       <div class="col-6">
-                        <span class="fs-5">1</span>
+                        <span class="fs-5">{{ upload.patientSupportDocuments }}</span>
                       </div>
                     </div>
                     <div class="row">
@@ -341,9 +341,12 @@ export default {
     this.patient.adjudicator.adjLastName =
       this.store.formFields[this.formFieldPatient]["adjLastName"];
 
+    // upload
     this.upload.note = this.store.formFields["upload"]["uploadNote"];
+    this.upload.patientSupportDocuments =
+      this.store.formFields["upload"]["patientSupportDocuments"].length;
 
-    //revireview.isDeclarationAccuracyew
+    //review
     this.review.isDeclarationAccuracy = this.store.formFields["review"]["isDeclarationAccuracy"];
   },
 

@@ -21,6 +21,7 @@ export const useFormStore = defineStore("formStore", {
       },
       upload: {
         uploadNote: null,
+        patientSupportDocuments: [],
       },
       review: {
         isDeclarationAccuracy: null,
@@ -69,6 +70,7 @@ export const useFormStore = defineStore("formStore", {
         },
         upload: {
           uploadNote: null,
+          patientSupportDocuments: [],
         },
         review: {
           isDeclarationAccuracy: null,
