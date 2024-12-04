@@ -135,7 +135,7 @@
                     <div class="col-6">
                       <RadioComponent
                         id="documents-category"
-                        v-model="documentsCategory"
+                        v-model="patient.documentsCategory"
                         class="fs-5"
                         aria-labelledby="documentsCategory"
                         name="documents-category"
