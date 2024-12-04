@@ -23,7 +23,7 @@
           :items="radioOptionsDocumentsCategory"
           cypress-id="documents-category"
           :model-value="documentsCategory"
-          @change="handleChangeField(v$.documentsCategory, $event)"
+          @change="handleChangeField(v$.documentsCategory, $event, formFieldParent)"
         />
 
         <div
@@ -46,7 +46,7 @@
           :maxlength="firstNameMaxLength"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.adjFirstName, $event)"
+          @blur="handleChangeField(v$.adjFirstName, $event, formFieldParent)"
         />
         <InputComponent
           id="adj-last-name"
@@ -55,7 +55,7 @@
           :maxlength="lastNameMaxLength"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.adjLastName, $event)"
+          @blur="handleChangeField(v$.adjLastName, $event, formFieldParent)"
         />
         <h2 class="mt-5">Patient</h2>
         <p>Please provide the necessary information about the patient.</p>
@@ -68,7 +68,7 @@
           :required="true"
           class="mt-3"
           :input-style="extraSmallStyles"
-          @change="handleBlurField(v$.patientFirstInitial, $event)"
+          @change="handleChangeField(v$.patientFirstInitial, $event, formFieldParent)"
         />
         <div
           v-if="
@@ -96,7 +96,7 @@
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.patientLastName, $event)"
+          @blur="handleChangeField(v$.patientLastName, $event, formFieldParent)"
         />
         <div
           v-if="v$.patientLastName.$dirty"
@@ -119,7 +119,7 @@
           :use-invalid-state="true"
           class-name="mt-3"
           @process-date="handleProcessBirthdate($event)"
-          @blur="handleBlurField(v$.patientBirthdate)"
+          @blur="handleChangeField(v$.patientBirthdate, null, null)"
         />
         <div
           v-if="v$.patientBirthdate.$dirty"
@@ -131,7 +131,7 @@
               ? "Birthdate is required."
               : v$.patientBirthdate.dateDataValidator.$invalid ||
                   v$.patientBirthdate.distantPastValidator.$invalid ||
-                  !v$.patientBirthdate.futureDateValidator.$invalid
+                  v$.patientBirthdate.birthDatePastValidator.$invalid
                 ? "Invalid birthdate."
                 : null
           }}
@@ -144,7 +144,7 @@
           :required="true"
           class="mt-3"
           :input-style="smallStyles"
-          @blur="handleBlurField(v$.patientPhn, $event)"
+          @blur="handleChangeField(v$.patientPhn, $event, formFieldParent)"
         />
         <div
           v-if="v$.patientPhn.$dirty && v$.patientPhn.required.$invalid"
@@ -183,7 +183,6 @@ import {
   DateInput,
   PhnInput,
   phnValidator,
-  futureDateValidator,
 } from "common-lib-vue";
 import { extraSmallStyles, smallStyles, mediumStyles } from "@/constants/input-styles";
 import {
@@ -198,7 +197,8 @@ import { required } from "@vuelidate/validators";
 import { nameValidator, dateDataValidator, phnFirstDigitValidator } from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
 import { useFormStore } from "@/stores/formData";
-import { distantPastValidator } from "../helpers/date.js";
+import { distantPastValidator, birthDatePastValidator } from "../helpers/date.js";
+import { handleChangeField } from "../helpers/handler.js";
 </script>
 
 <script>
@@ -262,7 +262,7 @@ export default {
         required,
         dateDataValidator,
         distantPastValidator,
-        futureDateValidator,
+        birthDatePastValidator,
       },
       patientPhn: {
         required,
@@ -286,26 +286,6 @@ export default {
     },
     handleProcessBirthdate(data) {
       this.store.updateFormField(this.formFieldParent, "patientBirthdate", data.date);
-    },
-    processChangeField(validationObject, event) {
-      if (validationObject) {
-        validationObject.$touch();
-
-        if (event != null) {
-          // update pinia store
-          this.store.updateFormField(
-            this.formFieldParent,
-            validationObject.$path,
-            event.target.value
-          );
-        }
-      }
-    },
-    handleChangeField(validationObject, event) {
-      this.processChangeField(validationObject, event);
-    },
-    handleBlurField(validationObject, event = null) {
-      this.processChangeField(validationObject, event);
     },
   },
 };

@@ -10,6 +10,8 @@ import {
 } from "date-fns";
 import { padLeadingZeros } from "./string";
 
+import { pastDateValidator } from "common-lib-vue";
+
 const MAX_YEAR_RANGE = 120;
 
 export const formatDate = (date) => {
@@ -58,4 +60,8 @@ export const isValidISODateString = (isoDateString) => {
 export const distantPastValidator = (date) => {
   const distantPast = subYears(startOfToday(), MAX_YEAR_RANGE);
   return isSameDay(date, distantPast) || isAfter(date, distantPast);
+};
+
+export const birthDatePastValidator = (value) => {
+  return pastDateValidator(value) || isSameDay(value, startOfToday());
 };

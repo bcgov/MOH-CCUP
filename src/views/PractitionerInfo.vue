@@ -50,7 +50,7 @@
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.pracFirstName, $event)"
+          @blur="handleChangeField(v$.pracFirstName, $event, formFieldParent)"
         />
         <div
           v-if="v$.pracFirstName.$dirty"
@@ -74,7 +74,7 @@
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.pracLastName, $event)"
+          @blur="handleChangeField(v$.pracLastName, $event, formFieldParent)"
         />
 
         <div
@@ -98,7 +98,7 @@
           cypress-id="pracNumber"
           class="mt-3"
           :input-style="extraSmallStyles"
-          @blur="handleBlurField(v$.pracNumber, $event)"
+          @blur="handleChangeField(v$.pracNumber, $event, formFieldParent)"
         />
         <div
           v-if="v$.pracNumber.$dirty"
@@ -122,7 +122,7 @@
           cypress-id="payeeNumber"
           class="mt-3"
           :input-style="extraSmallStyles"
-          @blur="handleBlurField(v$.payeeNumber, $event)"
+          @blur="handleChangeField(v$.payeeNumber, $event, formFieldParent)"
         />
 
         <div
@@ -159,6 +159,7 @@ import { required } from "@vuelidate/validators";
 import { nameValidator, valueLengthValidator } from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
 import { useFormStore } from "@/stores/formData";
+import { handleChangeField } from "../helpers/handler.js";
 </script>
 
 <script>
@@ -232,18 +233,6 @@ export default {
         pageStateService.setPageComplete(toPath);
         pageStateService.visitPage(toPath);
         this.$router.push(toPath);
-      }
-    },
-    handleBlurField(validationObject, event) {
-      if (validationObject) {
-        validationObject.$touch();
-
-        // update pinia store
-        this.store.updateFormField(
-          this.formFieldParent,
-          validationObject.$path,
-          event.target.value
-        );
       }
     },
   },

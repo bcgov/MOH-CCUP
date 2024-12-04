@@ -22,7 +22,6 @@
           :disabled="true"
           class="mt-3"
           :input-style="extraSmallStyles"
-          @blur="handleBlurField(v$.patientFirstInitial)"
         />
         <InputComponent
           id="patient-last-name"
@@ -31,7 +30,6 @@
           :disabled="true"
           class="mt-3"
           :input-style="mediumStyles"
-          @blur="handleBlurField(v$.patientLastName)"
         />
         <DateInput
           id="patient-birthdate"
@@ -39,7 +37,6 @@
           label="Patient birthdate"
           class-name="mt-3"
           :disabled="true"
-          @blur="handleBlurField(v$.patientBirthdate)"
         />
         <InputComponent
           id="patient-phn"
@@ -48,7 +45,6 @@
           :disabled="true"
           class="mt-3"
           :input-style="smallStyles"
-          @blur="handleBlurField(v$.patientPhn)"
         />
         <h2 class="mt-5">Upload tool</h2>
         <p>
@@ -71,8 +67,10 @@
             <FileUploader
               id="patient-support-documents"
               v-model="patientSupportDocuments"
+              @change="handleChangeFile"
             />
           </div>
+
           <div class="col-md-5">
             <div class="tip-container rounded p-3">
               <p class="title">Tip</p>
@@ -89,13 +87,22 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div
+            v-if="issupportDocumentsRequired"
+            class="text-danger"
+            aria-live="assertive"
+          >
+            At least 1 supporting document is required.
+          </div>
+        </div>
         <InputComponent
           id="upload-note"
           v-model="uploadNote"
           label="Note (optional)"
           class="mt-3"
           :input-style="extraLargeStyles"
-          @blur="handleBlurField(v$.uploadNote)"
+          @blur="handleBlurField"
         />
       </main>
     </PageContent>
@@ -108,7 +115,7 @@
 </template>
 
 <script setup>
-// import { useFormStore } from "@/stores/formData";
+import { useFormStore } from "@/stores/formData";
 import { PageContent, ContinueBar, InputComponent, DateInput, FileUploader } from "common-lib-vue";
 import {
   extraSmallStyles,
@@ -127,14 +134,55 @@ export default {
   components: {
     FileUploader,
   },
+  data() {
+    return {
+      store: useFormStore(),
+      formFieldPatient: "patient",
+      issupportDocumentsRequired: false,
+      formFieldUpload: "upload",
+      patientSupportDocuments: [],
+      patientBirthdate: null,
+      patientFirstInitial: null,
+      patientLastName: null,
+      patientPhn: null,
+      uploadNote: null,
+    };
+  },
+  created() {
+    this.patientFirstInitial = this.store.formFields[this.formFieldPatient]["patientFirstInitial"];
+    this.patientLastName = this.store.formFields[this.formFieldPatient]["patientLastName"];
+    this.patientBirthdate = this.store.formFields[this.formFieldPatient]["patientBirthdate"];
+    this.patientPhn = this.store.formFields[this.formFieldPatient]["patientPhn"];
+    this.uploadNote = this.store.formFields[this.formFieldUpload]["uploadNote"];
+    this.patientSupportDocuments =
+      this.store.formFields[this.formFieldUpload]["patientSupportDocuments"];
+  },
   methods: {
     nextPage() {
-      console.log("nextPage function called");
-      // Navigate to next path.
-      const toPath = routes.REVIEW_PAGE.path;
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-      this.$router.push(toPath);
+      if (this.patientSupportDocuments.length == 0) {
+        // show error message
+        this.issupportDocumentsRequired = true;
+      } else {
+        this.store.updateFormField(
+          "upload",
+          "patientSupportDocuments",
+          this.patientSupportDocuments
+        );
+        console.log("nextPage function called");
+
+        // Navigate to next path.
+        const toPath = routes.REVIEW_PAGE.path;
+        pageStateService.setPageComplete(toPath);
+        pageStateService.visitPage(toPath);
+        this.$router.push(toPath);
+      }
+    },
+    handleChangeFile() {
+      this.issupportDocumentsRequired = false;
+    },
+    handleBlurField(event) {
+      // update pinia store
+      this.store.updateFormField("upload", "uploadNote", event.target.value);
     },
   },
 };
