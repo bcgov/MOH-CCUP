@@ -244,7 +244,7 @@ parameters:
   - description: SPA_ENV_AUTH_TOKEN
     name: SPA_ENV_AUTH_TOKEN
     required: true
-    valueFrom:
-      secretKeyRef:
-        name: spa-env-auth-token
-        key: token
+    # valueFrom:
+    #   secretKeyRef:
+    #     name: spa-env-server-service-auth-token
+    #     key: token
