@@ -1,16 +1,16 @@
-import Page from "@/views/PractitionerInfo.vue";
+import Page from "@/views/HomeView.vue";
 import { shallowMount } from "@vue/test-utils";
 import { it, describe, expect, beforeEach } from "vitest";
 import { createRouter, createWebHistory } from "vue-router";
 import { setActivePinia, createPinia } from "pinia";
-//beforeEach, afterEach, vi
+// afterEach, vi
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [],
 });
 
-describe("PractitionerInfo.vue", async () => {
+describe("HomeView.vue", async () => {
   router.push("/");
 
   // After this line, router is ready
