@@ -1,0 +1,169 @@
+# Copyright 2020 The Province of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+---
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  labels:
+    app: ${NAME}-web
+  name: ${NAME}-build
+objects:
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      name: ${NAME}-web-artifacts
+      labels:
+        app: ${NAME}-web
+    spec:
+      lookupPolicy:
+        local: true
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      name: ${NAME}-web
+      labels:
+        app: ${NAME}-web
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: ${NAME}-web-artifact-build
+      labels:
+        app: ${NAME}-web
+        name: ${NAME}-web-artifact-build
+    spec:
+      successfulBuildsHistoryLimit: 1
+      failedBuildsHistoryLimit: 1
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${NAME}-web-artifacts:${OUTPUT_IMAGE_TAG}
+      resources:
+        limits:
+          cpu: ${CPU_LIMIT}
+          memory: ${MEMORY_LIMIT}
+        requests:
+          cpu: ${CPU_REQUEST}
+          memory: ${MEMORY_REQUEST}
+      runPolicy: Serial
+      source:
+        contextDir: ${SOURCE_CONTEXT_DIR}
+        git:
+          ref: ${GIT_REF}
+          uri: ${GIT_REPO_URL}
+        type: Git
+      strategy:
+        sourceStrategy:
+          from:
+            kind: DockerImage
+            name: registry.redhat.io/ubi9/nodejs-18
+          env:
+            - name: BUILD_LOGLEVEL
+              value: "5"
+          incremental: false
+      triggers:
+        - type: ConfigChange
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      name: ${NAME}-web-image-build
+      labels:
+        app: ${NAME}-web
+        name: ${NAME}-web-image-build
+    spec:
+      successfulBuildsHistoryLimit: 3
+      failedBuildsHistoryLimit: 3
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${NAME}-web:${OUTPUT_IMAGE_TAG}
+      resources:
+        limits:
+          cpu: ${CPU_LIMIT}
+          memory: ${MEMORY_LIMIT}
+        requests:
+          cpu: ${CPU_REQUEST}
+          memory: ${MEMORY_REQUEST}
+      runPolicy: Serial
+      source:
+        type: Dockerfile
+        dockerfile: |-
+          FROM registry.redhat.io/ubi8/nginx-124:latest
+          COPY dist /opt/app-root/src
+          CMD nginx -g "daemon off;"
+        images:
+          - from:
+              kind: ImageStreamTag
+              name: ${NAME}-web-artifacts:latest
+            paths:
+              - sourcePath: /opt/app-root/src/dist/
+                destinationDir: "."
+      strategy:
+        dockerStrategy:
+          from:
+            kind: DockerImage
+            name: registry.redhat.io/ubi8/nginx-124:latest
+        type: Docker
+        # triggers:
+        #   - imageChange: {}
+        #     type: ImageChange
+parameters:
+  - description: |
+      The name/acronym assigned to all of the objects defined in this template.
+      Should match what's in the config.yaml and deploy.yaml.
+    displayName: Name
+    name: NAME
+    required: true
+    value: ccup
+  - description: |
+      The URL to your GIT repo.
+    displayName: Git Repo URL
+    name: GIT_REPO_URL
+    required: true
+    value: https://github.com/bcgov/MOH-CCUP.git
+  - description: The git reference or branch.
+    displayName: Git Reference
+    name: GIT_REF
+    required: true
+    value: main
+  - description: The source context directory. Used in Github monorepos.
+    displayName: Source Context Directory
+    name: SOURCE_CONTEXT_DIR
+    required: false
+    value: ""
+  - description: The tag given to the built image.
+    displayName: Output Image Tag
+    name: OUTPUT_IMAGE_TAG
+    required: true
+    value: latest
+  - description: The resources CPU limit (in cores) for this build.
+    displayName: Resources CPU Limit
+    name: CPU_LIMIT
+    required: true
+    value: "1.5"
+  - description: The resources Memory limit (in Mi, Gi, etc) for this build.
+    displayName: Resources Memory Limit
+    name: MEMORY_LIMIT
+    required: true
+    value: 4Gi
+  - description: The resources CPU request (in cores) for this build.
+    displayName: Resources CPU Request
+    name: CPU_REQUEST
+    required: true
+    value: ".5"
+  - description: The resources Memory request (in Mi, Gi, etc) for this build.
+    displayName: Resources Memory Request
+    name: MEMORY_REQUEST
+    required: true
+    value: 2Gi
