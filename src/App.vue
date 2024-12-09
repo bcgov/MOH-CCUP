@@ -9,6 +9,11 @@
       <RouterView />
       <FooterComponent :version="version" />
     </div>
+    <div
+      id="modal-target"
+      ref="modal"
+      name="modal"
+    ></div>
   </div>
 </template>
 

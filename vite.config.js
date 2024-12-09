@@ -15,12 +15,12 @@ export default defineConfig({
     environment: "jsdom",
   },
   server: {
-    // proxy: {
-    //   "/ccup/api": {
-    //     target: "TODO: change to Openshift for API development, eg. https://itrf-web-3f9283-dev.apps.silver.devops.gov.bc.ca/",
-    //     changeOrigin: true,
-    //     secure: false,
-    //   },
-    // },
+    proxy: {
+      "/ccup/api/": {
+        target: "https://ccup-web-be8465-dev.apps.silver.devops.gov.bc.ca/",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });
