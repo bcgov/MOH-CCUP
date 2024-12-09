@@ -9,7 +9,7 @@ export const useFormStore = defineStore("formStore", {
     captcha: {
       applicationUuid: uuidv4(),
       enrolmentModule: "enrolmentModule",
-      captaToken: "setCaptchaToken",
+      captchaToken: "setCaptchaToken",
     },
     formFields: {
       practitioner: {
@@ -62,7 +62,7 @@ export const useFormStore = defineStore("formStore", {
       (this.captcha = {
         applicationUuid: "",
         enrolmentModule: "",
-        captaToken: "",
+        captchaToken: "",
       }),
         (this.formFields = {
           practitioner: {

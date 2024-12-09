@@ -82,6 +82,7 @@ export default {
     ButtonComponent,
     CaptchaComponent,
   },
+  emits: ["close"],
   data: () => {
     return {
       store: useFormStore(),
@@ -90,7 +91,7 @@ export default {
       applicationUuid: null,
       captchaAPIBasePath: "/ccup/api/captcha",
       isCaptchaValid: false,
-      // isTermsAccepted: false,
+      isTermsAccepted: false,
     };
   },
   created() {
@@ -118,10 +119,7 @@ export default {
       this.focusableEls = this.getFocusableEls();
     },
     handleCaptchaVerified(captchaToken) {
-      //this.$store.dispatch(`${ccupModule}/${SET_CAPTCHA_TOKEN}`, captchaToken);
-      const enrolmentModule = this.store.captcha.enrolmentModule;
-      const SET_CAPTCHA_TOKEN = this.store.captcha.captchaToken;
-      this.$store.dispatch(`${enrolmentModule}/${SET_CAPTCHA_TOKEN}`, captchaToken);
+      this.store.captcha.captchaToken = captchaToken;
       this.isCaptchaValid = true;
       this.logMiddlewareVersion();
       setTimeout(() => {

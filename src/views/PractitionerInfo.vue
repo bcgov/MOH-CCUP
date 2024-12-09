@@ -242,6 +242,9 @@ export default {
         this.$router.push(toPath);
       }
     },
+    handleCloseConsentModal(value) {
+      this.store.isShowConsentModal = !value;
+    },
   },
 };
 </script>
