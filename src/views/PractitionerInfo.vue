@@ -146,6 +146,12 @@
     cypress-id="continue-bar"
     @continue="nextPage()"
   />
+  <Teleport
+    v-if="store.isShowConsentModal"
+    to="#modal-target"
+  >
+    <ConsentModal @close="handleCloseConsentModal" />
+  </Teleport>
 </template>
 
 <script setup>
@@ -160,6 +166,7 @@ import { nameValidator, valueLengthValidator } from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
 import { useFormStore } from "@/stores/formData";
 import { handleChangeField } from "../helpers/handler.js";
+import ConsentModal from "../components/ConsentModal.vue";
 </script>
 
 <script>
