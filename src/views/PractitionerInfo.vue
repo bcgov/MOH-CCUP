@@ -167,6 +167,11 @@ import { useVuelidate } from "@vuelidate/core";
 import { useFormStore } from "@/stores/formData";
 import { handleChangeField } from "../helpers/handler.js";
 import ConsentModal from "../components/ConsentModal.vue";
+import {
+  scrollTo,
+  scrollToError,
+  // getTopScrollPosition,
+} from "../helpers/scroll";
 </script>
 
 <script>
@@ -239,6 +244,9 @@ export default {
         pageStateService.setPageComplete(toPath);
         pageStateService.visitPage(toPath);
         this.$router.push(toPath);
+        scrollTo(0);
+      } else {
+        scrollToError();
       }
     },
     handleCloseConsentModal(value) {

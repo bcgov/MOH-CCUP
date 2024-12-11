@@ -199,6 +199,11 @@ import { useVuelidate } from "@vuelidate/core";
 import { useFormStore } from "@/stores/formData";
 import { distantPastValidator, birthDatePastValidator } from "../helpers/date.js";
 import { handleChangeField } from "../helpers/handler.js";
+import {
+  scrollTo,
+  scrollToError,
+  // getTopScrollPosition,
+} from "../helpers/scroll";
 </script>
 
 <script>
@@ -281,6 +286,9 @@ export default {
         pageStateService.setPageComplete(toPath);
         pageStateService.visitPage(toPath);
         this.$router.push(toPath);
+        scrollTo(0);
+      } else {
+        scrollToError();
       }
     },
     handleProcessBirthdate(data) {

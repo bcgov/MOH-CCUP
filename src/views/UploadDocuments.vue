@@ -126,6 +126,11 @@ import {
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
+import {
+  scrollTo,
+  scrollToError,
+  // getTopScrollPosition,
+} from "../helpers/scroll";
 // const store = useFormStore();
 </script>
 
@@ -162,6 +167,7 @@ export default {
       if (this.patientSupportDocuments.length == 0) {
         // show error message
         this.issupportDocumentsRequired = true;
+        scrollToError();
       } else {
         this.store.updateFormField(
           "upload",
@@ -174,6 +180,7 @@ export default {
         pageStateService.setPageComplete(toPath);
         pageStateService.visitPage(toPath);
         this.$router.push(toPath);
+        scrollTo(0);
       }
     },
     handleChangeFile() {
