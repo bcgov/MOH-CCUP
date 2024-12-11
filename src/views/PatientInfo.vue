@@ -276,7 +276,6 @@ export default {
       this.v$.$validate();
 
       if (!this.v$.$error) {
-        console.log("nextPage function called");
         // Navigate to next path.
         const toPath = routes.UPLOAD_DOCUMENTS.path;
         pageStateService.setPageComplete(toPath);

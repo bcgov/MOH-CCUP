@@ -168,7 +168,6 @@ export default {
           "patientSupportDocuments",
           this.patientSupportDocuments
         );
-        console.log("nextPage function called");
 
         // Navigate to next path.
         const toPath = routes.REVIEW_PAGE.path;
