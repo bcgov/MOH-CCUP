@@ -1,4 +1,4 @@
-import Page from "@/views/PractitionerInfo.vue";
+import Page from "@/views/PatientInfo.vue";
 import { shallowMount } from "@vue/test-utils";
 import { it, describe, expect, beforeEach } from "vitest";
 import { createRouter, createWebHistory } from "vue-router";
@@ -11,12 +11,12 @@ const router = createRouter({
     {
       path: "/",
       name: "TestRoute",
-      component: () => import("@/views/PractitionerInfo.vue"),
+      component: () => import("@/views/PatientInfo.vue"),
     },
   ],
 });
 
-describe("PractitionerInfo.vue", async () => {
+describe("PatientInfo.vue", async () => {
   router.push("/");
 
   // After this line, router is ready
