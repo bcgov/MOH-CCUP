@@ -6,8 +6,8 @@
     />
     <PageContent>
       <main class="container pt-3 pt-sm-5 mb-5">
-        <h1>Get started</h1>
-        <hr />
+        <h1 class="mb-0">Get started</h1>
+        <hr class="mt-0" />
         <h2>Welcome</h2>
         <p>
           Welcome to the Claims Correspondence Upload Portal. This form simplifies the submission of
@@ -37,11 +37,11 @@
           If you have any questions or need assistance, please contact the HIBC practitioner claim
           support team. (Vancouver: (604) 456-6950, Elsewhere in B.C.: 1-866-456-6950)
         </p>
-        <h1 class="mt-5">Practitioner information</h1>
-        <hr />
+        <h1 class="mt-5 mb-0">Practitioner information</h1>
+        <hr class="mt-0" />
         <h2>Practitioner</h2>
-        <p>Please provide the necessary information about the practitioner.</p>
-        <hr />
+        <p class="mb-0">Please provide the necessary information about the practitioner.</p>
+        <hr class="mt-0" />
         <InputComponent
           id="prac-first-name"
           v-model="pracFirstName"

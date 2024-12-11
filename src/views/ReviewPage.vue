@@ -8,11 +8,11 @@
     <PageContent>
       <main class="container mb-5">
         <h2 class="my-0">Review</h2>
-        <hr class="mt-2" />
+        <hr class="mt-0" />
         <ReviewTable :show-edit-buttons="true" />
-        <div class="mt-5 row">
-          <h2 class="my-0">Declaration of accuracy and validity</h2>
-          <hr class="mt-2" />
+        <h2 class="my-0 mt-5">Declaration of accuracy and validity</h2>
+        <hr class="mt-0" />
+        <div class="mt-1 row">
           <p>
             I hereby declare that the information provided through this web form is accurate,
             complete, and truthful to the best of my knowledge. I confirm that all information

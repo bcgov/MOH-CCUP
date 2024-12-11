@@ -6,15 +6,15 @@
     />
     <PageContent>
       <main class="container pt-3 pt-sm-5 mb-5">
-        <h1>Documents upload</h1>
-        <hr />
+        <h1 class="mb-0">Documents upload</h1>
+        <hr class="mt-0" />
         <h2>Patient</h2>
-        <p>
+        <p class="mb-0">
           The documents that need to be uploaded being solely to the following individual. If you
           need change the patient's information, please go to the previous step, where you can make
           the necessary changes.
         </p>
-        <hr />
+        <hr class="mt-0" />
         <InputComponent
           id="patient-first-initial"
           v-model="patientFirstInitial"
@@ -58,16 +58,19 @@
           <li>Operation room record</li>
           <li>Delivery summary</li>
           <li>Pathology report</li>
-          <li>Other</li>
+          <li>Photos</li>
         </ul>
-        <p>Please comment on the documents to be uploaded if they are not in the previous list.</p>
-        <hr />
+        <p class="mb-0">
+          If your documents are not listed above, or if additional information is needed to support
+          your claim or pre-authorization, please provide comments below.
+        </p>
+        <hr class="mt-0" />
         <div class="row">
           <div class="col-md-7">
             <FileUploader
               id="patient-support-documents"
               v-model="patientSupportDocuments"
-              @change="handleChangeFile"
+              @input="handleChangeFile"
             />
           </div>
 
@@ -99,7 +102,7 @@
         <InputComponent
           id="upload-note"
           v-model="uploadNote"
-          label="Note (optional)"
+          label="Comments (optional)"
           class="mt-3"
           :input-style="extraLargeStyles"
           @blur="handleBlurField"

@@ -6,14 +6,14 @@
     />
     <PageContent>
       <main class="container pt-3 pt-sm-5 mb-5">
-        <h1>Patient information</h1>
-        <hr />
+        <h1 class="mb-0">Patient information</h1>
+        <hr class="mt-0" />
         <h2>Document type</h2>
-        <p>
+        <p class="mb-0">
           Indicate below the type of document(s) you are uploading. You must select and submit one
           document type for each submission.
         </p>
-        <hr />
+        <hr class="mt-0" />
         <RadioComponent
           id="documents-category"
           v-model="documentsCategory"
@@ -34,11 +34,11 @@
           Select a document type.
         </div>
         <h2 class="mt-5">Adjudicator</h2>
-        <p>
+        <p class="mb-0">
           Please provide, if possible, the adjudicator’s name, which is included in your letter.
           This information will help us significantly in expediting the processing of your data.
         </p>
-        <hr />
+        <hr class="mt-0" />
         <InputComponent
           id="adj-first-name"
           v-model="adjFirstName"
@@ -58,8 +58,8 @@
           @blur="handleChangeField(v$.adjLastName, $event, formFieldParent)"
         />
         <h2 class="mt-5">Patient</h2>
-        <p>Please provide the necessary information about the patient.</p>
-        <hr />
+        <p class="mb-0">Please provide the necessary information about the patient.</p>
+        <hr class="mt-0" />
         <InputComponent
           id="patient-first-initial"
           v-model="patientFirstInitial"
