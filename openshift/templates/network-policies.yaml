@@ -1,0 +1,102 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+objects:
+  # # only to be used during development, so it's commented by default
+  # - apiVersion: networking.k8s.io/v1
+  #   kind: NetworkPolicy
+  #   metadata:
+  #     name: allow-all-internal-temporary
+  #   spec:
+  #     podSelector: {}
+  #     ingress:
+  #       - from:
+  #           - namespaceSelector:
+  #               matchLabels:
+  #                 environment: dev
+  #                 name: be8465
+  # # only needs to exist once per namespace, so it's commented by default
+  # - apiVersion: networking.k8s.io/v1
+  #   kind: NetworkPolicy
+  #   metadata:
+  #     name: allow-from-openshift-ingress
+  #   spec:
+  #     podSelector: {}
+  #     ingress:
+  #       - from:
+  #           - namespaceSelector:
+  #               matchLabels:
+  #                 network.openshift.io/policy-group: ingress
+  #     policyTypes:
+  #       - Ingress
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: ccup-to-captcha-service
+    spec:
+      podSelector:
+        matchLabels:
+          app: captcha-service
+      ingress:
+        - ports:
+            - protocol: TCP
+              port: 8080
+          from:
+            - podSelector:
+                matchLabels:
+                  app: ccup-web
+      policyTypes:
+        - Ingress
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: ccup-to-msp-service
+    spec:
+      podSelector:
+        matchLabels:
+          app: msp-service
+      ingress:
+        - ports:
+            - protocol: TCP
+              port: 8080
+          from:
+            - podSelector:
+                matchLabels:
+                  app: ccup-web
+      policyTypes:
+        - Ingress
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: ccup-to-spa-env-server
+    spec:
+      podSelector:
+        matchLabels:
+          app: spa-env-server
+      ingress:
+        - ports:
+            - protocol: TCP
+              port: 8080
+          from:
+            - podSelector:
+                matchLabels:
+                  app: ccup-web
+      policyTypes:
+        - Ingress
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: ccup-to-splunk-forwarder
+    spec:
+      podSelector:
+        matchLabels:
+          app: splunk-forwarder
+      ingress:
+        - ports:
+            - protocol: TCP
+              port: 8080
+          from:
+            - podSelector:
+                matchLabels:
+                  app: ccup-web
+      policyTypes:
+        - Ingress
