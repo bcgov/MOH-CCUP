@@ -1,36 +1,28 @@
 import Page from "@/views/PatientInfo.vue";
-import { shallowMount } from "@vue/test-utils";
-import { it, describe, expect, beforeEach } from "vitest";
-import { createRouter, createWebHistory } from "vue-router";
+import { mount } from "@vue/test-utils";
+import { it, describe, expect, beforeEach, afterEach, vi } from "vitest";
+import { createRouter, createMemoryHistory } from "vue-router";
 import { setActivePinia, createPinia } from "pinia";
-//beforeEach, afterEach, vi
+import { routeStepOrder } from "@/router/index.js";
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes: [
-    {
-      path: "/",
-      name: "TestRoute",
-      component: () => import("@/views/PatientInfo.vue"),
-    },
-  ],
+const templateRouter = createRouter({
+  history: createMemoryHistory(),
+  routes: routeStepOrder,
 });
 
 describe("PatientInfo.vue", async () => {
-  router.push("/");
-
-  // After this line, router is ready
-  await router.isReady();
-
+  let router = null;
   let wrapper = null;
 
   beforeEach(async () => {
-    //   let tempForm = cloneDeep(formTemplate);
-    //   tempForm.replaceState(dummyData);
-    //   store = createStore(tempForm);
+    router = templateRouter;
+    router.push("/");
+    // After this line, router is ready
+    await router.isReady();
+
     setActivePinia(createPinia());
 
-    wrapper = shallowMount(Page, {
+    wrapper = mount(Page, {
       global: {
         plugins: [router],
       },
