@@ -4,6 +4,7 @@ import PatientInfo from "../views/PatientInfo.vue";
 import UploadDocuments from "../views/UploadDocuments.vue";
 import ReviewPage from "../views/ReviewPage.vue";
 import SubmissionPage from "../views/SubmissionPage.vue";
+import pageStateService from "../services/page-state-service";
 
 export const routes = {
   PRACTITIONER_INFO: {
@@ -83,6 +84,29 @@ const router = createRouter({
       component: () => import("../views/SubmissionPage.vue"),
     },
   ],
+});
+
+export const isPastPath = (toPath, fromPath) => {
+  for (let i = 0; i < routeStepOrder.length; i++) {
+    if (routeStepOrder[i].path === fromPath) {
+      return false;
+    } else if (routeStepOrder[i].path === toPath) {
+      return true;
+    }
+  }
+  return false;
+};
+
+pageStateService.importPageRoutes(routes);
+
+router.beforeEach((to, from, next) => {
+  // Home redirects.
+  if (to.path !== routes.PRACTITIONER_INFO.path && !pageStateService.isPageVisited(to.path)) {
+    next({ path: routes.PRACTITIONER_INFO.path });
+  } else {
+    // Catch-all (navigation).
+    next();
+  }
 });
 
 export default router;

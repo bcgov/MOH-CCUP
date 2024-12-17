@@ -31,6 +31,7 @@
           <CheckboxComponent
             id="pratitioner-declaration-accuracy"
             v-model="review.isDeclarationAccuracy"
+            cypress-id="isDeclarationAccuracy"
             :label="pracFullName"
             @change="handleCheckBoxChange"
           />
@@ -54,13 +55,17 @@ import pageStateService from "../services/page-state-service.js";
 import ReviewTable from "../components/ReviewTable.vue";
 import {
   scrollTo,
-  scrollToError,
+  // scrollToError,
   // getTopScrollPosition,
 } from "../helpers/scroll";
+import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>
 
 <script>
 export default {
+  beforeRouteLeave(to, from, next) {
+    beforeRouteLeaveHandler(to, from, next);
+  },
   data() {
     return {
       store: useFormStore(),

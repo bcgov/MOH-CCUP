@@ -18,6 +18,7 @@
         <InputComponent
           id="patient-first-initial"
           v-model="patientFirstInitial"
+          cypress-id="patientFirstInitial"
           label="First initial"
           :disabled="true"
           class="mt-3"
@@ -26,6 +27,7 @@
         <InputComponent
           id="patient-last-name"
           v-model="patientLastName"
+          cypress-id="patientLastName"
           label="Last name"
           :disabled="true"
           class="mt-3"
@@ -34,6 +36,7 @@
         <DateInput
           id="patient-birthdate"
           v-model="patientBirthdate"
+          cypress-id="patientBirthdate"
           label="Patient birthdate"
           class-name="mt-3"
           :disabled="true"
@@ -41,6 +44,7 @@
         <InputComponent
           id="patient-phn"
           v-model="patientPhn"
+          cypress-id="patientPhn"
           label="PHN (Personal Health Number)"
           :disabled="true"
           class="mt-3"
@@ -102,6 +106,7 @@
         <InputComponent
           id="upload-note"
           v-model="uploadNote"
+          cypress-id="uploadNote"
           label="Comments (optional)"
           class="mt-3"
           :input-style="extraLargeStyles"
@@ -135,12 +140,16 @@ import {
   // getTopScrollPosition,
 } from "../helpers/scroll";
 // const store = useFormStore();
+import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>
 
 <script>
 export default {
   components: {
     FileUploader,
+  },
+  beforeRouteLeave(to, from, next) {
+    beforeRouteLeaveHandler(to, from, next);
   },
   data() {
     return {

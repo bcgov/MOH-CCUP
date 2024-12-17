@@ -42,6 +42,7 @@
         <InputComponent
           id="adj-first-name"
           v-model="adjFirstName"
+          cypress-id="adjFirstName"
           label="First name (optional)"
           :maxlength="firstNameMaxLength"
           class="mt-3"
@@ -51,6 +52,7 @@
         <InputComponent
           id="adj-last-name"
           v-model="adjLastName"
+          cypress-id="adjLastName"
           label="Last name (optional)"
           :maxlength="lastNameMaxLength"
           class="mt-3"
@@ -63,6 +65,7 @@
         <InputComponent
           id="patient-first-initial"
           v-model="patientFirstInitial"
+          cypress-id="patientFirstInitial"
           label="First initial"
           :maxlength="firstInitialMaxLength"
           :required="true"
@@ -91,6 +94,7 @@
         <InputComponent
           id="patient-last-name"
           v-model="patientLastName"
+          cypress-id="patientLastName"
           label="Last name"
           :maxlength="lastNameMaxLength"
           :required="true"
@@ -114,6 +118,7 @@
         <DateInput
           id="patient-birthdate"
           v-model="patientBirthdate"
+          cypress-id="patientBirthdate"
           label="Patient birthdate"
           :required="true"
           :use-invalid-state="true"
@@ -139,6 +144,7 @@
         <PhnInput
           id="patient-phn"
           v-model="patientPhn"
+          cypress-id="patientPhn"
           label="PHN (Personal Health Number)"
           placeholder="9999999999"
           :required="true"
@@ -204,10 +210,14 @@ import {
   scrollToError,
   // getTopScrollPosition,
 } from "../helpers/scroll";
+import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>
 
 <script>
 export default {
+  beforeRouteLeave(to, from, next) {
+    beforeRouteLeaveHandler(to, from, next);
+  },
   data() {
     return {
       v$: useVuelidate(),

@@ -38,6 +38,7 @@
           patient by clicking on the following link:
 
           <a
+            data-cy="UploadNewPatient"
             href="/ccup/patient-info"
             @click.prevent="nextPage()"
           >
@@ -89,10 +90,14 @@ import { routes } from "../router/index.js";
 import { useFormStore } from "@/stores/formData";
 // const store = useFormStore();
 // import { smallStyles, mediumStyles } from "@/constants/input-styles";
+import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>
 
 <script>
 export default {
+  beforeRouteLeave(to, from, next) {
+    beforeRouteLeaveHandler(to, from, next);
+  },
   data() {
     return {
       store: useFormStore(),
@@ -143,6 +148,12 @@ export default {
     nextPage() {
       // Navigate to next path.
       this.store.clearPatient();
+      pageStateService.setPageUnvisited(routes.UPLOAD_DOCUMENTS.path);
+      pageStateService.setPageUnvisited(routes.REVIEW_PAGE.path);
+      pageStateService.setPageUnvisited(routes.SUBMISSION_PAGE.path);
+      pageStateService.setPageIncomplete(routes.UPLOAD_DOCUMENTS.path);
+      pageStateService.setPageIncomplete(routes.REVIEW_PAGE.path);
+      pageStateService.setPageIncomplete(routes.SUBMISSION_PAGE.path);
       const toPath = routes.PATIENT_INFO.path;
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);

@@ -45,6 +45,7 @@
         <InputComponent
           id="prac-first-name"
           v-model="pracFirstName"
+          cypress-id="pracFirstName"
           label="First name"
           :maxlength="firstNameMaxLength"
           :required="true"
@@ -69,6 +70,7 @@
         <InputComponent
           id="prac-last-name"
           v-model="pracLastName"
+          cypress-id="pracLastName"
           label="Last name"
           :maxlength="lastNameMaxLength"
           :required="true"
@@ -172,6 +174,7 @@ import {
   scrollToError,
   // getTopScrollPosition,
 } from "../helpers/scroll";
+import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>
 
 <script>
@@ -179,6 +182,9 @@ export default {
   name: "GetStartedPage",
   components: {
     ProgressBar,
+  },
+  beforeRouteLeave(to, from, next) {
+    beforeRouteLeaveHandler(to, from, next);
   },
   data() {
     return {

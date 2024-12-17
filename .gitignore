@@ -12,6 +12,7 @@ dist
 coverage
 dist-ssr
 *.local
+cypress/downloads/*
 
 # Editor directories and files
 .vscode/*

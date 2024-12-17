@@ -26,10 +26,15 @@
           <div class="card-body bg-gray">
             <div class="row">
               <div class="col-6">
-                <span class="fs-5 fw-bold">First name</span>
+                <span class="fs-5 fw-bold"> First name </span>
               </div>
               <div class="col-6 mb-3">
-                <span class="fs-5">{{ practitioner.firstName }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTablePracFirstName"
+                >
+                  {{ practitioner.firstName }}
+                </span>
               </div>
             </div>
             <div class="row">
@@ -37,7 +42,12 @@
                 <span class="fs-5 fw-bold">Last name</span>
               </div>
               <div class="mb-3 col-6">
-                <span class="fs-5">{{ practitioner.lastName }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTablePracLastName"
+                >
+                  {{ practitioner.lastName }}
+                </span>
               </div>
             </div>
             <div class="mb-0 row">
@@ -45,7 +55,11 @@
                 <p class="mb-0 fs-5 fw-bold">Practitioner number</p>
               </div>
               <div class="col-6">
-                <span class="fs-5">{{ practitioner.number }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTablePracNumber"
+                  >{{ practitioner.number }}
+                </span>
               </div>
             </div>
             <div class="row">
@@ -53,7 +67,11 @@
                 <span class="fs-5 fw-bold">Payee number</span>
               </div>
               <div class="col-6">
-                <span class="fs-5">{{ practitioner.payeeNumber }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTablePayeeNumber"
+                  >{{ practitioner.payeeNumber }}
+                </span>
               </div>
             </div>
           </div>
@@ -88,14 +106,22 @@
                   <span class="fs-5 fw-bold">Document uploaded</span>
                 </div>
                 <div class="col-6">
-                  <span class="fs-5">{{ upload.patientSupportDocuments }}</span>
+                  <span
+                    class="fs-5"
+                    data-cy="reviewTablePatientSupportDocuments"
+                  >
+                    {{ upload.patientSupportDocuments }}
+                  </span>
                 </div>
               </div>
               <div class="row">
                 <div class="col-6">
                   <span class="fs-5 fw-bold">Note</span>
                 </div>
-                <div class="col-6 fs-5">
+                <div
+                  class="col-6 fs-5"
+                  data-cy="reviewTableUploadNote"
+                >
                   <p>
                     {{ upload.note }}
                   </p>
@@ -139,6 +165,7 @@
                 <RadioComponent
                   id="documents-category"
                   v-model="patient.documentsCategory"
+                  data-cy="reviewTableDocumentsCategory"
                   class="fs-5"
                   aria-labelledby="documentsCategory"
                   name="documents-category"
@@ -155,10 +182,15 @@
             <h5 class="row-title">Adjudicator</h5>
             <div class="row">
               <div class="col-6">
-                <span class="fs-5 px-2 fw-bold">First name</span>
+                <span class="fs-5 px-2 fw-bold">First name </span>
               </div>
               <div class="col-6">
-                <span class="fs-5">{{ patient.adjudicator.adjFirstName }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTableAdjFirstName"
+                >
+                  {{ patient.adjudicator.adjFirstName }}
+                </span>
               </div>
             </div>
             <div class="row">
@@ -166,7 +198,11 @@
                 <span class="fs-5 px-2 fw-bold">Last name</span>
               </div>
               <div class="col-6">
-                <span class="fs-5">{{ patient.adjudicator.adjLastName }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTableAdjLastName"
+                  >{{ patient.adjudicator.adjLastName }}
+                </span>
               </div>
             </div>
           </div>
@@ -177,7 +213,11 @@
                 <span class="fs-5 px-2 fw-bold">First initial</span>
               </div>
               <div class="col-6">
-                <span class="fs-5">{{ patient.firstInitial }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTablePatientFirstInitial"
+                  >{{ patient.firstInitial }}
+                </span>
               </div>
             </div>
             <div class="row">
@@ -185,7 +225,11 @@
                 <span class="fs-5 px-2 fw-bold">Last name</span>
               </div>
               <div class="col-6">
-                <span class="fs-5">{{ patient.lastName }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTablePatientLastName"
+                  >{{ patient.lastName }}
+                </span>
               </div>
             </div>
             <div class="row">
@@ -193,7 +237,11 @@
                 <span class="fs-5 px-2 fw-bold">Birthdate</span>
               </div>
               <div class="col-6">
-                <span class="fs-5">{{ patient.birthdate }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTablePatientBirthdate"
+                  >{{ patient.birthdate }}
+                </span>
                 <!-- <span class="fs-5">February 23, 1985</span> -->
               </div>
             </div>
@@ -202,7 +250,11 @@
                 <p class="fs-5 px-2 fw-bold">PHN (Personal Health Number)</p>
               </div>
               <div class="col-6">
-                <span class="fs-5">{{ patient.phn }}</span>
+                <span
+                  class="fs-5"
+                  data-cy="reviewTablePatientPhn"
+                  >{{ patient.phn }}
+                </span>
               </div>
             </div>
           </div>
@@ -220,7 +272,7 @@ import { IconPencil, RadioComponent } from "common-lib-vue";
 import { routes } from "../router/index.js";
 import {
   scrollTo,
-  scrollToError,
+  // scrollToError,
   // getTopScrollPosition,
 } from "../helpers/scroll";
 </script>

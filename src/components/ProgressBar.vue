@@ -6,6 +6,7 @@
           <div v-if="currentStepNumber != 1">
             <a
               class="back-button"
+              data-cy="backButton"
               href="javascript:void(0);"
               @click="onClickLink(previousPath)"
             >
