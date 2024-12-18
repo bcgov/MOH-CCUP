@@ -51,7 +51,7 @@ objects:
           name: ${NAME}-web-artifacts:${OUTPUT_IMAGE_TAG}
       resources:
         limits:
-          cpu: ${CPU_LIMIT}
+          # cpu: ${CPU_LIMIT}
           memory: ${MEMORY_LIMIT}
         requests:
           cpu: ${CPU_REQUEST}
@@ -90,7 +90,7 @@ objects:
           name: ${NAME}-web:${OUTPUT_IMAGE_TAG}
       resources:
         limits:
-          cpu: ${CPU_LIMIT}
+          # cpu: ${CPU_LIMIT}
           memory: ${MEMORY_LIMIT}
         requests:
           cpu: ${CPU_REQUEST}
@@ -147,11 +147,11 @@ parameters:
     name: OUTPUT_IMAGE_TAG
     required: true
     value: latest
-  - description: The resources CPU limit (in cores) for this build.
-    displayName: Resources CPU Limit
-    name: CPU_LIMIT
-    required: true
-    value: "1.5"
+  # - description: The resources CPU limit (in cores) for this build.
+  #   displayName: Resources CPU Limit
+  #   name: CPU_LIMIT
+  #   required: true
+  #   value: "1.5"
   - description: The resources Memory limit (in Mi, Gi, etc) for this build.
     displayName: Resources Memory Limit
     name: MEMORY_LIMIT

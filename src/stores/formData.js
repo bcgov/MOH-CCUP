@@ -1,6 +1,24 @@
 import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
 
+const clearPatientStructure = {
+  patient: {
+    documentsCategory: null,
+    patientBirthdate: null,
+    patientFirstInitial: null,
+    patientPhn: null,
+    adjFirstName: null,
+    adjLastName: null,
+  },
+  upload: {
+    uploadNote: null,
+    patientSupportDocuments: [],
+  },
+  review: {
+    isDeclarationAccuracy: null,
+  },
+};
+
 export const useFormStore = defineStore("formStore", {
   state: () => ({
     phn: null,
@@ -87,6 +105,9 @@ export const useFormStore = defineStore("formStore", {
             isDeclarationAccuracy: null,
           },
         });
+    },
+    clearPatient() {
+      Object.assign(this.formFields, clearPatientStructure);
     },
   },
 });

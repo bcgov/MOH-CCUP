@@ -49,6 +49,15 @@ class PageStateService {
     }
   }
 
+  setPageUnvisited(path) {
+    const page = this.pages.find((page) => {
+      return page.path === path;
+    });
+    if (page) {
+      page.isVisited = false;
+    }
+  }
+
   isPageVisited(path) {
     const page = this.pages.find((page) => {
       return page.path === path;

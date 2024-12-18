@@ -6,14 +6,14 @@
     />
     <PageContent>
       <main class="container pt-3 pt-sm-5 mb-5">
-        <h1>Patient information</h1>
-        <hr />
+        <h1 class="mb-0">Patient information</h1>
+        <hr class="mt-0" />
         <h2>Document type</h2>
-        <p>
+        <p class="mb-0">
           Indicate below the type of document(s) you are uploading. You must select and submit one
           document type for each submission.
         </p>
-        <hr />
+        <hr class="mt-0" />
         <RadioComponent
           id="documents-category"
           v-model="documentsCategory"
@@ -34,14 +34,15 @@
           Select a document type.
         </div>
         <h2 class="mt-5">Adjudicator</h2>
-        <p>
+        <p class="mb-0">
           Please provide, if possible, the adjudicator’s name, which is included in your letter.
           This information will help us significantly in expediting the processing of your data.
         </p>
-        <hr />
+        <hr class="mt-0" />
         <InputComponent
           id="adj-first-name"
           v-model="adjFirstName"
+          cypress-id="adjFirstName"
           label="First name (optional)"
           :maxlength="firstNameMaxLength"
           class="mt-3"
@@ -51,6 +52,7 @@
         <InputComponent
           id="adj-last-name"
           v-model="adjLastName"
+          cypress-id="adjLastName"
           label="Last name (optional)"
           :maxlength="lastNameMaxLength"
           class="mt-3"
@@ -58,11 +60,12 @@
           @blur="handleChangeField(v$.adjLastName, $event, formFieldParent)"
         />
         <h2 class="mt-5">Patient</h2>
-        <p>Please provide the necessary information about the patient.</p>
-        <hr />
+        <p class="mb-0">Please provide the necessary information about the patient.</p>
+        <hr class="mt-0" />
         <InputComponent
           id="patient-first-initial"
           v-model="patientFirstInitial"
+          cypress-id="patientFirstInitial"
           label="First initial"
           :maxlength="firstInitialMaxLength"
           :required="true"
@@ -91,6 +94,7 @@
         <InputComponent
           id="patient-last-name"
           v-model="patientLastName"
+          cypress-id="patientLastName"
           label="Last name"
           :maxlength="lastNameMaxLength"
           :required="true"
@@ -114,6 +118,7 @@
         <DateInput
           id="patient-birthdate"
           v-model="patientBirthdate"
+          cypress-id="patientBirthdate"
           label="Patient birthdate"
           :required="true"
           :use-invalid-state="true"
@@ -139,6 +144,7 @@
         <PhnInput
           id="patient-phn"
           v-model="patientPhn"
+          cypress-id="patientPhn"
           label="PHN (Personal Health Number)"
           placeholder="9999999999"
           :required="true"
@@ -199,10 +205,19 @@ import { useVuelidate } from "@vuelidate/core";
 import { useFormStore } from "@/stores/formData";
 import { distantPastValidator, birthDatePastValidator } from "../helpers/date.js";
 import { handleChangeField } from "../helpers/handler.js";
+import {
+  scrollTo,
+  scrollToError,
+  // getTopScrollPosition,
+} from "../helpers/scroll";
+import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>
 
 <script>
 export default {
+  beforeRouteLeave(to, from, next) {
+    beforeRouteLeaveHandler(to, from, next);
+  },
   data() {
     return {
       v$: useVuelidate(),
@@ -276,12 +291,14 @@ export default {
       this.v$.$validate();
 
       if (!this.v$.$error) {
-        console.log("nextPage function called");
         // Navigate to next path.
         const toPath = routes.UPLOAD_DOCUMENTS.path;
         pageStateService.setPageComplete(toPath);
         pageStateService.visitPage(toPath);
         this.$router.push(toPath);
+        scrollTo(0);
+      } else {
+        scrollToError();
       }
     },
     handleProcessBirthdate(data) {

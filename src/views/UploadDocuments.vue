@@ -6,18 +6,19 @@
     />
     <PageContent>
       <main class="container pt-3 pt-sm-5 mb-5">
-        <h1>Documents upload</h1>
-        <hr />
+        <h1 class="mb-0">Documents upload</h1>
+        <hr class="mt-0" />
         <h2>Patient</h2>
-        <p>
+        <p class="mb-0">
           The documents that need to be uploaded being solely to the following individual. If you
           need change the patient's information, please go to the previous step, where you can make
           the necessary changes.
         </p>
-        <hr />
+        <hr class="mt-0" />
         <InputComponent
           id="patient-first-initial"
           v-model="patientFirstInitial"
+          cypress-id="patientFirstInitial"
           label="First initial"
           :disabled="true"
           class="mt-3"
@@ -26,6 +27,7 @@
         <InputComponent
           id="patient-last-name"
           v-model="patientLastName"
+          cypress-id="patientLastName"
           label="Last name"
           :disabled="true"
           class="mt-3"
@@ -34,6 +36,7 @@
         <DateInput
           id="patient-birthdate"
           v-model="patientBirthdate"
+          cypress-id="patientBirthdate"
           label="Patient birthdate"
           class-name="mt-3"
           :disabled="true"
@@ -41,6 +44,7 @@
         <InputComponent
           id="patient-phn"
           v-model="patientPhn"
+          cypress-id="patientPhn"
           label="PHN (Personal Health Number)"
           :disabled="true"
           class="mt-3"
@@ -58,16 +62,19 @@
           <li>Operation room record</li>
           <li>Delivery summary</li>
           <li>Pathology report</li>
-          <li>Other</li>
+          <li>Photos</li>
         </ul>
-        <p>Please comment on the documents to be uploaded if they are not in the previous list.</p>
-        <hr />
+        <p class="mb-0">
+          If your documents are not listed above, or if additional information is needed to support
+          your claim or pre-authorization, please provide comments below.
+        </p>
+        <hr class="mt-0" />
         <div class="row">
           <div class="col-md-7">
             <FileUploader
               id="patient-support-documents"
               v-model="patientSupportDocuments"
-              @change="handleChangeFile"
+              @input="handleChangeFile"
             />
           </div>
 
@@ -99,7 +106,8 @@
         <InputComponent
           id="upload-note"
           v-model="uploadNote"
-          label="Note (optional)"
+          cypress-id="uploadNote"
+          label="Comments (optional)"
           class="mt-3"
           :input-style="extraLargeStyles"
           @blur="handleBlurField"
@@ -126,13 +134,22 @@ import {
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
+import {
+  scrollTo,
+  scrollToError,
+  // getTopScrollPosition,
+} from "../helpers/scroll";
 // const store = useFormStore();
+import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>
 
 <script>
 export default {
   components: {
     FileUploader,
+  },
+  beforeRouteLeave(to, from, next) {
+    beforeRouteLeaveHandler(to, from, next);
   },
   data() {
     return {
@@ -162,19 +179,20 @@ export default {
       if (this.patientSupportDocuments.length == 0) {
         // show error message
         this.issupportDocumentsRequired = true;
+        scrollToError();
       } else {
         this.store.updateFormField(
           "upload",
           "patientSupportDocuments",
           this.patientSupportDocuments
         );
-        console.log("nextPage function called");
 
         // Navigate to next path.
         const toPath = routes.REVIEW_PAGE.path;
         pageStateService.setPageComplete(toPath);
         pageStateService.visitPage(toPath);
         this.$router.push(toPath);
+        scrollTo(0);
       }
     },
     handleChangeFile() {

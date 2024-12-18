@@ -6,8 +6,8 @@
     />
     <PageContent>
       <main class="container pt-3 pt-sm-5 mb-5">
-        <h1>Get started</h1>
-        <hr />
+        <h1 class="mb-0">Get started</h1>
+        <hr class="mt-0" />
         <h2>Welcome</h2>
         <p>
           Welcome to the Claims Correspondence Upload Portal. This form simplifies the submission of
@@ -37,14 +37,15 @@
           If you have any questions or need assistance, please contact the HIBC practitioner claim
           support team. (Vancouver: (604) 456-6950, Elsewhere in B.C.: 1-866-456-6950)
         </p>
-        <h1 class="mt-5">Practitioner information</h1>
-        <hr />
+        <h1 class="mt-5 mb-0">Practitioner information</h1>
+        <hr class="mt-0" />
         <h2>Practitioner</h2>
-        <p>Please provide the necessary information about the practitioner.</p>
-        <hr />
+        <p class="mb-0">Please provide the necessary information about the practitioner.</p>
+        <hr class="mt-0" />
         <InputComponent
           id="prac-first-name"
           v-model="pracFirstName"
+          cypress-id="pracFirstName"
           label="First name"
           :maxlength="firstNameMaxLength"
           :required="true"
@@ -69,6 +70,7 @@
         <InputComponent
           id="prac-last-name"
           v-model="pracLastName"
+          cypress-id="pracLastName"
           label="Last name"
           :maxlength="lastNameMaxLength"
           :required="true"
@@ -167,6 +169,12 @@ import { useVuelidate } from "@vuelidate/core";
 import { useFormStore } from "@/stores/formData";
 import { handleChangeField } from "../helpers/handler.js";
 import ConsentModal from "../components/ConsentModal.vue";
+import {
+  scrollTo,
+  scrollToError,
+  // getTopScrollPosition,
+} from "../helpers/scroll";
+import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>
 
 <script>
@@ -174,6 +182,9 @@ export default {
   name: "GetStartedPage",
   components: {
     ProgressBar,
+  },
+  beforeRouteLeave(to, from, next) {
+    beforeRouteLeaveHandler(to, from, next);
   },
   data() {
     return {
@@ -234,12 +245,14 @@ export default {
       this.v$.$validate();
 
       if (!this.v$.$error) {
-        console.log("nextPage function called");
         //Navigate to next path.
         const toPath = routes.PATIENT_INFO.path;
         pageStateService.setPageComplete(toPath);
         pageStateService.visitPage(toPath);
         this.$router.push(toPath);
+        scrollTo(0);
+      } else {
+        scrollToError();
       }
     },
     handleCloseConsentModal(value) {

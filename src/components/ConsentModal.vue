@@ -33,6 +33,7 @@
             </p>
             <CaptchaComponent
               v-if="!isCaptchaValid"
+              cypress-id="captcha"
               class="mt-4"
               :api-base-path="captchaAPIBasePath"
               :nonce="applicationUuid"
@@ -50,18 +51,20 @@
                 id="is-terms-accepted"
                 v-model="isTermsAccepted"
                 type="checkbox"
+                data-cy="consentCheckbox"
                 class="d-inline"
               />
               <label
                 for="is-terms-accepted"
                 class="mt-3 ml-2 d-inline"
-                ><b class="px-1">I have read and understand this information</b></label
-              >
+                ><b class="px-1">I have read and understand this information</b>
+              </label>
             </div>
           </div>
           <div class="modal-footer justify-content-center">
             <ButtonComponent
               label="Continue"
+              cypress-id="consentContinue"
               :disabled="!isCaptchaValid || !isTermsAccepted"
               @click="closeModal()"
             />

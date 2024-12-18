@@ -1,16 +1,17 @@
-import Page from "@/views/HomeView.vue";
+import Page from "@/views/UploadDocuments.vue";
 import { shallowMount } from "@vue/test-utils";
 import { it, describe, expect, beforeEach } from "vitest";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createMemoryHistory } from "vue-router";
 import { setActivePinia, createPinia } from "pinia";
-// afterEach, vi
+import { routeStepOrder } from "@/router/index.js";
+//beforeEach, afterEach, vi
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes: [],
+  history: createMemoryHistory(),
+  routes: routeStepOrder,
 });
 
-describe("HomeView.vue", async () => {
+describe("UploadDocuments.vue", async () => {
   router.push("/");
 
   // After this line, router is ready
