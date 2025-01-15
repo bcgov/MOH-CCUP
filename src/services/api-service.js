@@ -1,11 +1,11 @@
 import axios from "axios";
-import {
-  formatISODate,
-  stripPhoneFormatting,
-  stripSpaces,
-  replaceSpecialCharacters,
-} from "common-lib-vue";
-import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
+// import {
+//   formatISODate,
+//   stripPhoneFormatting,
+//   stripSpaces,
+//   replaceSpecialCharacters,
+// } from "common-lib-vue";
+// import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
 import { v4 as uuidv4 } from "uuid";
 
 const BASE_API_PATH = "/ccup/api";

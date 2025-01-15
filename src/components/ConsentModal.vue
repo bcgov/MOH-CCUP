@@ -78,7 +78,6 @@
 <script>
 import { useFormStore } from "../stores/formData";
 import { ButtonComponent, CaptchaComponent } from "common-lib-vue";
-import apiService from "../services/api-service";
 export default {
   name: "ConsentModal",
   components: {
