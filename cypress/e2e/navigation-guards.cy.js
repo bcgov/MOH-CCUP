@@ -36,6 +36,18 @@ describe("happy path", () => {
     cy.get("[data-cy=pracLastName]").type(envData.pracLastName);
     cy.get("[data-cy=pracNumber]").type(envData.pracNumber);
     cy.get("[data-cy=payeeNumber]").type(envData.payeeNumber);
+
+    if (envData.enableIntercepts) {
+      console.log("intercepted validatePractitioner call with 200 OK response");
+      cy.intercept("POST", "/ccup/api/**", {
+        statusCode: 200,
+        body: {
+          returnCode: "0",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
+
     cy.get("[data-cy=continue-bar]").click();
 
     //Patient info

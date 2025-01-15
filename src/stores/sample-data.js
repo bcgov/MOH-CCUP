@@ -1,9 +1,9 @@
 const sampleData = {
   practitioner: {
-    pracFirstName: "prac-first-name",
-    pracLastName: "prac-last-name",
-    pracNumber: "A1234",
-    payeeNumber: "B1234",
+    pracFirstName: "RVWUJY",
+    pracLastName: "ABABML",
+    pracNumber: "J5868",
+    payeeNumber: "J5868",
   },
   patient: {
     documentsCategory: "claims",
