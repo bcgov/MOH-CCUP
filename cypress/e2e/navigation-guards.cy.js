@@ -90,7 +90,7 @@ describe("happy path", () => {
     });
 
     // // The rest of these tests only work if you temporarily add RouterLinks to the application
-    // // This is because Cypress reloads the page when you use cy.vist()-- not compatible with single page applications
+    // // This is because Cypress reloads the page when you use cy.visit()-- not compatible with single page applications
     // // Here's what I put in the App.vue file:
     // <RouterLink to="/" data-cy="cucumber1"> Go to 1</RouterLink>
     // <RouterLink to="/patient-info" data-cy="cucumber2"> Go to 2</RouterLink>
