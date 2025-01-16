@@ -78,7 +78,6 @@
 <script>
 import { useFormStore } from "../stores/formData";
 import { ButtonComponent, CaptchaComponent } from "common-lib-vue";
-import apiService from "../services/api-service";
 export default {
   name: "ConsentModal",
   components: {
@@ -124,16 +123,9 @@ export default {
     handleCaptchaVerified(captchaToken) {
       this.store.captcha.captchaToken = captchaToken;
       this.isCaptchaValid = true;
-      this.logMiddlewareVersion();
       setTimeout(() => {
         this.focusableEls = this.getFocusableEls();
       }, 0);
-    },
-    logMiddlewareVersion() {
-      const captchaToken = this.$store.state.ccupModule.captchaToken;
-      apiService.getMiddlewareVersion(captchaToken).then((response) => {
-        console.log(`Middleware version: ${response.data}`);
-      });
     },
     closeModal() {
       this.$emit("close", true);

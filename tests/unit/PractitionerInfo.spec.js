@@ -1,6 +1,5 @@
 import Page from "@/views/PractitionerInfo.vue";
 import { shallowMount } from "@vue/test-utils";
-import { it, describe, expect, beforeEach, afterEach, vi } from "vitest";
 import { createRouter, createMemoryHistory } from "vue-router";
 import { setActivePinia, createPinia } from "pinia";
 import { routeStepOrder } from "@/router/index.js";

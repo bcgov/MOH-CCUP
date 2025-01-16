@@ -36,7 +36,7 @@ const envData = {
       adjFirstName: "new-adj-first-name",
       adjLastName: "new-adj-last-name",
       patientFirstInitial: "n",
-      patientLastName: "new-patient-last-name",
+      patientLastName: "new-patient-l-name",
       patientBirthdateMonth: "2",
       patientBirthdateDay: "22",
       patientBirthdateYear: testYear,

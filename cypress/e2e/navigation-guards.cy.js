@@ -36,6 +36,18 @@ describe("happy path", () => {
     cy.get("[data-cy=pracLastName]").type(envData.pracLastName);
     cy.get("[data-cy=pracNumber]").type(envData.pracNumber);
     cy.get("[data-cy=payeeNumber]").type(envData.payeeNumber);
+
+    if (envData.enableIntercepts) {
+      console.log("intercepted validatePractitioner call with 200 OK response");
+      cy.intercept("POST", "/ccup/api/**", {
+        statusCode: 200,
+        body: {
+          returnCode: "0",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
+
     cy.get("[data-cy=continue-bar]").click();
 
     //Patient info
@@ -90,7 +102,7 @@ describe("happy path", () => {
     });
 
     // // The rest of these tests only work if you temporarily add RouterLinks to the application
-    // // This is because Cypress reloads the page when you use cy.vist()-- not compatible with single page applications
+    // // This is because Cypress reloads the page when you use cy.visit()-- not compatible with single page applications
     // // Here's what I put in the App.vue file:
     // <RouterLink to="/" data-cy="cucumber1"> Go to 1</RouterLink>
     // <RouterLink to="/patient-info" data-cy="cucumber2"> Go to 2</RouterLink>

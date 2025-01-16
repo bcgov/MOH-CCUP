@@ -51,6 +51,7 @@
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
+          @input="handleAPIValidationReset"
           @blur="handleChangeField(v$.pracFirstName, $event, formFieldParent)"
         />
         <div
@@ -76,6 +77,7 @@
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
+          @input="handleAPIValidationReset"
           @blur="handleChangeField(v$.pracLastName, $event, formFieldParent)"
         />
 
@@ -100,6 +102,7 @@
           cypress-id="pracNumber"
           class="mt-3"
           :input-style="extraSmallStyles"
+          @input="handleAPIValidationReset"
           @blur="handleChangeField(v$.pracNumber, $event, formFieldParent)"
         />
         <div
@@ -124,6 +127,7 @@
           cypress-id="payeeNumber"
           class="mt-3"
           :input-style="extraSmallStyles"
+          @input="handleAPIValidationReset"
           @blur="handleChangeField(v$.payeeNumber, $event, formFieldParent)"
         />
 
@@ -140,13 +144,28 @@
                 : null
           }}
         </div>
+        <div
+          v-if="isSystemUnavailable"
+          class="text-danger my-4"
+          aria-live="assertive"
+        >
+          Unable to continue, system unavailable. Please try again later.
+        </div>
+        <div
+          v-if="isAPIValidationErrorShown"
+          class="text-danger my-4"
+          aria-live="assertive"
+        >
+          Practitioner information does not match our records.
+        </div>
       </main>
     </PageContent>
   </main>
   <ContinueBar
     :button-label="'Continue'"
+    :has-loader="isLoading"
     cypress-id="continue-bar"
-    @continue="nextPage()"
+    @continue="validatePage()"
   />
   <Teleport
     v-if="store.isShowConsentModal"
@@ -175,6 +194,8 @@ import {
   // getTopScrollPosition,
 } from "../helpers/scroll";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
+import apiService from "@/services/api-service";
+import settings from "@/settings";
 </script>
 
 <script>
@@ -195,6 +216,9 @@ export default {
       pracLastName: null,
       pracNumber: null,
       payeeNumber: null,
+      isLoading: false,
+      isSystemUnavailable: false,
+      isAPIValidationErrorShown: false,
     };
   },
   computed: {
@@ -214,10 +238,7 @@ export default {
     },
   },
   created() {
-    this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
-    this.pracLastName = this.store.formFields[this.formFieldParent]["pracLastName"];
-    this.pracNumber = this.store.formFields[this.formFieldParent]["pracNumber"];
-    this.payeeNumber = this.store.formFields[this.formFieldParent]["payeeNumber"];
+    this.assignDataFromStore();
   },
   validations() {
     return {
@@ -240,23 +261,75 @@ export default {
     };
   },
   methods: {
-    nextPage() {
-      // trigger validation
+    validatePage() {
+      //trigger Vuelidate validation
       this.v$.$validate();
 
+      //if no Vuelidate errors, move to API check, otherwise scroll to error
       if (!this.v$.$error) {
-        //Navigate to next path.
-        const toPath = routes.PATIENT_INFO.path;
-        pageStateService.setPageComplete(toPath);
-        pageStateService.visitPage(toPath);
-        this.$router.push(toPath);
-        scrollTo(0);
+        this.validatePractitioner();
       } else {
         scrollToError();
       }
     },
+    validatePractitioner() {
+      this.isLoading = true;
+      this.isSystemUnavailable = false;
+      this.isAPIValidationErrorShown = false;
+
+      apiService
+        .validatePractitioner(this.store)
+        .then((response) => {
+          this.isLoading = false;
+          // const responseData = response.data;
+          const returnCode = response.data.returnCode;
+
+          switch (returnCode) {
+            case "0": // Valid payload data.
+              this.nextPage();
+              break;
+            case "1": // Invalid payload data.
+              this.isAPIValidationErrorShown = true;
+              scrollToError();
+              break;
+            default: // An error occurred.
+              this.isSystemUnavailable = true;
+              scrollToError();
+              break;
+          }
+        })
+        .catch(() => {
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          scrollToError();
+        });
+    },
+    nextPage() {
+      //Navigate to next path.
+      const toPath = routes.PATIENT_INFO.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+    },
+    handleAPIValidationReset() {
+      this.isAPIValidationErrorShown = false;
+      this.isSystemUnavailable = false;
+    },
     handleCloseConsentModal(value) {
       this.store.isShowConsentModal = !value;
+      if (settings.useSampleData) {
+        //assign sample data to the Pinia store
+        this.store.assignSampleData();
+        //pull local data values from the store one more time, since the store was just changed
+        this.assignDataFromStore();
+      }
+    },
+    assignDataFromStore() {
+      this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
+      this.pracLastName = this.store.formFields[this.formFieldParent]["pracLastName"];
+      this.pracNumber = this.store.formFields[this.formFieldParent]["pracNumber"];
+      this.payeeNumber = this.store.formFields[this.formFieldParent]["payeeNumber"];
     },
   },
 };

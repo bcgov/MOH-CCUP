@@ -56,6 +56,7 @@ objects:
   - apiVersion: apps/v1
     kind: Deployment
     metadata:
+      image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"${NAME}-web:${SOURCE_IMAGE_TAG}","namespace":"${SOURCE_IMAGE_NAMESPACE}"},"fieldPath":"spec.template.spec.containers[?(@.name==\"${NAME}-web\")].image"}]'
       labels:
         app: ${NAME}-web
       name: ${NAME}-web
@@ -76,7 +77,7 @@ objects:
           containers:
             - name: ${NAME}-web
               # image: ''
-              image: "image-registry.openshift-image-registry.svc:5000/be8465-tools/ccup-web:${SOURCE_IMAGE_TAG}"
+              image: "image-registry.openshift-image-registry.svc:5000/${SOURCE_IMAGE_NAMESPACE}/${NAME}-web:${SOURCE_IMAGE_TAG}"
               imagePullPolicy: Always
               livenessProbe:
                 httpGet:
@@ -156,11 +157,11 @@ parameters:
     name: SOURCE_IMAGE_NAMESPACE
     required: true
     value: be8465-tools
-  - description: The name of the source image.
-    displayName: Source Image Name
-    name: SOURCE_IMAGE_NAME
-    value: ccup-web
-    required: true
+  # - description: The name of the source image.
+  #   displayName: Source Image Name
+  #   name: SOURCE_IMAGE_NAME
+  #   value: ccup-web
+  #   required: true
   - description: The tag of the source image.
     displayName: Source Image Tag
     name: SOURCE_IMAGE_TAG

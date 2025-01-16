@@ -1,10 +1,8 @@
 import Page from "@/views/ReviewPage.vue";
 import { shallowMount } from "@vue/test-utils";
-import { it, describe, expect, beforeEach } from "vitest";
 import { createRouter, createMemoryHistory } from "vue-router";
 import { setActivePinia, createPinia } from "pinia";
 import { routeStepOrder } from "@/router/index.js";
-//beforeEach, afterEach, vi
 
 const router = createRouter({
   history: createMemoryHistory(),
