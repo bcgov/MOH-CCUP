@@ -18,7 +18,7 @@ body.no-scroll {
 
 .text-danger {
   font-size: 13.33px;
-  color: #d8292f !important; /* Override Bootstrap class for passing accessibility tests. */
+  color: #d52a32 !important; /* Override Bootstrap class for passing accessibility tests. */
 }
 
 /* Override BCGOV Bootstrap styles. */

@@ -37,9 +37,9 @@
           If you have any questions or need assistance, please contact the HIBC practitioner claim
           support team. (Vancouver: (604) 456-6950, Elsewhere in B.C.: 1-866-456-6950)
         </p>
-        <h1 class="mt-5 mb-0">Practitioner information</h1>
+        <h2 class="mt-5 mb-0">Practitioner information</h2>
         <hr class="mt-0" />
-        <h2>Practitioner</h2>
+        <h3>Practitioner</h3>
         <p class="mb-0">Please provide the necessary information about the practitioner.</p>
         <hr class="mt-0" />
         <InputComponent

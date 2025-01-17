@@ -9,7 +9,7 @@
           <PrintPage class="print-page mb-0" />
         </div>
         <hr class="mt-0" />
-        <h3>Date submitted: {{ submitDate }}</h3>
+        <p class="heading">Date submitted: {{ submitDate }}</p>
         <ValidationMessage class="mb-5">
           Your Claims / Pre-authorization documents have been received.<br />Reference number is:
           {insert reference number here}
@@ -17,7 +17,7 @@
 
         <h2 class="mb-0">Next steps</h2>
         <hr class="mt-0" />
-        <h4>
+        <p class="heading">
           <a
             href="javascript:void(0)"
             @click="printPage()"
@@ -25,14 +25,14 @@
             Print or save
           </a>
           this page for your records.
-        </h4>
+        </p>
         <!-- make print or save sentence bold-->
         <p>
           Your documents will be added to your claim/pre-authorization file so the adjudicator can
           complete the request and continue processing. Please allow two to three weeks for your
           request to be completed.
         </p>
-        <h4>Upload documents for another patient.</h4>
+        <p class="heading">Upload documents for another patient.</p>
         <p>
           Using the current practitioner information, you can upload documents for a different
           patient by clicking on the following link:
@@ -47,7 +47,7 @@
           Please note that the practitioner information cannot be changed, and you will begin the
           process from Step 2 (Patient information).
         </p>
-        <h4>Important.</h4>
+        <p class="heading">Important.</p>
         <p>
           If you are not adding another patient after printing or saving this page, please close the
           browser page.
@@ -164,3 +164,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.heading {
+  font-weight: bold;
+}
+</style>

@@ -7,7 +7,7 @@
 
     <PageContent>
       <main class="container mb-5">
-        <h2 class="my-0">Review</h2>
+        <h1 class="my-0">Review</h1>
         <hr class="mt-0" />
         <ReviewTable :show-edit-buttons="true" />
         <h2 class="my-0 mt-5">Declaration of accuracy and validity</h2>

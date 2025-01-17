@@ -22,6 +22,7 @@
           :required="true"
           :items="radioOptionsDocumentsCategory"
           cypress-id="documents-category"
+          role="radio"
           :model-value="documentsCategory"
           @change="handleChangeField(v$.documentsCategory, $event, formFieldParent)"
         />
