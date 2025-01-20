@@ -88,7 +88,6 @@ import { formatDateDisplay } from "../helpers/date.js";
 import pageStateService from "../services/page-state-service.js";
 import { routes } from "../router/index.js";
 import { useFormStore } from "@/stores/formData";
-// const store = useFormStore();
 // import { smallStyles, mediumStyles } from "@/constants/input-styles";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>

@@ -1,3 +1,4 @@
+import sampleData from "@/stores/sample-data";
 import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,8 +22,6 @@ const clearPatientStructure = {
 
 export const useFormStore = defineStore("formStore", {
   state: () => ({
-    phn: null,
-    testField: "asdf",
     isShowConsentModal: true,
     captcha: {
       applicationUuid: uuidv4(),
@@ -53,17 +52,7 @@ export const useFormStore = defineStore("formStore", {
       },
     },
   }),
-  getters: {
-    phnGetter() {
-      return `Phn: ${this.phn}`;
-    },
-  },
   actions: {
-    appendData(object) {
-      if (typeof this.testField === "string") {
-        this.testField = `${this.testField.toString()} ${object}`;
-      }
-    },
     /**
      * Updates formFields store
      * @param {*} parentName
@@ -74,9 +63,6 @@ export const useFormStore = defineStore("formStore", {
       this.formFields[parentName][fieldName] = fieldValue;
     },
     clearData() {
-      this.phn = null;
-      this.pracNumber = null;
-      this.testField = "";
       (this.captcha = {
         applicationUuid: "",
         enrolmentModule: "",
@@ -108,6 +94,9 @@ export const useFormStore = defineStore("formStore", {
     },
     clearPatient() {
       Object.assign(this.formFields, clearPatientStructure);
+    },
+    assignSampleData() {
+      Object.assign(this.formFields, sampleData);
     },
   },
 });
