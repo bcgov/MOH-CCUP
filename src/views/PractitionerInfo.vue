@@ -200,7 +200,7 @@ import settings from "@/settings";
 
 <script>
 export default {
-  name: "GetStartedPage",
+  name: "PractitionerInfo",
   components: {
     ProgressBar,
   },
