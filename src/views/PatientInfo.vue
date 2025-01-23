@@ -213,7 +213,7 @@ import {
   PhnInput,
   phnValidator,
 } from "common-lib-vue";
-import { extraSmallStyles, smallStyles, mediumStyles } from "@/constants/input-styles";
+import { smallStyles, mediumStyles } from "@/constants/input-styles";
 import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
