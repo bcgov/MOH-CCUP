@@ -100,3 +100,21 @@ objects:
                   app: ccup-web
       policyTypes:
         - Ingress
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: msp-service-to-splunk-forwarder
+    spec:
+      podSelector:
+        matchLabels:
+          app: splunk-forwarder
+      ingress:
+        - ports:
+            - protocol: TCP
+              port: 8080
+          from:
+            - podSelector:
+                matchLabels:
+                  app: msp-service
+      policyTypes:
+        - Ingress

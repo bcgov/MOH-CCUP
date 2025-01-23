@@ -39,7 +39,7 @@ describe("happy path", () => {
 
     if (envData.enableIntercepts) {
       console.log("intercepted validatePractitioner call with 200 OK response");
-      cy.intercept("POST", "/ccup/api/**", {
+      cy.intercept("POST", "/ccup/api/claims.supportDocIntegration/validatePractitioner/*", {
         statusCode: 200,
         body: {
           returnCode: "0",
@@ -55,6 +55,18 @@ describe("happy path", () => {
       expect(loc.pathname).to.eq("/ccup/patient-info");
     });
     cy.fillPatient(envData.patients[0]);
+
+    if (envData.enableIntercepts) {
+      console.log("intercepted validatePerson call with 200 OK response");
+      cy.intercept("POST", "/ccup/api/claims.supportDocIntegration/validatePerson/*", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
+
     cy.get("[data-cy=continue-bar]").click();
 
     //Upload documents

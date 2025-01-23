@@ -24,6 +24,7 @@
           cypress-id="documents-category"
           role="radio"
           :model-value="documentsCategory"
+          @input="handleAPIValidationReset"
           @change="handleChangeField(v$.documentsCategory, $event, formFieldParent)"
         />
 
@@ -48,6 +49,7 @@
           :maxlength="firstNameMaxLength"
           class="mt-3"
           :input-style="mediumStyles"
+          @input="handleAPIValidationReset"
           @blur="handleChangeField(v$.adjFirstName, $event, formFieldParent)"
         />
         <InputComponent
@@ -58,6 +60,7 @@
           :maxlength="lastNameMaxLength"
           class="mt-3"
           :input-style="mediumStyles"
+          @input="handleAPIValidationReset"
           @blur="handleChangeField(v$.adjLastName, $event, formFieldParent)"
         />
         <h2 class="mt-5">Patient</h2>
@@ -67,11 +70,12 @@
           id="patient-first-initial"
           v-model="patientFirstInitial"
           cypress-id="patientFirstInitial"
-          label="First initial"
-          :maxlength="firstInitialMaxLength"
+          label="First name"
+          :maxlength="firstNameMaxLength"
           :required="true"
           class="mt-3"
-          :input-style="extraSmallStyles"
+          :input-style="mediumStyles"
+          @input="handleAPIValidationReset"
           @change="handleChangeField(v$.patientFirstInitial, $event, formFieldParent)"
         />
         <div
@@ -101,6 +105,7 @@
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
+          @input="handleAPIValidationReset"
           @blur="handleChangeField(v$.patientLastName, $event, formFieldParent)"
         />
         <div
@@ -125,6 +130,7 @@
           :use-invalid-state="true"
           class-name="mt-3"
           @process-date="handleProcessBirthdate($event)"
+          @input="handleAPIValidationReset"
           @blur="handleChangeField(v$.patientBirthdate, null, null)"
         />
         <div
@@ -151,6 +157,7 @@
           :required="true"
           class="mt-3"
           :input-style="smallStyles"
+          @input="handleAPIValidationReset"
           @blur="handleChangeField(v$.patientPhn, $event, formFieldParent)"
         />
         <div
@@ -171,13 +178,28 @@
         >
           Personal Health Number is not valid.
         </div>
+        <div
+          v-if="isSystemUnavailable"
+          class="text-danger my-4"
+          aria-live="assertive"
+        >
+          Unable to continue, system unavailable. Please try again later.
+        </div>
+        <div
+          v-if="isAPIValidationErrorShown"
+          class="text-danger my-4"
+          aria-live="assertive"
+        >
+          Practitioner information does not match our records.
+        </div>
       </main>
     </PageContent>
   </main>
   <ContinueBar
     :button-label="'Continue'"
+    :has-loader="isLoading"
     cypress-id="continue-bar"
-    @continue="nextPage()"
+    @continue="validatePage()"
   />
 </template>
 
@@ -191,12 +213,8 @@ import {
   PhnInput,
   phnValidator,
 } from "common-lib-vue";
-import { extraSmallStyles, smallStyles, mediumStyles } from "@/constants/input-styles";
-import {
-  firstNameMaxLength,
-  lastNameMaxLength,
-  firstInitialMaxLength,
-} from "@/constants/html-validations.js";
+import { smallStyles, mediumStyles } from "@/constants/input-styles";
+import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
@@ -212,10 +230,15 @@ import {
   // getTopScrollPosition,
 } from "../helpers/scroll";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
+import apiService from "@/services/api-service";
 </script>
 
 <script>
 export default {
+  name: "PatientInfo",
+  components: {
+    ProgressBar,
+  },
   beforeRouteLeave(to, from, next) {
     beforeRouteLeaveHandler(to, from, next);
   },
@@ -231,6 +254,9 @@ export default {
       patientPhn: null,
       adjFirstName: null,
       adjLastName: null,
+      isLoading: false,
+      isSystemUnavailable: false,
+      isAPIValidationErrorShown: false,
     };
   },
 
@@ -251,13 +277,7 @@ export default {
     },
   },
   created() {
-    this.documentsCategory = this.store.formFields[this.formFieldParent]["documentsCategory"];
-    this.patientLastName = this.store.formFields[this.formFieldParent]["patientLastName"];
-    this.patientFirstInitial = this.store.formFields[this.formFieldParent]["patientFirstInitial"];
-    this.patientBirthdate = this.store.formFields[this.formFieldParent]["patientBirthdate"];
-    this.patientPhn = this.store.formFields[this.formFieldParent]["patientPhn"];
-    this.adjFirstName = this.store.formFields[this.formFieldParent]["adjFirstName"];
-    this.adjLastName = this.store.formFields[this.formFieldParent]["adjLastName"];
+    this.assignDataFromStore();
   },
   validations() {
     return {
@@ -288,22 +308,72 @@ export default {
     };
   },
   methods: {
-    nextPage() {
+    validatePage() {
+      //trigger Vuelidate validation
       this.v$.$validate();
 
+      //if no Vuelidate errors, move to API check, otherwise scroll to error
       if (!this.v$.$error) {
-        // Navigate to next path.
-        const toPath = routes.UPLOAD_DOCUMENTS.path;
-        pageStateService.setPageComplete(toPath);
-        pageStateService.visitPage(toPath);
-        this.$router.push(toPath);
-        scrollTo(0);
+        this.validatePatient();
       } else {
         scrollToError();
       }
     },
+    validatePatient() {
+      this.isLoading = true;
+      this.isSystemUnavailable = false;
+      this.isAPIValidationErrorShown = false;
+
+      apiService
+        .validatePatient(this.store)
+        .then((response) => {
+          this.isLoading = false;
+          // const responseData = response.data;
+          const returnCode = response.data.returnCode;
+
+          switch (returnCode) {
+            case "success": // Valid payload data.
+              this.nextPage();
+              break;
+            case "failure": // Invalid payload data.
+              this.isAPIValidationErrorShown = true;
+              scrollToError();
+              break;
+            default: // An error occurred.
+              this.isSystemUnavailable = true;
+              scrollToError();
+              break;
+          }
+        })
+        .catch(() => {
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          scrollToError();
+        });
+    },
+    nextPage() {
+      //Navigate to next path.
+      const toPath = routes.UPLOAD_DOCUMENTS.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+    },
+    handleAPIValidationReset() {
+      this.isAPIValidationErrorShown = false;
+      this.isSystemUnavailable = false;
+    },
     handleProcessBirthdate(data) {
       this.store.updateFormField(this.formFieldParent, "patientBirthdate", data.date);
+    },
+    assignDataFromStore() {
+      this.documentsCategory = this.store.formFields[this.formFieldParent]["documentsCategory"];
+      this.patientLastName = this.store.formFields[this.formFieldParent]["patientLastName"];
+      this.patientFirstInitial = this.store.formFields[this.formFieldParent]["patientFirstInitial"];
+      this.patientBirthdate = this.store.formFields[this.formFieldParent]["patientBirthdate"];
+      this.patientPhn = this.store.formFields[this.formFieldParent]["patientPhn"];
+      this.adjFirstName = this.store.formFields[this.formFieldParent]["adjFirstName"];
+      this.adjLastName = this.store.formFields[this.formFieldParent]["adjLastName"];
     },
   },
 };
