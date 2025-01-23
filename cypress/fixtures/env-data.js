@@ -1,5 +1,5 @@
-import * as fixtureDataTest from "./data-test.json";
-import * as fixtureDataDev from "./data-dev.json";
+import * as fixtureDataTest from "./data-test";
+import * as fixtureDataDev from "./data-dev";
 
 //api intercepts should always be enabled in the local environment so the build pipeline doesn't fail due to an API issue
 //api intercepts are disabled in DEV/TEST by default
