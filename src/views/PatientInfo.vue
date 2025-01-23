@@ -74,7 +74,7 @@
           :maxlength="firstNameMaxLength"
           :required="true"
           class="mt-3"
-          :input-style="extraSmallStyles"
+          :input-style="mediumStyles"
           @input="handleAPIValidationReset"
           @change="handleChangeField(v$.patientFirstInitial, $event, formFieldParent)"
         />
