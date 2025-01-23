@@ -1,0 +1,30 @@
+export default {
+  pracFirstName: "RVWUJY",
+  pracLastName: "ABABML",
+  pracNumber: "J5868",
+  payeeNumber: "J5868",
+  patients: [
+    {
+      adjFirstName: "adj-first-name",
+      adjLastName: "adj-last-name",
+      patientFirstInitial: "Bazcqt",
+      patientLastName: "Znxem",
+      patientBirthdateMonth: "03",
+      patientBirthdateDay: "10",
+      patientBirthdateYear: "1968",
+      patientPhn: "9151843149",
+      uploadNote: "comment",
+    },
+    {
+      adjFirstName: "new-adj-first-name",
+      adjLastName: "new-adj-last-name",
+      patientFirstInitial: "Bazcqt",
+      patientLastName: "Znxem",
+      patientBirthdateMonth: "03",
+      patientBirthdateDay: "10",
+      patientBirthdateYear: "1968",
+      patientPhn: "9151843149",
+      uploadNote: "new comment",
+    },
+  ],
+};
