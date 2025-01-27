@@ -190,7 +190,7 @@
           class="text-danger my-4"
           aria-live="assertive"
         >
-          Practitioner information does not match our records.
+          Patient information does not match our records.
         </div>
       </main>
     </PageContent>
