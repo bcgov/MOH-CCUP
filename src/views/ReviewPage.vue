@@ -14,17 +14,10 @@
         <hr class="mt-0" />
         <div class="mt-1 row">
           <p>
-            I hereby declare that the information provided through this web form is accurate,
-            complete, and truthful to the best of my knowledge. I confirm that all information
-            provided pertains to a single patient and is valid for a single claim or
-            pre-authorization. I understand that any false, misleading, or omitted information may
-            result in the rejection of my submission and could have legal consequences.
+            {{ declarationAccuracy }}
           </p>
           <p>
-            By submitting this form, I affirm that I have personally completed all sections and that
-            the information I have provided is a true and honest representation of the facts. I
-            acknowledge that it is my responsibility to update any changes to this information
-            promptly.
+            {{ declarationValidity }}
           </p>
         </div>
         <div class="row px-3 fs-5">
@@ -34,15 +27,31 @@
             cypress-id="isDeclarationAccuracy"
             :label="pracFullName"
             @change="handleCheckBoxChange"
+            @input="handleAPIValidationReset"
           />
+        </div>
+        <div
+          v-if="isSystemUnavailable"
+          class="text-danger my-4"
+          aria-live="assertive"
+        >
+          Unable to continue, system unavailable. Please try again later.
+        </div>
+        <div
+          v-if="isAPIValidationErrorShown"
+          class="text-danger my-4"
+          aria-live="assertive"
+        >
+          There was a problem with your submission. Please try again.
         </div>
       </main>
     </PageContent>
   </main>
   <ContinueBar
+    :has-loader="isLoading"
     :button-label="'Submit'"
     cypress-id="continue-bar"
-    @continue="nextPage()"
+    @continue="validatePage()"
   />
 </template>
 <script setup>
@@ -55,10 +64,12 @@ import pageStateService from "../services/page-state-service.js";
 import ReviewTable from "../components/ReviewTable.vue";
 import {
   scrollTo,
-  // scrollToError,
+  scrollToError,
   // getTopScrollPosition,
 } from "../helpers/scroll";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
+import apiService from "@/services/api-service";
+import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 </script>
 
 <script>
@@ -95,6 +106,9 @@ export default {
       review: {
         isDeclarationAccuracy: null,
       },
+      isLoading: false,
+      isSystemUnavailable: false,
+      isAPIValidationErrorShown: false,
     };
   },
   computed: {
@@ -127,6 +141,36 @@ export default {
         : "";
   },
   methods: {
+    validatePage() {
+      this.isLoading = true;
+      this.isSystemUnavailable = false;
+      this.isAPIValidationErrorShown = false;
+      apiService
+        .submitForm(this.store)
+        .then((response) => {
+          this.isLoading = false;
+          // const responseData = response.data;
+          const returnCode = response.data.returnCode;
+          switch (returnCode) {
+            case "success": // Valid payload data.
+              this.nextPage();
+              break;
+            case "failure": // Invalid payload data.
+              this.isAPIValidationErrorShown = true;
+              scrollToError();
+              break;
+            default: // An error occurred.
+              this.isSystemUnavailable = true;
+              scrollToError();
+              break;
+          }
+        })
+        .catch(() => {
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          scrollToError();
+        });
+    },
     nextPage() {
       // Navigate to next path.
       const toPath = routes.SUBMISSION_PAGE.path;
@@ -137,6 +181,10 @@ export default {
     },
     handleCheckBoxChange(e) {
       this.store.updateFormField("review", "isDeclarationAccuracy", e.target.checked);
+    },
+    handleAPIValidationReset() {
+      this.isAPIValidationErrorShown = false;
+      this.isSystemUnavailable = false;
     },
   },
 };
