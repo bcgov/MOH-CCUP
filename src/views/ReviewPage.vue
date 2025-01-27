@@ -25,10 +25,21 @@
             id="pratitioner-declaration-accuracy"
             v-model="review.isDeclarationAccuracy"
             cypress-id="isDeclarationAccuracy"
+            :required="true"
             :label="pracFullName"
             @change="handleCheckBoxChange"
             @input="handleAPIValidationReset"
           />
+        </div>
+        <div
+          v-if="
+            v$.review.isDeclarationAccuracy.$dirty &&
+            v$.review.isDeclarationAccuracy.requiredTrue.$invalid
+          "
+          class="text-danger mt-3"
+          aria-live="assertive"
+        >
+          Field is required.
         </div>
         <div
           v-if="isSystemUnavailable"
@@ -57,6 +68,7 @@
 <script setup>
 // import { smallStyles, mediumStyles } from "@/constants/input-styles";
 import { useFormStore } from "@/stores/formData";
+import { useVuelidate } from "@vuelidate/core";
 import { PageContent, ContinueBar, CheckboxComponent } from "common-lib-vue";
 import { stepRoutes, routes } from "../router/index.js";
 import ProgressBar from "../components/ProgressBar.vue";
@@ -73,12 +85,17 @@ import { declarationAccuracy, declarationValidity } from "@/constants/declaratio
 </script>
 
 <script>
+const requiredTrue = (value) => {
+  return value === true;
+};
+
 export default {
   beforeRouteLeave(to, from, next) {
     beforeRouteLeaveHandler(to, from, next);
   },
   data() {
     return {
+      v$: useVuelidate(),
       store: useFormStore(),
       formFieldPractitioner: "practitioner",
       formFieldPatient: "patient",
@@ -104,7 +121,7 @@ export default {
         note: null,
       },
       review: {
-        isDeclarationAccuracy: null,
+        isDeclarationAccuracy: false,
       },
       isLoading: false,
       isSystemUnavailable: false,
@@ -140,8 +157,28 @@ export default {
         ? this.practitioner.firstName + " " + this.practitioner.lastName
         : "";
   },
+  validations() {
+    return {
+      review: {
+        isDeclarationAccuracy: {
+          requiredTrue,
+        },
+      },
+    };
+  },
   methods: {
     validatePage() {
+      //trigger Vuelidate validation
+      this.v$.$validate();
+
+      //if no Vuelidate errors, move to API check, otherwise scroll to error
+      if (!this.v$.$error) {
+        this.submitForm();
+      } else {
+        scrollToError();
+      }
+    },
+    submitForm() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
@@ -180,6 +217,7 @@ export default {
       scrollTo(0);
     },
     handleCheckBoxChange(e) {
+      this.v$.review.isDeclarationAccuracy.$touch();
       this.store.updateFormField("review", "isDeclarationAccuracy", e.target.checked);
     },
     handleAPIValidationReset() {
