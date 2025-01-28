@@ -16,7 +16,7 @@ body.no-scroll {
   overflow: hidden;
 }
 
-.text-danger {
+.text-danger.error {
   font-size: 13.33px;
   color: #d52a32 !important; /* Override Bootstrap class for passing accessibility tests. */
 }
