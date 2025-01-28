@@ -24,14 +24,15 @@
             <p>
               Your personal information is collected by the Ministry of Health under the authority
               of sections 26(a) and (c) of the
-              <i>Freedom of Information and Protection of Privacy Act (FIPPA).</i> It is collected
-              for the purpose of administering Medical Services Plan and Supplementary Benefits
-              under the <i>Medicare Protection Act</i> and to determine, verify and administer your
-              and your family’s Fair PharmaCare coverage under the
-              <i>Pharmaceutical Services Act.</i> If you have questions about the collection of
-              personal information on this form, contact the HIBC Chief Privacy Officer at PO Box
-              9035 STN Prov Govt, Victoria BC V8W 9E3; or call 604 683-7151 (Vancouver) or 1 800
-              663-7100 (toll free).
+              <span class="i">Freedom of Information and Protection of Privacy Act (FIPPA).</span>
+              It is collected for the purpose of administering Medical Services Plan and
+              Supplementary Benefits under the
+              <span class="i">Medicare Protection Act</span> and to determine, verify and administer
+              your and your family’s Fair PharmaCare coverage under the
+              <span class="i">Pharmaceutical Services Act.</span> If you have questions about the
+              collection of personal information on this form, contact the HIBC Chief Privacy
+              Officer at PO Box 9035 STN Prov Govt, Victoria BC V8W 9E3; or call 604 683-7151
+              (Vancouver) or 1 800 663-7100 (toll free).
             </p>
             <CaptchaComponent
               v-if="!isCaptchaValid"
@@ -188,5 +189,8 @@ export default {
 .modal-header {
   background: #036;
   color: #fff;
+}
+.i {
+  font-style: italic;
 }
 </style>
