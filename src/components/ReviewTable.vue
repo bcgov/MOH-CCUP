@@ -155,7 +155,7 @@
         </div>
         <div class="card-body bg-gray">
           <div class="row">
-            <h5 class="row-title">Document Type</h5>
+            <p class="row-title">Document Type</p>
 
             <div class="row">
               <div class="col-6 pt-2">
@@ -179,7 +179,7 @@
             </div>
           </div>
           <div class="row">
-            <h5 class="row-title">Adjudicator</h5>
+            <p class="row-title">Adjudicator</p>
             <div class="row">
               <div class="col-6">
                 <span class="fs-5 px-2 fw-bold">First name </span>
@@ -207,7 +207,7 @@
             </div>
           </div>
           <div class="row mt-3 mb-3">
-            <h5 class="row-title">Patient</h5>
+            <p class="row-title">Patient</p>
             <div class="row">
               <div class="col-6">
                 <span class="fs-5 px-2 fw-bold">First initial</span>

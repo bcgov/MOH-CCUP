@@ -56,7 +56,7 @@
         />
         <div
           v-if="v$.pracFirstName.$dirty"
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           {{
@@ -83,7 +83,7 @@
 
         <div
           v-if="v$.pracLastName.$dirty"
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           {{
@@ -107,7 +107,7 @@
         />
         <div
           v-if="v$.pracNumber.$dirty"
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           {{
@@ -133,7 +133,7 @@
 
         <div
           v-if="v$.payeeNumber.$dirty"
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           {{
@@ -146,14 +146,14 @@
         </div>
         <div
           v-if="isSystemUnavailable"
-          class="text-danger my-4"
+          class="text-danger error my-4"
           aria-live="assertive"
         >
           Unable to continue, system unavailable. Please try again later.
         </div>
         <div
           v-if="isAPIValidationErrorShown"
-          class="text-danger my-4"
+          class="text-danger error my-4"
           aria-live="assertive"
         >
           Practitioner information does not match our records.
