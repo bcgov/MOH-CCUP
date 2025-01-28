@@ -97,7 +97,7 @@
         <div class="row">
           <div
             v-if="issupportDocumentsRequired"
-            class="text-danger"
+            class="text-danger error"
             aria-live="assertive"
           >
             At least 1 supporting document is required.

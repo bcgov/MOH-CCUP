@@ -30,7 +30,7 @@
 
         <div
           v-if="v$.documentsCategory.$errors.length > 0"
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           Select a document type.
@@ -84,7 +84,7 @@
             (v$.patientFirstInitial.required.$invalid ||
               v$.patientFirstInitial.nameValidator.$invalid)
           "
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           {{
@@ -110,7 +110,7 @@
         />
         <div
           v-if="v$.patientLastName.$dirty"
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           {{
@@ -135,7 +135,7 @@
         />
         <div
           v-if="v$.patientBirthdate.$dirty"
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           {{
@@ -162,7 +162,7 @@
         />
         <div
           v-if="v$.patientPhn.$dirty && v$.patientPhn.required.$invalid"
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           Personal Health Number is required.
@@ -173,21 +173,21 @@
             !v$.patientPhn.required.$invalid &&
             (v$.patientPhn.phnValidator.$invalid || v$.patientPhn.phnFirstDigitValidator.$invalid)
           "
-          class="text-danger"
+          class="text-danger error"
           aria-live="assertive"
         >
           Personal Health Number is not valid.
         </div>
         <div
           v-if="isSystemUnavailable"
-          class="text-danger my-4"
+          class="text-danger error my-4"
           aria-live="assertive"
         >
           Unable to continue, system unavailable. Please try again later.
         </div>
         <div
           v-if="isAPIValidationErrorShown"
-          class="text-danger my-4"
+          class="text-danger error my-4"
           aria-live="assertive"
         >
           Patient information does not match our records.
