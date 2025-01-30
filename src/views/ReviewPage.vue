@@ -173,15 +173,32 @@ export default {
 
       //if no Vuelidate errors, move to API check, otherwise scroll to error
       if (!this.v$.$error) {
-        this.submitForm();
+        this.handleAttachments();
       } else {
         scrollToError();
       }
     },
-    submitForm() {
+    handleAttachments() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
+
+      apiService
+        .sendAttachments(this.store)
+        .then(() => {
+          //if all image uploads are successful, submit the form
+          this.submitForm();
+        })
+        .catch(() => {
+          //this is the error code that runs if any attachments fail to send
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          scrollToError();
+        });
+    },
+    submitForm() {
+      this.isLoading = true;
+      this.isSystemUnavailable = false;
       apiService
         .submitForm(this.store)
         .then((response) => {
