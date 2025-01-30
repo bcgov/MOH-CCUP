@@ -7,6 +7,7 @@ const clearPatientStructure = {
     documentsCategory: null,
     patientBirthdate: null,
     patientFirstInitial: null,
+    patientLastName: null,
     patientPhn: null,
     adjFirstName: null,
     adjLastName: null,
@@ -39,6 +40,7 @@ export const useFormStore = defineStore("formStore", {
         documentsCategory: null,
         patientBirthdate: null,
         patientFirstInitial: null,
+        patientLastName: null,
         patientPhn: null,
         adjFirstName: null,
         adjLastName: null,
@@ -49,6 +51,7 @@ export const useFormStore = defineStore("formStore", {
       },
       review: {
         isDeclarationAccuracy: null,
+        referenceNumber: null,
       },
     },
   }),

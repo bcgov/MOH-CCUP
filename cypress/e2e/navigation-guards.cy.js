@@ -85,6 +85,28 @@ describe("happy path", () => {
     });
     cy.checkReviewTable(envData, 0);
     cy.get("[data-cy=isDeclarationAccuracy]").check({ force: true });
+
+    if (envData.enableIntercepts) {
+      console.log("intercepted submit-attachment call with 200 OK response");
+      cy.intercept("POST", "/ccup/api/submit-attachment/**", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
+
+    if (envData.enableIntercepts) {
+      console.log("intercepted validatePerson call with 200 OK response");
+      cy.intercept("POST", "/ccup/api/claims.supportDocIntegration/submitForm/*", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
     cy.get("[data-cy=continue-bar]").click();
 
     //Submission page

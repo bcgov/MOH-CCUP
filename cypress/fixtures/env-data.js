@@ -59,6 +59,9 @@ if (Cypress.env("environment") === "test") {
   envData.enableIntercepts = true;
 }
 
+//uncomment to force intercepts on or off (eg. while testin an API in local development )
+// envData.enableIntercepts = false;
+
 const formatPhn = (phn) => {
   const result = phn.substring(0, 4) + " " + phn.substring(4, 7) + " " + phn.substring(7, 10);
 

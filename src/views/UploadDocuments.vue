@@ -176,7 +176,7 @@ export default {
   },
   methods: {
     nextPage() {
-      if (this.patientSupportDocuments.length == 0) {
+      if (!this.patientSupportDocuments || this.patientSupportDocuments.length == 0) {
         // show error message
         this.issupportDocumentsRequired = true;
         scrollToError();

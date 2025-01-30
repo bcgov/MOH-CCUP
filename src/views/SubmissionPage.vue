@@ -12,7 +12,7 @@
         <p class="heading">Date submitted: {{ submitDate }}</p>
         <ValidationMessage class="mb-5">
           Your Claims / Pre-authorization documents have been received.<br />Reference number is:
-          {insert reference number here}
+          {{ store.formFields.review.referenceNumber }}
         </ValidationMessage>
 
         <h2 class="mb-0">Next steps</h2>
@@ -58,17 +58,10 @@
         <h2 class="mt-5 mb-0">Declaration of accuracy and validity</h2>
         <hr class="mt-0" />
         <p>
-          I hereby declare that the information provided through this web form is accurate,
-          complete, and truthful to the best of my knowledge. I confirm that all information
-          provided pertains to a single patient and is valid for a single claim or
-          pre-authorization. I understand that any false, misleading, or omitted information may
-          result in the rejection of my submission and could have legal consequences.
+          {{ declarationAccuracy }}
         </p>
         <p>
-          By submitting this form, I affirm that I have personally completed all sections and that
-          the information I have provided is a true and honest representation of the facts. I
-          acknowledge that it is my responsibility to update any changes to this information
-          promptly.
+          {{ declarationValidity }}
         </p>
         <CheckboxComponent
           id="pratitioner-declaration-accuracy"
@@ -90,6 +83,7 @@ import { routes } from "../router/index.js";
 import { useFormStore } from "@/stores/formData";
 // import { smallStyles, mediumStyles } from "@/constants/input-styles";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
+import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 </script>
 
 <script>

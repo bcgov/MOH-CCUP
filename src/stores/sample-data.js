@@ -16,7 +16,8 @@ const sampleData = {
   },
   upload: {
     uploadNote: "upload-note",
-    patientSupportDocuments: [{}],
+    // uncomment this line to auto-fill file uploader
+    // patientSupportDocuments: [{}],
   },
   review: {
     isDeclarationAccuracy: null,
