@@ -71,7 +71,7 @@
           v-model="patientFirstInitial"
           cypress-id="patientFirstInitial"
           label="First name"
-          :maxlength="firstNameMaxLength"
+          :maxlength="firstInitialMaxLength"
           :required="true"
           class="mt-3"
           :input-style="mediumStyles"
@@ -214,7 +214,11 @@ import {
   phnValidator,
 } from "common-lib-vue";
 import { smallStyles, mediumStyles } from "@/constants/input-styles";
-import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
+import {
+  firstNameMaxLength,
+  firstInitialMaxLength,
+  lastNameMaxLength,
+} from "@/constants/html-validations.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";

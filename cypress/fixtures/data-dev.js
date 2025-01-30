@@ -7,7 +7,7 @@ export default {
     {
       adjFirstName: "adj-first-name",
       adjLastName: "adj-last-name",
-      patientFirstInitial: "Bazcqt",
+      patientFirstInitial: "B",
       patientLastName: "Znxem",
       patientBirthdateMonth: "03",
       patientBirthdateDay: "10",
@@ -18,7 +18,7 @@ export default {
     {
       adjFirstName: "adj-first-name",
       adjLastName: "adj-last-name",
-      patientFirstInitial: "Bazcqt",
+      patientFirstInitial: "B",
       patientLastName: "Znxem",
       patientBirthdateMonth: "03",
       patientBirthdateDay: "10",
