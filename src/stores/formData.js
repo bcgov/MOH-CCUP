@@ -51,6 +51,7 @@ export const useFormStore = defineStore("formStore", {
       },
       review: {
         isDeclarationAccuracy: null,
+        referenceNumber: null,
       },
     },
   }),
