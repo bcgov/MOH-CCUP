@@ -203,10 +203,10 @@ export default {
         .submitForm(this.store)
         .then((response) => {
           this.isLoading = false;
-          // const responseData = response.data;
           const returnCode = response.data.returnCode;
           switch (returnCode) {
             case "success": // Valid payload data.
+              this.store.updateFormField("review", "referenceNumber", response.data.refNumber);
               this.nextPage();
               break;
             case "failure": // Invalid payload data.

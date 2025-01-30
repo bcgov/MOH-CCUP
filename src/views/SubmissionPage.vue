@@ -12,7 +12,7 @@
         <p class="heading">Date submitted: {{ submitDate }}</p>
         <ValidationMessage class="mb-5">
           Your Claims / Pre-authorization documents have been received.<br />Reference number is:
-          {insert reference number here}
+          {{ store.formFields.review.referenceNumber }}
         </ValidationMessage>
 
         <h2 class="mb-0">Next steps</h2>
