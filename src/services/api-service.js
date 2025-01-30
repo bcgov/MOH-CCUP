@@ -71,6 +71,23 @@ class ApiService {
     return Promise.all(promises);
   }
 
+  _formatAttachments(originalAttachments) {
+    let formattedAttachments = [];
+    if (!originalAttachments || originalAttachments.length === 0) {
+      return formattedAttachments;
+    }
+
+    for (let i = 0; i < originalAttachments.length; i++) {
+      formattedAttachments.push({
+        attachmentDocumentType: "SUPPORTDOCUMENT",
+        attachmentUuid: originalAttachments[i].uuid,
+        attachmentOrder: i,
+      });
+    }
+
+    return formattedAttachments;
+  }
+
   submitForm(formStore) {
     const captchaToken = formStore.captcha.captchaToken;
     //generate a fresh applicationId so it doesn't fail on repeat submissions in the same session
@@ -84,6 +101,10 @@ class ApiService {
     } else {
       supportingDocumentsCode = "CORRESPONDENCE";
     }
+
+    const finalAttachments = this._formatAttachments(
+      formStore.formFields.upload.patientSupportDocuments
+    );
 
     const jsonPayload = {
       applicationId: tempUuid,
@@ -101,6 +122,8 @@ class ApiService {
       declaration1: declarationAccuracy,
       declaration2: declarationValidity,
       supportingDocumentsFor: supportingDocumentsCode,
+      // temporarily commented out until we're ready to submit attachments to the backend
+      // attachments: finalAttachments,
     };
     const headers = this._getHeaders(captchaToken);
 
