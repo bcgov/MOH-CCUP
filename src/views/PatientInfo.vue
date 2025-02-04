@@ -70,7 +70,7 @@
           id="patient-first-initial"
           v-model="patientFirstInitial"
           cypress-id="patientFirstInitial"
-          label="First name"
+          label="First initial"
           :maxlength="firstInitialMaxLength"
           :required="true"
           class="mt-3"
