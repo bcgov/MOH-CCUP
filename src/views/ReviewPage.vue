@@ -1,63 +1,60 @@
 <template>
-  <main>
-    <ProgressBar
-      :routes="stepRoutes"
-      :current-path="$route.path"
-    />
-
-    <PageContent>
-      <main class="container mb-5">
-        <h1 class="my-0">Review</h1>
-        <hr class="mt-0" />
-        <ReviewTable :show-edit-buttons="true" />
-        <h2 class="my-0 mt-5">Declaration of accuracy and validity</h2>
-        <hr class="mt-0" />
-        <div class="mt-1 row">
-          <p>
-            {{ declarationAccuracy }}
-          </p>
-          <p>
-            {{ declarationValidity }}
-          </p>
-        </div>
-        <div class="row px-3 fs-5">
-          <CheckboxComponent
-            id="pratitioner-declaration-accuracy"
-            v-model="review.isDeclarationAccuracy"
-            cypress-id="isDeclarationAccuracy"
-            :required="true"
-            :label="pracFullName"
-            @change="handleCheckBoxChange"
-            @input="handleAPIValidationReset"
-          />
-        </div>
-        <div
-          v-if="
-            v$.review.isDeclarationAccuracy.$dirty &&
-            v$.review.isDeclarationAccuracy.requiredTrue.$invalid
-          "
-          class="text-danger mt-3"
-          aria-live="assertive"
-        >
-          Field is required.
-        </div>
-        <div
-          v-if="isSystemUnavailable"
-          class="text-danger my-4"
-          aria-live="assertive"
-        >
-          Unable to continue, system unavailable. Please try again later.
-        </div>
-        <div
-          v-if="isAPIValidationErrorShown"
-          class="text-danger my-4"
-          aria-live="assertive"
-        >
-          There was a problem with your submission. Please try again.
-        </div>
-      </main>
-    </PageContent>
-  </main>
+  <ProgressBar
+    :routes="stepRoutes"
+    :current-path="$route.path"
+  />
+  <PageContent>
+    <main class="container mb-5">
+      <h1 class="my-0">Review</h1>
+      <hr class="mt-0" />
+      <ReviewTable :show-edit-buttons="true" />
+      <h2 class="my-0 mt-5">Declaration of accuracy and validity</h2>
+      <hr class="mt-0" />
+      <div class="mt-1 row">
+        <p>
+          {{ declarationAccuracy }}
+        </p>
+        <p>
+          {{ declarationValidity }}
+        </p>
+      </div>
+      <div class="row px-3 fs-5">
+        <CheckboxComponent
+          id="pratitioner-declaration-accuracy"
+          v-model="review.isDeclarationAccuracy"
+          cypress-id="isDeclarationAccuracy"
+          :required="true"
+          :label="pracFullName"
+          @change="handleCheckBoxChange"
+          @input="handleAPIValidationReset"
+        />
+      </div>
+      <div
+        v-if="
+          v$.review.isDeclarationAccuracy.$dirty &&
+          v$.review.isDeclarationAccuracy.requiredTrue.$invalid
+        "
+        class="text-danger mt-3"
+        aria-live="assertive"
+      >
+        Field is required.
+      </div>
+      <div
+        v-if="isSystemUnavailable"
+        class="text-danger my-4"
+        aria-live="assertive"
+      >
+        Unable to continue, system unavailable. Please try again later.
+      </div>
+      <div
+        v-if="isAPIValidationErrorShown"
+        class="text-danger my-4"
+        aria-live="assertive"
+      >
+        There was a problem with your submission. Please try again.
+      </div>
+    </main>
+  </PageContent>
   <ContinueBar
     :has-loader="isLoading"
     :button-label="'Submit'"
