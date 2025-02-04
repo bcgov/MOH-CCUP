@@ -135,12 +135,7 @@ import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
 import logService from "@/services/log-service.js";
-import {
-  scrollTo,
-  scrollToError,
-  // getTopScrollPosition,
-} from "../helpers/scroll";
-// const store = useFormStore();
+import { scrollTo, scrollToError } from "../helpers/scroll";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 </script>
 
@@ -205,7 +200,6 @@ export default {
       this.issupportDocumentsRequired = false;
     },
     handleBlurField(event) {
-      // update pinia store
       this.store.updateFormField("upload", "uploadNote", event.target.value);
     },
   },

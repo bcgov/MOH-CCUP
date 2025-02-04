@@ -1,5 +1,3 @@
-// import { getISODateString, isValidISODateString } from "./date";
-
 export const valueLengthValidator = (value) => {
   return value.length == 5;
 };

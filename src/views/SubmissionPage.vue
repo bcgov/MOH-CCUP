@@ -82,7 +82,6 @@ import pageStateService from "../services/page-state-service.js";
 import logService from "@/services/log-service.js";
 import { routes } from "../router/index.js";
 import { useFormStore } from "@/stores/formData";
-// import { smallStyles, mediumStyles } from "@/constants/input-styles";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 </script>
@@ -145,8 +144,10 @@ export default {
 
   methods: {
     nextPage() {
-      // Navigate to next path.
+      // Clear patient data so it's ready for the next person
       this.store.clearPatient();
+
+      // Reset page history so navigation happens correctly
       pageStateService.setPageUnvisited(routes.UPLOAD_DOCUMENTS.path);
       pageStateService.setPageUnvisited(routes.REVIEW_PAGE.path);
       pageStateService.setPageUnvisited(routes.SUBMISSION_PAGE.path);
@@ -156,6 +157,8 @@ export default {
       const toPath = routes.PATIENT_INFO.path;
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
+
+      // Navigate to next path.
       this.$router.push(toPath);
     },
     printPage() {

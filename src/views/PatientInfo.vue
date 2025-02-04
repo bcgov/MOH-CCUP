@@ -229,11 +229,7 @@ import { useVuelidate } from "@vuelidate/core";
 import { useFormStore } from "@/stores/formData";
 import { distantPastValidator, birthDatePastValidator } from "../helpers/date.js";
 import { handleChangeField } from "../helpers/handler.js";
-import {
-  scrollTo,
-  scrollToError,
-  // getTopScrollPosition,
-} from "../helpers/scroll";
+import { scrollTo, scrollToError } from "../helpers/scroll";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import apiService from "@/services/api-service";
 </script>
@@ -338,7 +334,6 @@ export default {
         .validatePatient(this.store)
         .then((response) => {
           this.isLoading = false;
-          // const responseData = response.data;
           const returnCode = response.data.returnCode;
 
           switch (returnCode) {

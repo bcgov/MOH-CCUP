@@ -25,7 +25,6 @@ describe("PatientInfo.vue", async () => {
   beforeEach(async () => {
     router = templateRouter;
     router.push("/");
-    // After this line, router is ready
     await router.isReady();
 
     setActivePinia(createPinia());
@@ -36,10 +35,6 @@ describe("PatientInfo.vue", async () => {
       },
     });
   });
-
-  // afterEach(() => {
-  //   vi.restoreAllMocks();
-  // });
 
   it("renders", () => {
     expect(wrapper.element).toBeDefined();
