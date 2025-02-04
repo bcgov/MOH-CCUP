@@ -19,9 +19,13 @@
 
 <script>
 import project from "/package.json";
+import spaEnvService from "@/services/spa-env-service";
 import "@bcgov/bootstrap-v5-theme/css/bootstrap-theme.min.css";
 import "common-lib-vue/dist/common-lib-vue.css";
 import { HeaderComponent, FooterComponent } from "common-lib-vue";
+import { useFormStore } from "@/stores/formData";
+import { routes } from "@/router/index.js";
+import pageStateService from "@/services/page-state-service.js";
 
 export default {
   name: "App",
@@ -35,7 +39,27 @@ export default {
       pageTitle: "Claims Correspondence Upload Portal",
       isModalOpen: false,
       modalObserver: null,
+      store: useFormStore(),
     };
+  },
+  created() {
+    spaEnvService
+      .loadEnvs()
+      .then(() => {
+        if (spaEnvService.values && spaEnvService.values.SPA_ENV_CCUP_MAINTENANCE_FLAG === "true") {
+          this.store.maintenanceMessage = spaEnvService.values.SPA_ENV_CCUP_MAINTENANCE_MESSAGE;
+          const toPath = routes.MAINTENANCE_PAGE.path;
+          pageStateService.setPageComplete(toPath);
+          pageStateService.visitPage(toPath);
+          this.$router.push(toPath);
+        }
+      })
+      .catch((error) => {
+        // logService.logError(this.applicationUuid, {
+        //   event: "HTTP error getting values from spa-env-server",
+        //   status: error.response.status,
+        // });
+      });
   },
 };
 </script>

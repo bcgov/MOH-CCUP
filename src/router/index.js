@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import MaintenancePage from "../views/MaintenancePage.vue";
 import PractitionerInfo from "../views/PractitionerInfo.vue";
 import PatientInfo from "../views/PatientInfo.vue";
 import UploadDocuments from "../views/UploadDocuments.vue";
@@ -36,6 +37,12 @@ export const routes = {
     title: "Submission Page",
     name: "SubmissionPage",
     component: SubmissionPage,
+  },
+  MAINTENANCE_PAGE: {
+    path: "/maintenance-page",
+    title: "Maintenance Page",
+    name: "MaintenancePage",
+    component: MaintenancePage,
   },
 };
 
@@ -83,6 +90,11 @@ const router = createRouter({
       name: "SubmissionPage",
       component: () => import("../views/SubmissionPage.vue"),
     },
+    {
+      path: "/maintenance-page",
+      name: "MaintenancePage",
+      component: () => import("../views/MaintenancePage.vue"),
+    },
   ],
 });
 
@@ -100,12 +112,17 @@ export const isPastPath = (toPath, fromPath) => {
 pageStateService.importPageRoutes(routes);
 
 router.beforeEach((to, from, next) => {
-  // Home redirects.
-  if (to.path !== routes.PRACTITIONER_INFO.path && !pageStateService.isPageVisited(to.path)) {
-    next({ path: routes.PRACTITIONER_INFO.path });
-  } else {
-    // Catch-all (navigation).
+  // If navigation destination is maintenance page, allow it
+  if (to.path === routes.MAINTENANCE_PAGE.path) {
     next();
+  } else {
+    //Otherwise check if page has been visited before allowing navigation
+    if (to.path !== routes.PRACTITIONER_INFO.path && !pageStateService.isPageVisited(to.path)) {
+      next({ path: routes.PRACTITIONER_INFO.path });
+    } else {
+      // Catch-all (navigation)
+      next();
+    }
   }
 });
 
