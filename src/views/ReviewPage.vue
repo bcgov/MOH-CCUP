@@ -73,6 +73,7 @@ import { PageContent, ContinueBar, CheckboxComponent } from "common-lib-vue";
 import { stepRoutes, routes } from "../router/index.js";
 import ProgressBar from "../components/ProgressBar.vue";
 import pageStateService from "../services/page-state-service.js";
+import logService from "@/services/log-service.js";
 import ReviewTable from "../components/ReviewTable.vue";
 import {
   scrollTo,
@@ -156,6 +157,11 @@ export default {
       this.practitioner.firstName != null && this.practitioner.lastName != null
         ? this.practitioner.firstName + " " + this.practitioner.lastName
         : "";
+    logService.logNavigation(
+      this.store.captcha.applicationUuid,
+      routes.REVIEW_PAGE.path,
+      routes.REVIEW_PAGE.title
+    );
   },
   validations() {
     return {
@@ -187,12 +193,20 @@ export default {
         .sendAttachments(this.store)
         .then(() => {
           //if all image uploads are successful, submit the form
+          logService.logInfo(this.store.captcha.applicationUuid, {
+            event: "submission success (sendAttachments, all)",
+            response: "N/A",
+          });
           this.submitForm();
         })
-        .catch(() => {
+        .catch((error) => {
           //this is the error code that runs if any attachments fail to send
           this.isLoading = false;
           this.isSystemUnavailable = true;
+          logService.logError(this.store.captcha.applicationUuid, {
+            event: "submission failure (one or more sendAttachment calls failed)",
+            status: error.response.status,
+          });
           scrollToError();
         });
     },
@@ -205,23 +219,40 @@ export default {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
           switch (returnCode) {
-            case "success": // Valid payload data.
+            case "success": // Successfully submitted form
               this.store.updateFormField("review", "referenceNumber", response.data.refNumber);
+              logService.logInfo(this.store.captcha.applicationUuid, {
+                event: "submission success (submitForm)",
+                response: response.data,
+              });
               this.nextPage();
               break;
-            case "failure": // Invalid payload data.
+            case "failure": // Submission failure, eg. API didn't recognize a field
               this.isAPIValidationErrorShown = true;
+              logService.logError(this.store.captcha.applicationUuid, {
+                event: "submission failure (submitForm)",
+                response: response.data,
+              });
               scrollToError();
               break;
-            default: // An error occurred.
+            default: // Default error handler
               this.isSystemUnavailable = true;
+              logService.logError(this.store.captcha.applicationUuid, {
+                event: "submission failure (submitForm endpoint unavailable)",
+                response: response.data,
+              });
               scrollToError();
               break;
           }
         })
-        .catch(() => {
+        .catch((error) => {
+          // all other errors, eg. if the server is down
           this.isLoading = false;
           this.isSystemUnavailable = true;
+          logService.logError(this.store.captcha.applicationUuid, {
+            event: "HTTP error (submitForm schema error or other unexpected problem)",
+            status: error.response.status,
+          });
           scrollToError();
         });
     },

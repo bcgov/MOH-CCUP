@@ -222,6 +222,7 @@ import {
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
+import logService from "@/services/log-service.js";
 import { required } from "@vuelidate/validators";
 import { nameValidator, dateDataValidator, phnFirstDigitValidator } from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
@@ -282,6 +283,11 @@ export default {
   },
   created() {
     this.assignDataFromStore();
+    logService.logNavigation(
+      this.store.captcha.applicationUuid,
+      routes.PATIENT_INFO.path,
+      routes.PATIENT_INFO.title
+    );
   },
   validations() {
     return {
@@ -336,23 +342,40 @@ export default {
           const returnCode = response.data.returnCode;
 
           switch (returnCode) {
-            case "success": // Valid payload data.
+            case "success": // Successfully executed API validation (data matches records)
+              logService.logInfo(this.store.captcha.applicationUuid, {
+                event: "validation success (validatePerson)",
+                response: response.data,
+              });
               this.nextPage();
               break;
-            case "failure": // Invalid payload data.
+            case "failure": // Either the data does not match records, or the API didn't recognize one of the fields
               this.isAPIValidationErrorShown = true;
+              logService.logInfo(this.store.captcha.applicationUuid, {
+                event: "validation failure (validatePerson)",
+                response: response.data,
+              });
               scrollToError();
               break;
-            default: // An error occurred.
+            default: // An API error occurred, eg. first name max length exceeded.
               this.isSystemUnavailable = true;
+              logService.logError(this.store.captcha.applicationUuid, {
+                event: "validation failure (validatePerson endpoint unavailable)",
+                response: response.data,
+              });
               scrollToError();
               break;
           }
         })
-        .catch(() => {
-          this.isLoading = false;
+        .catch((error) => {
+          //all other errors, eg. if the server is down
           this.isSystemUnavailable = true;
+          logService.logError(this.store.captcha.applicationUuid, {
+            event: "HTTP error (validatePerson unexpected problem)",
+            status: error.response.status,
+          });
           scrollToError();
+          this.isLoading = false;
         });
     },
     nextPage() {

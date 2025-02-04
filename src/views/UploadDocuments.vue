@@ -134,6 +134,7 @@ import {
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
+import logService from "@/services/log-service.js";
 import {
   scrollTo,
   scrollToError,
@@ -173,6 +174,11 @@ export default {
     this.uploadNote = this.store.formFields[this.formFieldUpload]["uploadNote"];
     this.patientSupportDocuments =
       this.store.formFields[this.formFieldUpload]["patientSupportDocuments"];
+    logService.logNavigation(
+      this.store.captcha.applicationUuid,
+      routes.PATIENT_INFO.path,
+      routes.PATIENT_INFO.title
+    );
   },
   methods: {
     nextPage() {

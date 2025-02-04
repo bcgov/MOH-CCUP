@@ -20,6 +20,7 @@
 <script>
 import project from "/package.json";
 import spaEnvService from "@/services/spa-env-service";
+import logService from "@/services/log-service.js";
 import "@bcgov/bootstrap-v5-theme/css/bootstrap-theme.min.css";
 import "common-lib-vue/dist/common-lib-vue.css";
 import { HeaderComponent, FooterComponent } from "common-lib-vue";
@@ -55,10 +56,10 @@ export default {
         }
       })
       .catch((error) => {
-        // logService.logError(this.applicationUuid, {
-        //   event: "HTTP error getting values from spa-env-server",
-        //   status: error.response.status,
-        // });
+        logService.logError(this.applicationUuid, {
+          event: "HTTP error getting values from spa-env-server",
+          status: error.response.status,
+        });
       });
   },
 };
