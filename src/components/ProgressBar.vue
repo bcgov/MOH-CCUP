@@ -112,7 +112,6 @@ export default {
   min-height: 2em;
   margin-top: 0;
   background: #f2f2f2;
-  /* min-width: 650px; */
 }
 
 @media (min-width: 481px) {
