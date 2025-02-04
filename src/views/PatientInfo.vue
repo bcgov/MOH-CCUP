@@ -21,7 +21,6 @@
         :required="true"
         :items="radioOptionsDocumentsCategory"
         cypress-id="documents-category"
-        role="radio"
         :model-value="documentsCategory"
         @input="handleAPIValidationReset"
         @change="handleChangeField(v$.documentsCategory, $event, formFieldParent)"
