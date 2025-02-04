@@ -13,7 +13,8 @@
 <script>
 import { PageContent } from "common-lib-vue";
 import { useFormStore } from "@/stores/formData";
-//   import logService from "../services/log-service.js";
+import { routes } from "../router/index.js";
+import logService from "../services/log-service.js";
 
 export default {
   name: "MaintenancePage",
@@ -28,11 +29,11 @@ export default {
     };
   },
   created() {
-    //   logService.logNavigation(
-    //     this.$store.state.applicationUuid,
-    //     routes.MAINTENANCE.path,
-    //     routes.MAINTENANCE.title,
-    //   );
+    logService.logNavigation(
+      this.store.captcha.applicationUuid,
+      routes.MAINTENANCE_PAGE.path,
+      routes.MAINTENANCE_PAGE.title
+    );
     if (this && this.store && this.store.maintenanceMessage) {
       this.maintenanceMessage = this.store.maintenanceMessage;
     }
