@@ -24,6 +24,8 @@ const clearPatientStructure = {
 export const useFormStore = defineStore("formStore", {
   state: () => ({
     isShowConsentModal: true,
+    maintenanceMessage:
+      "This application is currently unavailable due to maintenance. Please try again later.",
     captcha: {
       applicationUuid: uuidv4(),
       enrolmentModule: "enrolmentModule",

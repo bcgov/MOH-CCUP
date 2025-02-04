@@ -79,6 +79,7 @@ import { PageContent, CheckboxComponent, ValidationMessage, PrintPage } from "co
 import ReviewTable from "../components/ReviewTable.vue";
 import { formatDateDisplay } from "../helpers/date.js";
 import pageStateService from "../services/page-state-service.js";
+import logService from "@/services/log-service.js";
 import { routes } from "../router/index.js";
 import { useFormStore } from "@/stores/formData";
 // import { smallStyles, mediumStyles } from "@/constants/input-styles";
@@ -135,6 +136,11 @@ export default {
       this.practitioner.firstName != null && this.practitioner.lastName != null
         ? this.practitioner.firstName + " " + this.practitioner.lastName
         : "";
+    logService.logNavigation(
+      this.store.captcha.applicationUuid,
+      routes.UPLOAD_DOCUMENTS.path,
+      routes.UPLOAD_DOCUMENTS.title
+    );
   },
 
   methods: {

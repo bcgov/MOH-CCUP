@@ -8,7 +8,7 @@ const sampleData = {
   patient: {
     documentsCategory: "claims",
     patientBirthdate: new Date("1968-03-10 00:00:00"), //timestamp required so the app doesn't subtract a day due to timezones
-    patientFirstInitial: "Bazcqt",
+    patientFirstInitial: "B", //Bazcqt
     patientLastName: "Znxem",
     patientPhn: "9151 843 149",
     adjFirstName: "adj-first-name",

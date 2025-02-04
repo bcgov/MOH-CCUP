@@ -182,6 +182,7 @@ import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validati
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
+import logService from "@/services/log-service.js";
 import { required } from "@vuelidate/validators";
 import { nameValidator, valueLengthValidator } from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
@@ -239,6 +240,11 @@ export default {
   },
   created() {
     this.assignDataFromStore();
+    logService.logNavigation(
+      this.store.captcha.applicationUuid,
+      routes.PRACTITIONER_INFO.path,
+      routes.PRACTITIONER_INFO.title
+    );
   },
   validations() {
     return {
@@ -285,22 +291,39 @@ export default {
           const returnCode = response.data.returnCode;
 
           switch (returnCode) {
-            case "0": // Valid payload data.
+            case "0": // Successfully executed API validation (data matches records)
+              logService.logInfo(this.store.captcha.applicationUuid, {
+                event: "validation success (validatePractitioner)",
+                response: response.data,
+              });
               this.nextPage();
               break;
-            case "1": // Invalid payload data.
+            case "1": // Successfully executed API validation (data does not match records)
               this.isAPIValidationErrorShown = true;
+              logService.logInfo(this.store.captcha.applicationUuid, {
+                event: "validation failure (validatePractitioner)",
+                response: response.data,
+              });
               scrollToError();
               break;
-            default: // An error occurred.
+            default: // An API error occurred, eg. first name is too long.
               this.isSystemUnavailable = true;
+              logService.logError(this.store.captcha.applicationUuid, {
+                event: "validation failure (validatePractitioner endpoint unavailable)",
+                response: response.data,
+              });
               scrollToError();
               break;
           }
         })
-        .catch(() => {
+        .catch((error) => {
+          //all other errors, eg. if the server is down
           this.isLoading = false;
           this.isSystemUnavailable = true;
+          logService.logError(this.store.captcha.applicationUuid, {
+            event: "HTTP error (validatePractitioner unexpected problem)",
+            status: error.response.status,
+          });
           scrollToError();
         });
     },
