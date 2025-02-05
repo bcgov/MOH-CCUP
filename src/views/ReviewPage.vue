@@ -200,7 +200,7 @@ export default {
           this.isSystemUnavailable = true;
           logService.logError(this.store.captcha.applicationUuid, {
             event: "submission failure (one or more sendAttachment calls failed)",
-            status: error.response.status,
+            status: error,
           });
           scrollToError();
         });
