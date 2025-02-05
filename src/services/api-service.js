@@ -85,8 +85,6 @@ class ApiService {
 
   submitForm(formStore) {
     const captchaToken = formStore.captcha.captchaToken;
-    //generate a fresh applicationId so it doesn't fail on repeat submissions in the same session
-    const tempUuid = uuidv4();
 
     //the database stored procedure checks for these two keywords in order to sort documents
     //so the API payloads need to match them exactly
