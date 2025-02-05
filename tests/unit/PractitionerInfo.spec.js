@@ -2,13 +2,19 @@ import Page from "@/views/PractitionerInfo.vue";
 import { shallowMount } from "@vue/test-utils";
 import { createRouter, createMemoryHistory } from "vue-router";
 import { setActivePinia, createPinia } from "pinia";
-import { routeStepOrder } from "@/router/index.js";
 import { vi } from "vitest";
 import logService from "@/services/log-service";
 
 const router = createRouter({
   history: createMemoryHistory(),
-  routes: routeStepOrder,
+  routes: [
+    {
+      path: "/",
+      title: "Practitioner information",
+      name: "PractitionerInfo",
+      component: { template: `<span style="display: none;"></span>` },
+    },
+  ],
 });
 
 vi.mock("axios");
