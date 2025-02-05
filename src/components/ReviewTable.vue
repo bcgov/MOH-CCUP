@@ -155,7 +155,7 @@
         </div>
         <div class="card-body bg-gray">
           <div class="row">
-            <p class="row-title">Document Type</p>
+            <p class="row-title fs-5 fw-bold">Document Type</p>
 
             <div class="row">
               <div class="col-6 pt-2">
@@ -179,7 +179,7 @@
             </div>
           </div>
           <div class="row">
-            <p class="row-title">Adjudicator</p>
+            <p class="row-title fs-5 fw-bold">Adjudicator</p>
             <div class="row">
               <div class="col-6">
                 <span class="fs-5 px-2 fw-bold">First name </span>
@@ -207,7 +207,7 @@
             </div>
           </div>
           <div class="row mt-3 mb-3">
-            <p class="row-title">Patient</p>
+            <p class="row-title fs-5 fw-bold">Patient</p>
             <div class="row">
               <div class="col-6">
                 <span class="fs-5 px-2 fw-bold">First initial</span>
@@ -328,7 +328,7 @@ export default {
         },
         {
           id: "documents-category-pre-auth",
-          label: "Pre-authorization document(S)",
+          label: "Pre-authorization document(s)",
           value: "pre-auth",
         },
       ];
