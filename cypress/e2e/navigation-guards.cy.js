@@ -9,22 +9,22 @@ describe("navigation guards", () => {
       expect(loc.pathname).to.eq("/ccup/");
     });
 
-    cy.visit("/ccup/patient-info");
+    cy.visit("/patient-info");
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/");
     });
 
-    cy.visit("/ccup/upload-documents");
+    cy.visit("/upload-documents");
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/");
     });
 
-    cy.visit("/ccup/review-page");
+    cy.visit("/review-page");
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/");
     });
 
-    cy.visit("/ccup/submission-page");
+    cy.visit("/submission-page");
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/");
     });
