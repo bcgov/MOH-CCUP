@@ -102,7 +102,7 @@ class ApiService {
     );
 
     const jsonPayload = {
-      applicationId: tempUuid,
+      applicationId: formStore.captcha.applicationUuid,
       submissionDate: formatISODate(new Date()),
       practitionerFirstName: formStore.formFields.practitioner.pracFirstName,
       practitionerLastName: formStore.formFields.practitioner.pracLastName,
@@ -117,12 +117,15 @@ class ApiService {
       declaration1: declarationAccuracy,
       declaration2: declarationValidity,
       supportingDocumentsFor: supportingDocumentsCode,
-      // temporarily commented out until we're ready to submit attachments to the backend
-      // attachments: finalAttachments,
+      attachments: finalAttachments,
     };
     const headers = this._getHeaders(captchaToken);
 
-    return this._sendPostRequest(`${SUBMIT_FORM_URL}/${tempUuid}`, jsonPayload, headers);
+    return this._sendPostRequest(
+      `${SUBMIT_FORM_URL}/${formStore.captcha.applicationUuid}`,
+      jsonPayload,
+      headers
+    );
   }
 
   _sendAttachment(image, formStore) {
