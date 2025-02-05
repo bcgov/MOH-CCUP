@@ -94,7 +94,7 @@ objects:
             server_name localhost;
 
             # add in most common security headers
-            add_header Content-Security-Policy "default-src 'self'";
+            add_header Content-Security-Policy "default-src 'self'; media-src data:";
             add_header Strict-Transport-Security "max-age=86400; includeSubDomains";
             add_header X-Content-Type-Options "nosniff";
             add_header X-XSS-Protection 1;
@@ -237,14 +237,9 @@ parameters:
     name: IpFilterRules
     required: true
     value: "allow 0.0.0.0/0; deny all;"
-  # - description: SPLUNK_AUTH_TOKEN
-  #   name: SPLUNK_AUTH_TOKEN
-  #   required: true
-  #   value:
+  - description: SPLUNK_AUTH_TOKEN
+    name: SPLUNK_AUTH_TOKEN
+    required: true
   - description: SPA_ENV_AUTH_TOKEN
     name: SPA_ENV_AUTH_TOKEN
     required: true
-    # valueFrom:
-    #   secretKeyRef:
-    #     name: spa-env-server-service-auth-token
-    #     key: token

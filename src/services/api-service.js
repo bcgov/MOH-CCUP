@@ -1,10 +1,5 @@
 import axios from "axios";
-import {
-  formatISODate,
-  stripSpaces,
-  //   replaceSpecialCharacters,
-} from "common-lib-vue";
-// import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
+import { formatISODate, stripSpaces } from "common-lib-vue";
 import { v4 as uuidv4 } from "uuid";
 import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 
@@ -90,8 +85,6 @@ class ApiService {
 
   submitForm(formStore) {
     const captchaToken = formStore.captcha.captchaToken;
-    //generate a fresh applicationId so it doesn't fail on repeat submissions in the same session
-    const tempUuid = uuidv4();
 
     //the database stored procedure checks for these two keywords in order to sort documents
     //so the API payloads need to match them exactly
@@ -107,7 +100,7 @@ class ApiService {
     );
 
     const jsonPayload = {
-      applicationId: tempUuid,
+      applicationId: formStore.captcha.applicationUuid,
       submissionDate: formatISODate(new Date()),
       practitionerFirstName: formStore.formFields.practitioner.pracFirstName,
       practitionerLastName: formStore.formFields.practitioner.pracLastName,
@@ -122,12 +115,15 @@ class ApiService {
       declaration1: declarationAccuracy,
       declaration2: declarationValidity,
       supportingDocumentsFor: supportingDocumentsCode,
-      // temporarily commented out until we're ready to submit attachments to the backend
-      // attachments: finalAttachments,
+      attachments: finalAttachments,
     };
     const headers = this._getHeaders(captchaToken);
 
-    return this._sendPostRequest(`${SUBMIT_FORM_URL}/${tempUuid}`, jsonPayload, headers);
+    return this._sendPostRequest(
+      `${SUBMIT_FORM_URL}/${formStore.captcha.applicationUuid}`,
+      jsonPayload,
+      headers
+    );
   }
 
   _sendAttachment(image, formStore) {

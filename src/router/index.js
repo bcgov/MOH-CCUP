@@ -1,10 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import MaintenancePage from "../views/MaintenancePage.vue";
-import PractitionerInfo from "../views/PractitionerInfo.vue";
-import PatientInfo from "../views/PatientInfo.vue";
-import UploadDocuments from "../views/UploadDocuments.vue";
-import ReviewPage from "../views/ReviewPage.vue";
-import SubmissionPage from "../views/SubmissionPage.vue";
 import pageStateService from "../services/page-state-service";
 
 export const routes = {
@@ -12,37 +6,37 @@ export const routes = {
     path: "/",
     title: "Practitioner information",
     name: "PractitionerInfo",
-    component: PractitionerInfo,
+    component: () => import("@/views/PractitionerInfo.vue"),
   },
   PATIENT_INFO: {
     path: "/patient-info",
     title: "Patient Info",
     name: "PatientInfo",
-    component: PatientInfo,
+    component: () => import("@/views/PatientInfo.vue"),
   },
   UPLOAD_DOCUMENTS: {
     path: "/upload-documents",
     title: "Upload Documents",
     name: "UploadDocuments",
-    component: UploadDocuments,
+    component: () => import("@/views/UploadDocuments.vue"),
   },
   REVIEW_PAGE: {
     path: "/review-page",
     title: "Review Page",
     name: "ReviewPage",
-    component: ReviewPage,
+    component: () => import("@/views/ReviewPage.vue"),
   },
   SUBMISSION_PAGE: {
     path: "/submission-page",
     title: "Submission Page",
     name: "SubmissionPage",
-    component: SubmissionPage,
+    component: () => import("@/views/SubmissionPage.vue"),
   },
   MAINTENANCE_PAGE: {
     path: "/maintenance-page",
     title: "Maintenance Page",
     name: "MaintenancePage",
-    component: MaintenancePage,
+    component: () => import("@/views/MaintenancePage.vue"),
   },
 };
 

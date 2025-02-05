@@ -76,7 +76,6 @@ objects:
         spec:
           containers:
             - name: ${NAME}-web
-              # image: ''
               image: "image-registry.openshift-image-registry.svc:5000/${SOURCE_IMAGE_NAMESPACE}/${NAME}-web:${SOURCE_IMAGE_TAG}"
               imagePullPolicy: Always
               livenessProbe:
@@ -88,28 +87,8 @@ objects:
               ports:
                 - containerPort: 8080
               env:
-                # - name: LOG_LEVEL
-                #   value: ${LOG_LEVEL}
-                # - name: SERVICE_PORT
-                #   value: "8080"
-                # - name: SERVICE_IP
-                #   value: "0.0.0.0"
-                # - name: SOURCE_IMAGE_NAME
-                #   value: "ccup-web"
-                # - name: RealIpFrom
-                #   value: ${RealIpFrom}
-                # - name: IpFilterRules
-                #   value: ${IpFilterRules}
-                # - name: AdditionalRealIpFromRules
-                #   value: ${AdditionalRealIpFromRules}
                 # - name: USE_SPLUNK_FORWARDER
                 #   value: ${USE_SPLUNK_FORWARDER}
-                # - name: HTTP_BASIC
-                #   value: ""
-                # - name: HTTP_BASIC_USERNAME
-                #   value: ${HTTP_BASIC_USERNAME}
-                # - name: HTTP_BASIC_PASSWORD
-                #   value: ${HTTP_BASIC_PASSWORD}
                 # - name: SPLUNK_AUTH_TOKEN
                 #   valueFrom:
                 #     secretKeyRef:
@@ -120,18 +99,7 @@ objects:
                 #     secretKeyRef:
                 #       name: ccup-web-spa-env-auth-token
                 #       key: token
-                # - name: CCUP_ENV
-                #   value: ${CCUP_ENV}
-                # - name: CCUP_VERSION
-                #   value: ${CCUP_VERSION}
-                # - name: ROUTER_DEFAULT_SERVER_TIMEOUT
-                #   value: ${ROUTER_DEFAULT_SERVER_TIMEOUT}
-                # - name: ROUTER_DEFAULT_CLIENT_TIMEOUT
-                #   value: ${ROUTER_DEFAULT_CLIENT_TIMEOUT}
               resources:
-                # limits:
-                #   cpu: 200m
-                #   memory: 256Mi
                 requests:
                   cpu: 20m
                   memory: 256Mi
@@ -157,35 +125,11 @@ parameters:
     name: SOURCE_IMAGE_NAMESPACE
     required: true
     value: be8465-tools
-  # - description: The name of the source image.
-  #   displayName: Source Image Name
-  #   name: SOURCE_IMAGE_NAME
-  #   value: ccup-web
-  #   required: true
   - description: The tag of the source image.
     displayName: Source Image Tag
     name: SOURCE_IMAGE_TAG
     required: true
     #value: should be either dev, test, or prod. Pass down in command line
-  # - description: |
-  #     This is used to construct a path based route for the web to access the
-  #     API.
-  #   displayName: Cluster Domain Name
-  #   name: CLUSTER_DOMAIN
-  #   required: true
-  #   value: apps.silver.devops.gov.bc.ca
-  # - description: RealIpFrom for nginx
-  #   name: RealIpFrom
-  #   value: "142.34.194.118"
-  #   required: true
-  # - description: AdditionalRealIpFromRules
-  #   name: AdditionalRealIpFromRules
-  #   value: ""
-  #   required: false
-  # - description: IpFilterRules
-  #   name: IpFilterRules
-  #   value: "allow 0.0.0.0/0; deny all;"
-  #   required: true
   - description: USE_SPLUNK_FORWARDER
     name: USE_SPLUNK_FORWARDER
     value: "true"
@@ -204,20 +148,6 @@ parameters:
   #     secretKeyRef:
   #       name: spa-env-server-service-auth-token
   #       key: token
-  # - description: CCUP_ENV
-  #   name: CCUP_ENV
-  #   required: true
-  # - description: CCUP_VERSION
-  #   name: CCUP_VERSION
-  #   required: false
-  # - description: ROUTER_DEFAULT_SERVER_TIMEOUT
-  #   name: ROUTER_DEFAULT_SERVER_TIMEOUT
-  #   value: "60s"
-  #   required: false
-  # - description: ROUTER_DEFAULT_CLIENT_TIMEOUT
-  #   name: ROUTER_DEFAULT_CLIENT_TIMEOUT
-  #   value: "60s"
-  #   required: false
   # - description: LOG_LEVEL
   #   name: LOG_LEVEL
   #   value: "info"

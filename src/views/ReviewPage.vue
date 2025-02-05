@@ -63,7 +63,6 @@
   />
 </template>
 <script setup>
-// import { smallStyles, mediumStyles } from "@/constants/input-styles";
 import { useFormStore } from "@/stores/formData";
 import { useVuelidate } from "@vuelidate/core";
 import { PageContent, ContinueBar, CheckboxComponent } from "common-lib-vue";
@@ -72,11 +71,7 @@ import ProgressBar from "../components/ProgressBar.vue";
 import pageStateService from "../services/page-state-service.js";
 import logService from "@/services/log-service.js";
 import ReviewTable from "../components/ReviewTable.vue";
-import {
-  scrollTo,
-  scrollToError,
-  // getTopScrollPosition,
-} from "../helpers/scroll";
+import { scrollTo, scrollToError } from "../helpers/scroll";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import apiService from "@/services/api-service";
 import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
@@ -202,7 +197,7 @@ export default {
           this.isSystemUnavailable = true;
           logService.logError(this.store.captcha.applicationUuid, {
             event: "submission failure (one or more sendAttachment calls failed)",
-            status: error.response.status,
+            status: error,
           });
           scrollToError();
         });

@@ -3,13 +3,6 @@ on:
   push:
     branches:
       - "*"
-    # paths:
-    #   - "ccup/src/**/*.html"
-    #   - "ccup/src/**/*.ts"
-    #   - "ccup/src/**/*.js"
-    #   - "ccup/src/**/*.scss"
-    #   - "ccup/src/**/*.vue"
-    #   - "ccup/package*.json"
   workflow_dispatch:
     inputs:
       force-image-build:
@@ -88,7 +81,6 @@ jobs:
       - name: Generate Image Build
         run: oc start-build ${BUILD_NAME} -n ${NAMESPACE} --follow
       - name: Time delay
-        # to give time for Openshift to process the build so it doesn't tag the wrong image
         run: sleep 20s
       - name: Tag Image Build
         run: oc tag -n ${NAMESPACE} ${NAMESPACE}/${IMAGE_NAME}:${SOURCE_IMAGE_TAG} ${NAMESPACE}/${IMAGE_NAME}:${TARGET_IMAGE_TAG}

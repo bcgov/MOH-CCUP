@@ -270,11 +270,7 @@ import { formatDateDisplay } from "../helpers/date.js";
 import pageStateService from "../services/page-state-service.js";
 import { IconPencil, RadioComponent } from "common-lib-vue";
 import { routes } from "../router/index.js";
-import {
-  scrollTo,
-  // scrollToError,
-  // getTopScrollPosition,
-} from "../helpers/scroll";
+import { scrollTo } from "../helpers/scroll";
 </script>
 
 <script>

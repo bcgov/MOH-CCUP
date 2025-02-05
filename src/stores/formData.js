@@ -99,6 +99,9 @@ export const useFormStore = defineStore("formStore", {
     },
     clearPatient() {
       Object.assign(this.formFields, clearPatientStructure);
+      //assign new applicationUuid so the documents all get grouped together properly
+      //the documentuuid on attachments needs to match the uuid on form submission
+      this.captcha.applicationUuid = uuidv4();
     },
     assignSampleData() {
       Object.assign(this.formFields, sampleData);
