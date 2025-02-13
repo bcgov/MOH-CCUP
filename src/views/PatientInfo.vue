@@ -8,14 +8,10 @@
       <h1 class="mb-0">Patient information</h1>
       <hr class="mt-0" />
       <h2>Document type</h2>
-      <p class="mb-0">
-        Indicate below the type of document(s) you are uploading. You must select and submit one
-        document type for each submission.
-      </p>
-      <hr class="mt-0" />
       <RadioComponent
         id="documents-category"
         v-model="documentsCategory"
+        label="Indicate below the type of document(s) you are uploading. You must select and submit one document type for each submission."
         aria-labelledby="documentsCategory"
         name="documents-category"
         :required="true"
