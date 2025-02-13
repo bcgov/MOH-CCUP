@@ -193,4 +193,7 @@ export default {
 .i {
   font-style: italic;
 }
+.text-success {
+  color: #3c7b37 !important;
+}
 </style>

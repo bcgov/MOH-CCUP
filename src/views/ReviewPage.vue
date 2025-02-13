@@ -34,21 +34,21 @@
           v$.review.isDeclarationAccuracy.$dirty &&
           v$.review.isDeclarationAccuracy.requiredTrue.$invalid
         "
-        class="text-danger mt-3"
+        class="text-danger error mt-3"
         aria-live="assertive"
       >
         Field is required.
       </div>
       <div
         v-if="isSystemUnavailable"
-        class="text-danger my-4"
+        class="text-danger error my-4"
         aria-live="assertive"
       >
         Unable to continue, system unavailable. Please try again later.
       </div>
       <div
         v-if="isAPIValidationErrorShown"
-        class="text-danger my-4"
+        class="text-danger error my-4"
         aria-live="assertive"
       >
         There was a problem with your submission. Please try again.
