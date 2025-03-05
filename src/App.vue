@@ -62,5 +62,23 @@ export default {
         });
       });
   },
+  mounted() {
+    this.initModalObserver();
+  },
+  beforeUnmount() {
+    if (this.modalObserver) {
+      this.modalObserver.disconnect();
+    }
+  },
+  methods: {
+    initModalObserver() {
+      const modalObserver = new MutationObserver(() => {
+        const modalTargetEl = this.$refs.modal;
+        this.isModalOpen = modalTargetEl && modalTargetEl.children.length > 0;
+      });
+      modalObserver.observe(this.$refs.modal, { childList: true });
+      this.modalObserver = modalObserver;
+    },
+  },
 };
 </script>

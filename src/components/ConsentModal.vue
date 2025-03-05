@@ -49,19 +49,26 @@
             >
               Captcha successfully verified.
             </div>
-            <div class="mt-3">
-              <input
+            <div class="mt-3 b">
+              <!-- <input
                 id="is-terms-accepted"
                 v-model="isTermsAccepted"
                 type="checkbox"
                 data-cy="consentCheckbox"
                 class="d-inline"
+              /> -->
+              <CheckboxComponent
+                id="is-terms-accepted"
+                v-model="isTermsAccepted"
+                cypress-id="consentCheckbox"
+                :required="true"
+                label="I have read and understand this information"
               />
-              <label
+              <!-- <label
                 for="is-terms-accepted"
                 class="mt-3 ml-2 d-inline"
                 ><b class="px-1">I have read and understand this information</b>
-              </label>
+              </label> -->
             </div>
           </div>
           <div class="modal-footer justify-content-center">
@@ -80,12 +87,13 @@
 
 <script>
 import { useFormStore } from "../stores/formData";
-import { ButtonComponent, CaptchaComponent } from "common-lib-vue";
+import { ButtonComponent, CaptchaComponent, CheckboxComponent } from "common-lib-vue";
 export default {
   name: "ConsentModal",
   components: {
     ButtonComponent,
     CaptchaComponent,
+    CheckboxComponent,
   },
   emits: ["close"],
   data: () => {
@@ -97,6 +105,7 @@ export default {
       captchaAPIBasePath: "/ccup/api/captcha",
       isCaptchaValid: false,
       isTermsAccepted: false,
+      boldTitle: "I have read and understand this information",
     };
   },
   created() {
@@ -195,5 +204,8 @@ export default {
 }
 .text-success {
   color: #3c7b37 !important;
+}
+.b {
+  font-style: bold;
 }
 </style>
