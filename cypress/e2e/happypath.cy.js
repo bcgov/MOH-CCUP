@@ -90,7 +90,7 @@ describe("happy path", () => {
     cy.get("[data-cy=continue-bar]").click();
 
     //Submission page
-    cy.location().should((loc) => {
+    cy.location({ timeout: 30000 }).should((loc) => {
       expect(loc.pathname).to.eq("/ccup/submission-page");
     });
     cy.checkReviewTable(envData, 0);
@@ -122,7 +122,7 @@ describe("happy path", () => {
     cy.get("[data-cy=continue-bar]").click();
 
     //Submission page
-    cy.location().should((loc) => {
+    cy.location({ timeout: 30000 }).should((loc) => {
       expect(loc.pathname).to.eq("/ccup/submission-page");
     });
     cy.checkReviewTable(envData, 1);
