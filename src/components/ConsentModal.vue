@@ -49,14 +49,7 @@
             >
               Captcha successfully verified.
             </div>
-            <div class="mt-3 b">
-              <!-- <input
-                id="is-terms-accepted"
-                v-model="isTermsAccepted"
-                type="checkbox"
-                data-cy="consentCheckbox"
-                class="d-inline"
-              /> -->
+            <div class="mt-3">
               <CheckboxComponent
                 id="is-terms-accepted"
                 v-model="isTermsAccepted"
@@ -64,11 +57,6 @@
                 :required="true"
                 label="I have read and understand this information"
               />
-              <!-- <label
-                for="is-terms-accepted"
-                class="mt-3 ml-2 d-inline"
-                ><b class="px-1">I have read and understand this information</b>
-              </label> -->
             </div>
           </div>
           <div class="modal-footer justify-content-center">
@@ -204,8 +192,5 @@ export default {
 }
 .text-success {
   color: #3c7b37 !important;
-}
-.b {
-  font-style: bold;
 }
 </style>
