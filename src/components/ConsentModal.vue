@@ -93,7 +93,6 @@ export default {
       captchaAPIBasePath: "/ccup/api/captcha",
       isCaptchaValid: false,
       isTermsAccepted: false,
-      boldTitle: "I have read and understand this information",
     };
   },
   created() {
