@@ -22,17 +22,14 @@
           </div>
           <div class="modal-body">
             <p>
-              Your personal information is collected by the Ministry of Health under the authority
-              of sections 26(a) and (c) of the
-              <span class="i">Freedom of Information and Protection of Privacy Act (FIPPA).</span>
-              It is collected for the purpose of administering Medical Services Plan and
-              Supplementary Benefits under the
-              <span class="i">Medicare Protection Act</span> and to determine, verify and administer
-              your and your family’s Fair PharmaCare coverage under the
-              <span class="i">Pharmaceutical Services Act.</span> If you have questions about the
-              collection of personal information on this form, contact the HIBC Chief Privacy
-              Officer at PO Box 9035 STN Prov Govt, Victoria BC V8W 9E3; or call 604 683-7151
-              (Vancouver) or 1 800 663-7100 (toll free).
+              Personal information is collected under the authority of the
+              <span class="i">Medicare Protection Act</span> and section 26 (a), (c) and (e) of the
+              <span class="i">Freedom of Information and Protection of Privacy Act (FIPPA)</span>
+              for the purposes of administration of the Medical Services Plan. If you have any
+              questions about the collection and use of your personal information, please contact
+              the Health Insurance BC Chief Privacy Office at Health Insurance BC, Chief Privacy
+              Office, PO Box 9035 STN Prov Govt, Victoria BC V8W 9E3 or call 604-683-7151
+              (Vancouver) or 1-800-663-7100 (toll free).
             </p>
             <CaptchaComponent
               v-if="!isCaptchaValid"
@@ -53,6 +50,7 @@
               <CheckboxComponent
                 id="is-terms-accepted"
                 v-model="isTermsAccepted"
+                class="is-terms-accepted"
                 cypress-id="consentCheckbox"
                 :required="true"
                 label="I have read and understand this information"
@@ -188,6 +186,9 @@ export default {
 }
 .i {
   font-style: italic;
+}
+.is-terms-accepted {
+  font-weight: bold;
 }
 .text-success {
   color: #3c7b37 !important;
