@@ -120,7 +120,7 @@
 </template>
 
 <script setup>
-import { useFormStore } from "@/stores/formData";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { PageContent, ContinueBar, InputComponent, DateInput, FileUploader } from "common-lib-vue";
 import {
   extraSmallStyles,
@@ -146,7 +146,7 @@ export default {
   },
   data() {
     return {
-      store: useFormStore(),
+      store: useDocSubmissionStore(),
       formFieldPatient: "patient",
       issupportDocumentsRequired: false,
       formFieldUpload: "upload",

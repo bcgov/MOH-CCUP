@@ -21,7 +21,7 @@ const clearPatientStructure = {
   },
 };
 
-export const useFormStore = defineStore("formStore", {
+export const useDocSubmissionStore = defineStore("formStore", {
   state: () => ({
     isShowConsentModal: true,
     maintenanceMessage:

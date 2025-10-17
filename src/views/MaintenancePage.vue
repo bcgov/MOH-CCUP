@@ -12,7 +12,7 @@
 
 <script>
 import { PageContent } from "common-lib-vue";
-import { useFormStore } from "@/stores/formData";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { routes } from "../router/index.js";
 import logService from "../services/log-service.js";
 
@@ -25,7 +25,7 @@ export default {
     return {
       maintenanceMessage:
         "This application is currently unavailable due to maintenance. Please try again later.",
-      store: useFormStore(),
+      store: useDocSubmissionStore(),
     };
   },
   created() {

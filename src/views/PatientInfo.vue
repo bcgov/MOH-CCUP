@@ -219,7 +219,7 @@ import logService from "@/services/log-service.js";
 import { required } from "@vuelidate/validators";
 import { nameValidator, dateDataValidator, phnFirstDigitValidator } from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
-import { useFormStore } from "@/stores/formData";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { distantPastValidator, birthDatePastValidator } from "../helpers/date.js";
 import { handleChangeField } from "../helpers/handler.js";
 import { scrollTo, scrollToError } from "../helpers/scroll";
@@ -239,7 +239,7 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
-      store: useFormStore(),
+      store: useDocSubmissionStore(),
       formFieldParent: "patient",
       documentsCategory: null,
       patientBirthdate: null,

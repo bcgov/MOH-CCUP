@@ -79,7 +79,7 @@ import { formatDateDisplay } from "../helpers/date.js";
 import pageStateService from "../services/page-state-service.js";
 import logService from "@/services/log-service.js";
 import { routes } from "../router/index.js";
-import { useFormStore } from "@/stores/formData";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 </script>
@@ -91,7 +91,7 @@ export default {
   },
   data() {
     return {
-      store: useFormStore(),
+      store: useDocSubmissionStore(),
       documentsCategory: null,
       isDeclarationAccuracy: null,
       pracFullName: null,

@@ -63,7 +63,7 @@
   />
 </template>
 <script setup>
-import { useFormStore } from "@/stores/formData";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { useVuelidate } from "@vuelidate/core";
 import { PageContent, ContinueBar, CheckboxComponent } from "common-lib-vue";
 import { stepRoutes, routes } from "../router/index.js";
@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
-      store: useFormStore(),
+      store: useDocSubmissionStore(),
       formFieldPractitioner: "practitioner",
       formFieldPatient: "patient",
 

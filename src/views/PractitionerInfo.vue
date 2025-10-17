@@ -183,7 +183,7 @@ import logService from "@/services/log-service.js";
 import { required } from "@vuelidate/validators";
 import { nameValidator, valueLengthValidator } from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
-import { useFormStore } from "@/stores/formData";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { handleChangeField } from "../helpers/handler.js";
 import ConsentModal from "../components/ConsentModal.vue";
 import { scrollTo, scrollToError } from "../helpers/scroll";
@@ -204,7 +204,7 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
-      store: useFormStore(),
+      store: useDocSubmissionStore(),
       formFieldParent: "practitioner",
       pracFirstName: null,
       pracLastName: null,

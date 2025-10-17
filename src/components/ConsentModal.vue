@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { useFormStore } from "../stores/formData";
+import { useDocSubmissionStore } from "../stores/docSubmissionStore";
 import { ButtonComponent, CaptchaComponent, CheckboxComponent } from "common-lib-vue";
 export default {
   name: "ConsentModal",
@@ -84,7 +84,7 @@ export default {
   emits: ["close"],
   data: () => {
     return {
-      store: useFormStore(),
+      store: useDocSubmissionStore(),
       focusableEls: [],
       focusedEl: null,
       applicationUuid: null,

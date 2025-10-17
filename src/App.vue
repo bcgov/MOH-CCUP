@@ -24,7 +24,7 @@ import logService from "@/services/log-service.js";
 import "@bcgov/bootstrap-v5-theme/css/bootstrap-theme.min.css";
 import "common-lib-vue/dist/common-lib-vue.css";
 import { HeaderComponent, FooterComponent } from "common-lib-vue";
-import { useFormStore } from "@/stores/formData";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { routes } from "@/router/index.js";
 import pageStateService from "@/services/page-state-service.js";
 
@@ -40,7 +40,7 @@ export default {
       pageTitle: "Claims Correspondence Upload Portal",
       isModalOpen: false,
       modalObserver: null,
-      store: useFormStore(),
+      store: useDocSubmissionStore(),
     };
   },
   created() {
