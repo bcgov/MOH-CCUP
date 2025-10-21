@@ -58,7 +58,7 @@ class ApiService {
     const promises = [];
 
     formStore.formFields.upload.patientSupportDocuments.forEach((image) => {
-      promises.push(this._sendAttachment(image, formStore, captchaStore));
+      promises.push(this._sendAttachment(image, captchaStore));
     });
 
     //then try to resolve them all at once in one promise
@@ -126,7 +126,7 @@ class ApiService {
     );
   }
 
-  _sendAttachment(image, formStore, captchaStore) {
+  _sendAttachment(image, captchaStore) {
     const programArea = "claims";
     const docType = "SupportDocument";
 
