@@ -57,7 +57,7 @@ export default {
         }
       })
       .catch((error) => {
-        logService.logError(this.captchaStore.captcha.applicationUuid, {
+        logService.logError(this.captchaStore.applicationUuid, {
           event: "HTTP error getting values from spa-env-server",
           status: error.response.status,
         });

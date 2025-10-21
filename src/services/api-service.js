@@ -11,8 +11,8 @@ const SUBMIT_ATTACHMENT_URL = `${BASE_API_PATH}/submit-attachment`;
 
 class ApiService {
   validatePractitioner(formStore, captchaStore) {
-    const applicationUuid = captchaStore.captcha.applicationUuid;
-    const captchaToken = captchaStore.captcha.captchaToken;
+    const applicationUuid = captchaStore.applicationUuid;
+    const captchaToken = captchaStore.captchaToken;
 
     const jsonPayload = {
       applicationUuid: applicationUuid,
@@ -32,8 +32,8 @@ class ApiService {
   }
 
   validatePatient(formStore, captchaStore) {
-    const applicationUuid = captchaStore.captcha.applicationUuid;
-    const captchaToken = captchaStore.captcha.captchaToken;
+    const applicationUuid = captchaStore.applicationUuid;
+    const captchaToken = captchaStore.captchaToken;
 
     const jsonPayload = {
       uuid: applicationUuid,
@@ -84,7 +84,7 @@ class ApiService {
   }
 
   submitForm(formStore, captchaStore) {
-    const captchaToken = captchaStore.captcha.captchaToken;
+    const captchaToken = captchaStore.captchaToken;
 
     //the database stored procedure checks for these two keywords in order to sort documents
     //so the API payloads need to match them exactly
@@ -100,7 +100,7 @@ class ApiService {
     );
 
     const jsonPayload = {
-      applicationId: captchaStore.captcha.applicationUuid,
+      applicationId: captchaStore.applicationUuid,
       submissionDate: formatISODate(new Date()),
       practitionerFirstName: formStore.formFields.practitioner.pracFirstName,
       practitionerLastName: formStore.formFields.practitioner.pracLastName,
@@ -120,7 +120,7 @@ class ApiService {
     const headers = this._getHeaders(captchaToken);
 
     return this._sendPostRequest(
-      `${SUBMIT_FORM_URL}/${captchaStore.captcha.applicationUuid}`,
+      `${SUBMIT_FORM_URL}/${captchaStore.applicationUuid}`,
       jsonPayload,
       headers
     );
@@ -130,8 +130,8 @@ class ApiService {
     const programArea = "claims";
     const docType = "SupportDocument";
 
-    const url = `${SUBMIT_ATTACHMENT_URL}/${captchaStore.captcha.applicationUuid}/attachments/${image.uuid}?programarea=${programArea}&attachmentDocumentType=${docType}&contentType=image/jpeg&imageSize=${image.size}`;
-    const headers = this._getAttachmentHeaders(captchaStore.captcha.captchaToken);
+    const url = `${SUBMIT_ATTACHMENT_URL}/${captchaStore.applicationUuid}/attachments/${image.uuid}?programarea=${programArea}&attachmentDocumentType=${docType}&contentType=image/jpeg&imageSize=${image.size}`;
+    const headers = this._getAttachmentHeaders(captchaStore.captchaToken);
     let blob;
 
     //the file uploader component stores the uploaded image data in the Vue store data as a JSON string

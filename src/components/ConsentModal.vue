@@ -94,7 +94,7 @@ export default {
     };
   },
   created() {
-    this.applicationUuid = this.captchaStore.captcha.applicationUuid;
+    this.applicationUuid = this.captchaStore.applicationUuid;
     window.addEventListener("keydown", this.handleKeyDown);
     document.body.classList.add("no-scroll");
   },
@@ -118,7 +118,7 @@ export default {
       this.focusableEls = this.getFocusableEls();
     },
     handleCaptchaVerified(captchaToken) {
-      this.captchaStore.captcha.captchaToken = captchaToken;
+      this.captchaStore.captchaToken = captchaToken;
       this.isCaptchaValid = true;
       setTimeout(() => {
         this.focusableEls = this.getFocusableEls();

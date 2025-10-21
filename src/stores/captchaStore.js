@@ -6,10 +6,8 @@ export const useCaptchaStore = defineStore("captchaStore", {
     isShowConsentModal: true,
     maintenanceMessage:
       "This application is currently unavailable due to maintenance. Please try again later.",
-    captcha: {
-      applicationUuid: uuidv4(),
-      captchaToken: "setCaptchaToken",
-    },
+    applicationUuid: uuidv4(),
+    captchaToken: "setCaptchaToken",
   }),
   actions: {
     /**
@@ -21,7 +19,7 @@ export const useCaptchaStore = defineStore("captchaStore", {
     resetCaptchaToken() {
       //assign new applicationUuid so the documents all get grouped together properly
       //the documentuuid on attachments needs to match the uuid on form submission
-      this.captcha.applicationUuid = uuidv4();
+      this.applicationUuid = uuidv4();
     },
   },
 });

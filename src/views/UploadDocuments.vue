@@ -169,7 +169,7 @@ export default {
     this.patientSupportDocuments =
       this.store.formFields[this.formFieldUpload]["patientSupportDocuments"];
     logService.logNavigation(
-      this.captchaStore.captcha.applicationUuid,
+      this.captchaStore.applicationUuid,
       routes.PATIENT_INFO.path,
       routes.PATIENT_INFO.title
     );

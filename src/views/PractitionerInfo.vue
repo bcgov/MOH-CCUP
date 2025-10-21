@@ -236,7 +236,7 @@ export default {
   created() {
     this.assignDataFromStore();
     logService.logNavigation(
-      this.captchaStore.captcha.applicationUuid,
+      this.captchaStore.applicationUuid,
       routes.PRACTITIONER_INFO.path,
       routes.PRACTITIONER_INFO.title
     );
@@ -286,7 +286,7 @@ export default {
 
           switch (returnCode) {
             case "0": // Successfully executed API validation (data matches records)
-              logService.logInfo(this.captchaStore.captcha.applicationUuid, {
+              logService.logInfo(this.captchaStore.applicationUuid, {
                 event: "validation success (validatePractitioner)",
                 response: response.data,
               });
@@ -294,7 +294,7 @@ export default {
               break;
             case "1": // Successfully executed API validation (data does not match records)
               this.isAPIValidationErrorShown = true;
-              logService.logInfo(this.captchaStore.captcha.applicationUuid, {
+              logService.logInfo(this.captchaStore.applicationUuid, {
                 event: "validation failure (validatePractitioner)",
                 response: response.data,
               });
@@ -302,7 +302,7 @@ export default {
               break;
             default: // An API error occurred, eg. first name is too long.
               this.isSystemUnavailable = true;
-              logService.logError(this.captchaStore.captcha.applicationUuid, {
+              logService.logError(this.captchaStore.applicationUuid, {
                 event: "validation failure (validatePractitioner endpoint unavailable)",
                 response: response.data,
               });
@@ -314,7 +314,7 @@ export default {
           //all other errors, eg. if the server is down
           this.isLoading = false;
           this.isSystemUnavailable = true;
-          logService.logError(this.captchaStore.captcha.applicationUuid, {
+          logService.logError(this.captchaStore.applicationUuid, {
             event: "HTTP error (validatePractitioner unexpected problem)",
             status: error.response.status,
           });

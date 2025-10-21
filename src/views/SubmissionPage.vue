@@ -136,7 +136,7 @@ export default {
         ? this.practitioner.firstName + " " + this.practitioner.lastName
         : "";
     logService.logNavigation(
-      this.captchaStore.captcha.applicationUuid,
+      this.captchaStore.applicationUuid,
       routes.UPLOAD_DOCUMENTS.path,
       routes.UPLOAD_DOCUMENTS.title
     );

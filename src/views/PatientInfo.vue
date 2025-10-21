@@ -275,7 +275,7 @@ export default {
   created() {
     this.assignDataFromStore();
     logService.logNavigation(
-      this.captchaStore.captcha.applicationUuid,
+      this.captchaStore.applicationUuid,
       routes.PATIENT_INFO.path,
       routes.PATIENT_INFO.title
     );
@@ -333,7 +333,7 @@ export default {
 
           switch (returnCode) {
             case "success": // Successfully executed API validation (data matches records)
-              logService.logInfo(this.captchaStore.captcha.applicationUuid, {
+              logService.logInfo(this.captchaStore.applicationUuid, {
                 event: "validation success (validatePerson)",
                 response: response.data,
               });
@@ -341,7 +341,7 @@ export default {
               break;
             case "failure": // Either the data does not match records, or the API didn't recognize one of the fields
               this.isAPIValidationErrorShown = true;
-              logService.logInfo(this.captchaStore.captcha.applicationUuid, {
+              logService.logInfo(this.captchaStore.applicationUuid, {
                 event: "validation failure (validatePerson)",
                 response: response.data,
               });
@@ -349,7 +349,7 @@ export default {
               break;
             default: // An API error occurred, eg. first name max length exceeded.
               this.isSystemUnavailable = true;
-              logService.logError(this.captchaStore.captcha.applicationUuid, {
+              logService.logError(this.captchaStore.applicationUuid, {
                 event: "validation failure (validatePerson endpoint unavailable)",
                 response: response.data,
               });
@@ -360,7 +360,7 @@ export default {
         .catch((error) => {
           //all other errors, eg. if the server is down
           this.isSystemUnavailable = true;
-          logService.logError(this.captchaStore.captcha.applicationUuid, {
+          logService.logError(this.captchaStore.applicationUuid, {
             event: "HTTP error (validatePerson unexpected problem)",
             status: error.response.status,
           });

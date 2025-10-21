@@ -30,7 +30,7 @@ export default {
   },
   created() {
     logService.logNavigation(
-      this.captchaStore.captcha.applicationUuid,
+      this.captchaStore.applicationUuid,
       routes.MAINTENANCE_PAGE.path,
       routes.MAINTENANCE_PAGE.title
     );
