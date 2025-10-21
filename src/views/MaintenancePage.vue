@@ -12,6 +12,7 @@
 
 <script>
 import { PageContent } from "common-lib-vue";
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { routes } from "../router/index.js";
 import logService from "../services/log-service.js";
@@ -26,11 +27,12 @@ export default {
       maintenanceMessage:
         "This application is currently unavailable due to maintenance. Please try again later.",
       store: useDocSubmissionStore(),
+      captchaStore: useCaptchaStore(),
     };
   },
   created() {
     logService.logNavigation(
-      this.store.captcha.applicationUuid,
+      this.captchaStore.captcha.applicationUuid,
       routes.MAINTENANCE_PAGE.path,
       routes.MAINTENANCE_PAGE.title
     );

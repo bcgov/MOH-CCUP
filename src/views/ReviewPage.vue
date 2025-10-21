@@ -63,6 +63,7 @@
   />
 </template>
 <script setup>
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { useVuelidate } from "@vuelidate/core";
 import { PageContent, ContinueBar, CheckboxComponent } from "common-lib-vue";
@@ -89,6 +90,7 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
+      captchaStore: useCaptchaStore(),
       store: useDocSubmissionStore(),
       formFieldPractitioner: "practitioner",
       formFieldPatient: "patient",
@@ -150,7 +152,7 @@ export default {
         ? this.practitioner.firstName + " " + this.practitioner.lastName
         : "";
     logService.logNavigation(
-      this.store.captcha.applicationUuid,
+      this.captchaStore.captcha.applicationUuid,
       routes.REVIEW_PAGE.path,
       routes.REVIEW_PAGE.title
     );
@@ -182,10 +184,10 @@ export default {
       this.isAPIValidationErrorShown = false;
 
       apiService
-        .sendAttachments(this.store)
+        .sendAttachments(this.store, this.captchaStore)
         .then(() => {
           //if all image uploads are successful, submit the form
-          logService.logInfo(this.store.captcha.applicationUuid, {
+          logService.logInfo(this.captchaStore.captcha.applicationUuid, {
             event: "submission success (sendAttachments, all)",
             response: "N/A",
           });
@@ -195,7 +197,7 @@ export default {
           //this is the error code that runs if any attachments fail to send
           this.isLoading = false;
           this.isSystemUnavailable = true;
-          logService.logError(this.store.captcha.applicationUuid, {
+          logService.logError(this.captchaStore.captcha.applicationUuid, {
             event: "submission failure (one or more sendAttachment calls failed)",
             status: error,
           });
@@ -206,14 +208,14 @@ export default {
       this.isLoading = true;
       this.isSystemUnavailable = false;
       apiService
-        .submitForm(this.store)
+        .submitForm(this.store, this.captchaStore)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
           switch (returnCode) {
             case "success": // Successfully submitted form
               this.store.updateFormField("review", "referenceNumber", response.data.refNumber);
-              logService.logInfo(this.store.captcha.applicationUuid, {
+              logService.logInfo(this.captchaStore.captcha.applicationUuid, {
                 event: "submission success (submitForm)",
                 response: response.data,
               });
@@ -221,7 +223,7 @@ export default {
               break;
             case "failure": // Submission failure, eg. API didn't recognize a field
               this.isAPIValidationErrorShown = true;
-              logService.logError(this.store.captcha.applicationUuid, {
+              logService.logError(this.captchaStore.captcha.applicationUuid, {
                 event: "submission failure (submitForm)",
                 response: response.data,
               });
@@ -229,7 +231,7 @@ export default {
               break;
             default: // Default error handler
               this.isSystemUnavailable = true;
-              logService.logError(this.store.captcha.applicationUuid, {
+              logService.logError(this.captchaStore.captcha.applicationUuid, {
                 event: "submission failure (submitForm endpoint unavailable)",
                 response: response.data,
               });
@@ -241,7 +243,7 @@ export default {
           // all other errors, eg. if the server is down
           this.isLoading = false;
           this.isSystemUnavailable = true;
-          logService.logError(this.store.captcha.applicationUuid, {
+          logService.logError(this.captchaStore.captcha.applicationUuid, {
             event: "HTTP error (submitForm schema error or other unexpected problem)",
             status: error.response.status,
           });

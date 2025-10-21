@@ -120,6 +120,7 @@
 </template>
 
 <script setup>
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { PageContent, ContinueBar, InputComponent, DateInput, FileUploader } from "common-lib-vue";
 import {
@@ -146,6 +147,7 @@ export default {
   },
   data() {
     return {
+      captchaStore: useCaptchaStore(),
       store: useDocSubmissionStore(),
       formFieldPatient: "patient",
       issupportDocumentsRequired: false,
@@ -167,7 +169,7 @@ export default {
     this.patientSupportDocuments =
       this.store.formFields[this.formFieldUpload]["patientSupportDocuments"];
     logService.logNavigation(
-      this.store.captcha.applicationUuid,
+      this.captchaStore.captcha.applicationUuid,
       routes.PATIENT_INFO.path,
       routes.PATIENT_INFO.title
     );

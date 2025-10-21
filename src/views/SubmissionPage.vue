@@ -79,6 +79,7 @@ import { formatDateDisplay } from "../helpers/date.js";
 import pageStateService from "../services/page-state-service.js";
 import logService from "@/services/log-service.js";
 import { routes } from "../router/index.js";
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
@@ -91,6 +92,7 @@ export default {
   },
   data() {
     return {
+      captchaStore: useCaptchaStore(),
       store: useDocSubmissionStore(),
       documentsCategory: null,
       isDeclarationAccuracy: null,
@@ -134,7 +136,7 @@ export default {
         ? this.practitioner.firstName + " " + this.practitioner.lastName
         : "";
     logService.logNavigation(
-      this.store.captcha.applicationUuid,
+      this.captchaStore.captcha.applicationUuid,
       routes.UPLOAD_DOCUMENTS.path,
       routes.UPLOAD_DOCUMENTS.title
     );
@@ -144,6 +146,8 @@ export default {
     nextPage() {
       // Clear patient data so it's ready for the next person
       this.store.clearPatient();
+      // Reset captcha token so the database doesn't receive duplicate submission uuids
+      this.captchaStore.resetCaptchaToken();
 
       // Reset page history so navigation happens correctly
       pageStateService.setPageUnvisited(routes.UPLOAD_DOCUMENTS.path);

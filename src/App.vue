@@ -24,6 +24,7 @@ import logService from "@/services/log-service.js";
 import "@bcgov/bootstrap-v5-theme/css/bootstrap-theme.min.css";
 import "common-lib-vue/dist/common-lib-vue.css";
 import { HeaderComponent, FooterComponent } from "common-lib-vue";
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { routes } from "@/router/index.js";
 import pageStateService from "@/services/page-state-service.js";
@@ -40,6 +41,7 @@ export default {
       pageTitle: "Claims Correspondence Upload Portal",
       isModalOpen: false,
       modalObserver: null,
+      captchaStore: useCaptchaStore(),
       store: useDocSubmissionStore(),
     };
   },
@@ -56,7 +58,7 @@ export default {
         }
       })
       .catch((error) => {
-        logService.logError(this.applicationUuid, {
+        logService.logError(this.captchaStore.captcha.applicationUuid, {
           event: "HTTP error getting values from spa-env-server",
           status: error.response.status,
         });

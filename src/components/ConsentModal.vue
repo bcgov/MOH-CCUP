@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "../stores/docSubmissionStore";
 import { ButtonComponent, CaptchaComponent, CheckboxComponent } from "common-lib-vue";
 export default {
@@ -84,6 +85,7 @@ export default {
   emits: ["close"],
   data: () => {
     return {
+      captchaStore: useCaptchaStore(),
       store: useDocSubmissionStore(),
       focusableEls: [],
       focusedEl: null,
@@ -94,7 +96,7 @@ export default {
     };
   },
   created() {
-    this.applicationUuid = this.store.captcha.applicationUuid;
+    this.applicationUuid = this.captchaStore.captcha.applicationUuid;
     window.addEventListener("keydown", this.handleKeyDown);
     document.body.classList.add("no-scroll");
   },
@@ -118,7 +120,7 @@ export default {
       this.focusableEls = this.getFocusableEls();
     },
     handleCaptchaVerified(captchaToken) {
-      this.store.captcha.captchaToken = captchaToken;
+      this.captchaStore.captcha.captchaToken = captchaToken;
       this.isCaptchaValid = true;
       setTimeout(() => {
         this.focusableEls = this.getFocusableEls();

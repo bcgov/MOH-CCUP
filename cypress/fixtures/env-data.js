@@ -59,7 +59,7 @@ if (Cypress.env("environment") === "test") {
   envData.enableIntercepts = true;
 }
 
-//uncomment to force intercepts on or off (eg. while testin an API in local development )
+//uncomment to force intercepts on or off (eg. while testing an API in local development )
 // envData.enableIntercepts = false;
 
 const formatPhn = (phn) => {

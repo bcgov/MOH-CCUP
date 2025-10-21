@@ -219,6 +219,7 @@ import logService from "@/services/log-service.js";
 import { required } from "@vuelidate/validators";
 import { nameValidator, dateDataValidator, phnFirstDigitValidator } from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { distantPastValidator, birthDatePastValidator } from "../helpers/date.js";
 import { handleChangeField } from "../helpers/handler.js";
@@ -239,6 +240,7 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
+      captchaStore: useCaptchaStore(),
       store: useDocSubmissionStore(),
       formFieldParent: "patient",
       documentsCategory: null,
@@ -273,7 +275,7 @@ export default {
   created() {
     this.assignDataFromStore();
     logService.logNavigation(
-      this.store.captcha.applicationUuid,
+      this.captchaStore.captcha.applicationUuid,
       routes.PATIENT_INFO.path,
       routes.PATIENT_INFO.title
     );
@@ -324,14 +326,14 @@ export default {
       this.isAPIValidationErrorShown = false;
 
       apiService
-        .validatePatient(this.store)
+        .validatePatient(this.store, this.captchaStore)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
 
           switch (returnCode) {
             case "success": // Successfully executed API validation (data matches records)
-              logService.logInfo(this.store.captcha.applicationUuid, {
+              logService.logInfo(this.captchaStore.captcha.applicationUuid, {
                 event: "validation success (validatePerson)",
                 response: response.data,
               });
@@ -339,7 +341,7 @@ export default {
               break;
             case "failure": // Either the data does not match records, or the API didn't recognize one of the fields
               this.isAPIValidationErrorShown = true;
-              logService.logInfo(this.store.captcha.applicationUuid, {
+              logService.logInfo(this.captchaStore.captcha.applicationUuid, {
                 event: "validation failure (validatePerson)",
                 response: response.data,
               });
@@ -347,7 +349,7 @@ export default {
               break;
             default: // An API error occurred, eg. first name max length exceeded.
               this.isSystemUnavailable = true;
-              logService.logError(this.store.captcha.applicationUuid, {
+              logService.logError(this.captchaStore.captcha.applicationUuid, {
                 event: "validation failure (validatePerson endpoint unavailable)",
                 response: response.data,
               });
@@ -358,7 +360,7 @@ export default {
         .catch((error) => {
           //all other errors, eg. if the server is down
           this.isSystemUnavailable = true;
-          logService.logError(this.store.captcha.applicationUuid, {
+          logService.logError(this.captchaStore.captcha.applicationUuid, {
             event: "HTTP error (validatePerson unexpected problem)",
             status: error.response.status,
           });
