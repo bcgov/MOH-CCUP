@@ -73,7 +73,6 @@
 
 <script>
 import { useCaptchaStore } from "@/stores/captchaStore";
-import { useDocSubmissionStore } from "../stores/docSubmissionStore";
 import { ButtonComponent, CaptchaComponent, CheckboxComponent } from "common-lib-vue";
 export default {
   name: "ConsentModal",
@@ -86,7 +85,6 @@ export default {
   data: () => {
     return {
       captchaStore: useCaptchaStore(),
-      store: useDocSubmissionStore(),
       focusableEls: [],
       focusedEl: null,
       applicationUuid: null,

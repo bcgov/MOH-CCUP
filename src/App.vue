@@ -25,7 +25,6 @@ import "@bcgov/bootstrap-v5-theme/css/bootstrap-theme.min.css";
 import "common-lib-vue/dist/common-lib-vue.css";
 import { HeaderComponent, FooterComponent } from "common-lib-vue";
 import { useCaptchaStore } from "@/stores/captchaStore";
-import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { routes } from "@/router/index.js";
 import pageStateService from "@/services/page-state-service.js";
 
@@ -42,7 +41,6 @@ export default {
       isModalOpen: false,
       modalObserver: null,
       captchaStore: useCaptchaStore(),
-      store: useDocSubmissionStore(),
     };
   },
   created() {
@@ -50,7 +48,8 @@ export default {
       .loadEnvs()
       .then(() => {
         if (spaEnvService.values && spaEnvService.values.SPA_ENV_CCUP_MAINTENANCE_FLAG === "true") {
-          this.store.maintenanceMessage = spaEnvService.values.SPA_ENV_CCUP_MAINTENANCE_MESSAGE;
+          this.captchaStore.maintenanceMessage =
+            spaEnvService.values.SPA_ENV_CCUP_MAINTENANCE_MESSAGE;
           const toPath = routes.MAINTENANCE_PAGE.path;
           pageStateService.setPageComplete(toPath);
           pageStateService.visitPage(toPath);

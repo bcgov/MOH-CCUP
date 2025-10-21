@@ -13,7 +13,6 @@
 <script>
 import { PageContent } from "common-lib-vue";
 import { useCaptchaStore } from "@/stores/captchaStore";
-import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { routes } from "../router/index.js";
 import logService from "../services/log-service.js";
 
@@ -26,7 +25,6 @@ export default {
     return {
       maintenanceMessage:
         "This application is currently unavailable due to maintenance. Please try again later.",
-      store: useDocSubmissionStore(),
       captchaStore: useCaptchaStore(),
     };
   },
@@ -36,8 +34,8 @@ export default {
       routes.MAINTENANCE_PAGE.path,
       routes.MAINTENANCE_PAGE.title
     );
-    if (this && this.store && this.store.maintenanceMessage) {
-      this.maintenanceMessage = this.store.maintenanceMessage;
+    if (this && this.captchaStore && this.captchaStore.maintenanceMessage) {
+      this.maintenanceMessage = this.captchaStore.maintenanceMessage;
     }
   },
 };
