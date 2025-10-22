@@ -7,10 +7,10 @@ const sampleData = {
   },
   patient: {
     documentsCategory: "claims",
-    patientBirthdate: new Date("1968-03-10 00:00:00"), //timestamp required so the app doesn't subtract a day due to timezones
-    patientFirstInitial: "B", //Bazcqt
-    patientLastName: "Znxem",
-    patientPhn: "9151 843 149",
+    patientBirthdate: new Date("1965-05-13 00:00:00"), //timestamp required so the app doesn't subtract a day due to timezones
+    patientFirstInitial: "J", //Bazcqt
+    patientLastName: "CAFEXD",
+    patientPhn: "9373 158 557",
     adjFirstName: "adj-first-name",
     adjLastName: "adj-last-name",
   },

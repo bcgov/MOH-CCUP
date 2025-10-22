@@ -265,7 +265,7 @@
 </template>
 
 <script setup>
-import { useFormStore } from "@/stores/formData";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { formatDateDisplay } from "../helpers/date.js";
 import pageStateService from "../services/page-state-service.js";
 import { IconPencil, RadioComponent } from "common-lib-vue";
@@ -285,7 +285,7 @@ export default {
   },
   data() {
     return {
-      store: useFormStore(),
+      store: useDocSubmissionStore(),
       formFieldPractitioner: "practitioner",
       formFieldPatient: "patient",
 

@@ -12,7 +12,7 @@
 
 <script>
 import { PageContent } from "common-lib-vue";
-import { useFormStore } from "@/stores/formData";
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { routes } from "../router/index.js";
 import logService from "../services/log-service.js";
 
@@ -25,17 +25,17 @@ export default {
     return {
       maintenanceMessage:
         "This application is currently unavailable due to maintenance. Please try again later.",
-      store: useFormStore(),
+      captchaStore: useCaptchaStore(),
     };
   },
   created() {
     logService.logNavigation(
-      this.store.captcha.applicationUuid,
+      this.captchaStore.applicationUuid,
       routes.MAINTENANCE_PAGE.path,
       routes.MAINTENANCE_PAGE.title
     );
-    if (this && this.store && this.store.maintenanceMessage) {
-      this.maintenanceMessage = this.store.maintenanceMessage;
+    if (this && this.captchaStore && this.captchaStore.maintenanceMessage) {
+      this.maintenanceMessage = this.captchaStore.maintenanceMessage;
     }
   },
 };

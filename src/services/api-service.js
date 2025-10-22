@@ -10,9 +10,9 @@ const SUBMIT_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitFor
 const SUBMIT_ATTACHMENT_URL = `${BASE_API_PATH}/submit-attachment`;
 
 class ApiService {
-  validatePractitioner(formStore) {
-    const applicationUuid = formStore.captcha.applicationUuid;
-    const captchaToken = formStore.captcha.captchaToken;
+  validatePractitioner(formStore, captchaStore) {
+    const applicationUuid = captchaStore.applicationUuid;
+    const captchaToken = captchaStore.captchaToken;
 
     const jsonPayload = {
       applicationUuid: applicationUuid,
@@ -31,9 +31,9 @@ class ApiService {
     );
   }
 
-  validatePatient(formStore) {
-    const applicationUuid = formStore.captcha.applicationUuid;
-    const captchaToken = formStore.captcha.captchaToken;
+  validatePatient(formStore, captchaStore) {
+    const applicationUuid = captchaStore.applicationUuid;
+    const captchaToken = captchaStore.captchaToken;
 
     const jsonPayload = {
       uuid: applicationUuid,
@@ -53,12 +53,12 @@ class ApiService {
     );
   }
 
-  sendAttachments(formStore) {
+  sendAttachments(formStore, captchaStore) {
     //create an array containing individual promises for each image upload
     const promises = [];
 
     formStore.formFields.upload.patientSupportDocuments.forEach((image) => {
-      promises.push(this._sendAttachment(image, formStore));
+      promises.push(this._sendAttachment(image, captchaStore));
     });
 
     //then try to resolve them all at once in one promise
@@ -83,8 +83,8 @@ class ApiService {
     return formattedAttachments;
   }
 
-  submitForm(formStore) {
-    const captchaToken = formStore.captcha.captchaToken;
+  submitForm(formStore, captchaStore) {
+    const captchaToken = captchaStore.captchaToken;
 
     //the database stored procedure checks for these two keywords in order to sort documents
     //so the API payloads need to match them exactly
@@ -100,7 +100,7 @@ class ApiService {
     );
 
     const jsonPayload = {
-      applicationId: formStore.captcha.applicationUuid,
+      applicationId: captchaStore.applicationUuid,
       submissionDate: formatISODate(new Date()),
       practitionerFirstName: formStore.formFields.practitioner.pracFirstName,
       practitionerLastName: formStore.formFields.practitioner.pracLastName,
@@ -120,18 +120,18 @@ class ApiService {
     const headers = this._getHeaders(captchaToken);
 
     return this._sendPostRequest(
-      `${SUBMIT_FORM_URL}/${formStore.captcha.applicationUuid}`,
+      `${SUBMIT_FORM_URL}/${captchaStore.applicationUuid}`,
       jsonPayload,
       headers
     );
   }
 
-  _sendAttachment(image, formStore) {
+  _sendAttachment(image, captchaStore) {
     const programArea = "claims";
     const docType = "SupportDocument";
 
-    const url = `${SUBMIT_ATTACHMENT_URL}/${formStore.captcha.applicationUuid}/attachments/${image.uuid}?programarea=${programArea}&attachmentDocumentType=${docType}&contentType=image/jpeg&imageSize=${image.size}`;
-    const headers = this._getAttachmentHeaders(formStore.captcha.captchaToken);
+    const url = `${SUBMIT_ATTACHMENT_URL}/${captchaStore.applicationUuid}/attachments/${image.uuid}?programarea=${programArea}&attachmentDocumentType=${docType}&contentType=image/jpeg&imageSize=${image.size}`;
+    const headers = this._getAttachmentHeaders(captchaStore.captchaToken);
     let blob;
 
     //the file uploader component stores the uploaded image data in the Vue store data as a JSON string
@@ -162,7 +162,7 @@ class ApiService {
               size: image && image.size,
               programArea,
               docType,
-              token: formStore.captchaToken,
+              token: captchaStore.captchaToken,
               // getting status in ReviewPage.vue depends on response.data.response being under error.response
               response: response && response.data && response.data.response,
               // actual response from individual post request for extra detail
@@ -176,7 +176,7 @@ class ApiService {
             size: image && image.size,
             programArea,
             docType,
-            token: formStore.captchaToken,
+            token: captchaStore.captchaToken,
             error,
           });
         });

@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { useFormStore } from "../stores/formData";
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { ButtonComponent, CaptchaComponent, CheckboxComponent } from "common-lib-vue";
 export default {
   name: "ConsentModal",
@@ -84,7 +84,7 @@ export default {
   emits: ["close"],
   data: () => {
     return {
-      store: useFormStore(),
+      captchaStore: useCaptchaStore(),
       focusableEls: [],
       focusedEl: null,
       applicationUuid: null,
@@ -94,7 +94,7 @@ export default {
     };
   },
   created() {
-    this.applicationUuid = this.store.captcha.applicationUuid;
+    this.applicationUuid = this.captchaStore.applicationUuid;
     window.addEventListener("keydown", this.handleKeyDown);
     document.body.classList.add("no-scroll");
   },
@@ -118,7 +118,7 @@ export default {
       this.focusableEls = this.getFocusableEls();
     },
     handleCaptchaVerified(captchaToken) {
-      this.store.captcha.captchaToken = captchaToken;
+      this.captchaStore.captchaToken = captchaToken;
       this.isCaptchaValid = true;
       setTimeout(() => {
         this.focusableEls = this.getFocusableEls();

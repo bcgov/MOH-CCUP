@@ -120,7 +120,8 @@
 </template>
 
 <script setup>
-import { useFormStore } from "@/stores/formData";
+import { useCaptchaStore } from "@/stores/captchaStore";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { PageContent, ContinueBar, InputComponent, DateInput, FileUploader } from "common-lib-vue";
 import {
   extraSmallStyles,
@@ -146,7 +147,8 @@ export default {
   },
   data() {
     return {
-      store: useFormStore(),
+      captchaStore: useCaptchaStore(),
+      store: useDocSubmissionStore(),
       formFieldPatient: "patient",
       issupportDocumentsRequired: false,
       formFieldUpload: "upload",
@@ -167,7 +169,7 @@ export default {
     this.patientSupportDocuments =
       this.store.formFields[this.formFieldUpload]["patientSupportDocuments"];
     logService.logNavigation(
-      this.store.captcha.applicationUuid,
+      this.captchaStore.applicationUuid,
       routes.PATIENT_INFO.path,
       routes.PATIENT_INFO.title
     );

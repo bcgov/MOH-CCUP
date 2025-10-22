@@ -19,7 +19,7 @@
         cypress-id="documents-category"
         :model-value="documentsCategory"
         @input="handleAPIValidationReset"
-        @change="handleChangeField(v$.documentsCategory, $event, formFieldParent)"
+        @change="handleChangeField(v$.documentsCategory, $event, formFieldParent, store)"
       />
 
       <div
@@ -44,7 +44,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.adjFirstName, $event, formFieldParent)"
+        @blur="handleChangeField(v$.adjFirstName, $event, formFieldParent, store)"
       />
       <InputComponent
         id="adj-last-name"
@@ -55,7 +55,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.adjLastName, $event, formFieldParent)"
+        @blur="handleChangeField(v$.adjLastName, $event, formFieldParent, store)"
       />
       <h2 class="mt-5">Patient</h2>
       <p class="mb-0">Please provide the necessary information about the patient.</p>
@@ -70,7 +70,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @change="handleChangeField(v$.patientFirstInitial, $event, formFieldParent)"
+        @change="handleChangeField(v$.patientFirstInitial, $event, formFieldParent, store)"
       />
       <div
         v-if="
@@ -100,7 +100,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.patientLastName, $event, formFieldParent)"
+        @blur="handleChangeField(v$.patientLastName, $event, formFieldParent, store)"
       />
       <div
         v-if="v$.patientLastName.$dirty"
@@ -125,7 +125,7 @@
         class-name="mt-3"
         @process-date="handleProcessBirthdate($event)"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.patientBirthdate, null, null)"
+        @blur="handleChangeField(v$.patientBirthdate, null, null, store)"
       />
       <div
         v-if="v$.patientBirthdate.$dirty"
@@ -152,7 +152,7 @@
         class="mt-3"
         :input-style="smallStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.patientPhn, $event, formFieldParent)"
+        @blur="handleChangeField(v$.patientPhn, $event, formFieldParent, store)"
       />
       <div
         v-if="v$.patientPhn.$dirty && v$.patientPhn.required.$invalid"
@@ -219,7 +219,8 @@ import logService from "@/services/log-service.js";
 import { required } from "@vuelidate/validators";
 import { nameValidator, dateDataValidator, phnFirstDigitValidator } from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
-import { useFormStore } from "@/stores/formData";
+import { useCaptchaStore } from "@/stores/captchaStore";
+import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import { distantPastValidator, birthDatePastValidator } from "../helpers/date.js";
 import { handleChangeField } from "../helpers/handler.js";
 import { scrollTo, scrollToError } from "../helpers/scroll";
@@ -239,7 +240,8 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
-      store: useFormStore(),
+      captchaStore: useCaptchaStore(),
+      store: useDocSubmissionStore(),
       formFieldParent: "patient",
       documentsCategory: null,
       patientBirthdate: null,
@@ -273,7 +275,7 @@ export default {
   created() {
     this.assignDataFromStore();
     logService.logNavigation(
-      this.store.captcha.applicationUuid,
+      this.captchaStore.applicationUuid,
       routes.PATIENT_INFO.path,
       routes.PATIENT_INFO.title
     );
@@ -324,14 +326,14 @@ export default {
       this.isAPIValidationErrorShown = false;
 
       apiService
-        .validatePatient(this.store)
+        .validatePatient(this.store, this.captchaStore)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
 
           switch (returnCode) {
             case "success": // Successfully executed API validation (data matches records)
-              logService.logInfo(this.store.captcha.applicationUuid, {
+              logService.logInfo(this.captchaStore.applicationUuid, {
                 event: "validation success (validatePerson)",
                 response: response.data,
               });
@@ -339,7 +341,7 @@ export default {
               break;
             case "failure": // Either the data does not match records, or the API didn't recognize one of the fields
               this.isAPIValidationErrorShown = true;
-              logService.logInfo(this.store.captcha.applicationUuid, {
+              logService.logInfo(this.captchaStore.applicationUuid, {
                 event: "validation failure (validatePerson)",
                 response: response.data,
               });
@@ -347,7 +349,7 @@ export default {
               break;
             default: // An API error occurred, eg. first name max length exceeded.
               this.isSystemUnavailable = true;
-              logService.logError(this.store.captcha.applicationUuid, {
+              logService.logError(this.captchaStore.applicationUuid, {
                 event: "validation failure (validatePerson endpoint unavailable)",
                 response: response.data,
               });
@@ -358,7 +360,7 @@ export default {
         .catch((error) => {
           //all other errors, eg. if the server is down
           this.isSystemUnavailable = true;
-          logService.logError(this.store.captcha.applicationUuid, {
+          logService.logError(this.captchaStore.applicationUuid, {
             event: "HTTP error (validatePerson unexpected problem)",
             status: error.response.status,
           });
