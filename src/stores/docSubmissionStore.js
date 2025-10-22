@@ -20,7 +20,7 @@ const clearPatientStructure = {
   },
 };
 
-export const useDocSubmissionStore = defineStore("formStore", {
+export const useDocSubmissionStore = defineStore("docSubmissionStore", {
   state: () => ({
     formFields: {
       practitioner: {
