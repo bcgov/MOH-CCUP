@@ -50,7 +50,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.pracFirstName, $event, formFieldParent)"
+        @blur="handleChangeField(v$.pracFirstName, $event, formFieldParent, store)"
       />
       <div
         v-if="v$.pracFirstName.$dirty"
@@ -76,7 +76,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.pracLastName, $event, formFieldParent)"
+        @blur="handleChangeField(v$.pracLastName, $event, formFieldParent, store)"
       />
 
       <div
@@ -101,7 +101,7 @@
         class="mt-3"
         :input-style="extraSmallStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.pracNumber, $event, formFieldParent)"
+        @blur="handleChangeField(v$.pracNumber, $event, formFieldParent, store)"
       />
       <div
         v-if="v$.pracNumber.$dirty"
@@ -126,7 +126,7 @@
         class="mt-3"
         :input-style="extraSmallStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.payeeNumber, $event, formFieldParent)"
+        @blur="handleChangeField(v$.payeeNumber, $event, formFieldParent, store)"
       />
 
       <div

@@ -19,7 +19,7 @@
         cypress-id="documents-category"
         :model-value="documentsCategory"
         @input="handleAPIValidationReset"
-        @change="handleChangeField(v$.documentsCategory, $event, formFieldParent)"
+        @change="handleChangeField(v$.documentsCategory, $event, formFieldParent, store)"
       />
 
       <div
@@ -44,7 +44,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.adjFirstName, $event, formFieldParent)"
+        @blur="handleChangeField(v$.adjFirstName, $event, formFieldParent, store)"
       />
       <InputComponent
         id="adj-last-name"
@@ -55,7 +55,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.adjLastName, $event, formFieldParent)"
+        @blur="handleChangeField(v$.adjLastName, $event, formFieldParent, store)"
       />
       <h2 class="mt-5">Patient</h2>
       <p class="mb-0">Please provide the necessary information about the patient.</p>
@@ -70,7 +70,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @change="handleChangeField(v$.patientFirstInitial, $event, formFieldParent)"
+        @change="handleChangeField(v$.patientFirstInitial, $event, formFieldParent, store)"
       />
       <div
         v-if="
@@ -100,7 +100,7 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.patientLastName, $event, formFieldParent)"
+        @blur="handleChangeField(v$.patientLastName, $event, formFieldParent, store)"
       />
       <div
         v-if="v$.patientLastName.$dirty"
@@ -125,7 +125,7 @@
         class-name="mt-3"
         @process-date="handleProcessBirthdate($event)"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.patientBirthdate, null, null)"
+        @blur="handleChangeField(v$.patientBirthdate, null, null, store)"
       />
       <div
         v-if="v$.patientBirthdate.$dirty"
@@ -152,7 +152,7 @@
         class="mt-3"
         :input-style="smallStyles"
         @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.patientPhn, $event, formFieldParent)"
+        @blur="handleChangeField(v$.patientPhn, $event, formFieldParent, store)"
       />
       <div
         v-if="v$.patientPhn.$dirty && v$.patientPhn.required.$invalid"
