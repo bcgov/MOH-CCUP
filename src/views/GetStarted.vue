@@ -76,7 +76,7 @@ import ConsentModal from "../components/ConsentModal.vue";
 
 <script>
 export default {
-  name: "GetStartedInfo",
+  name: "GetStarted",
   components: {},
   data() {
     return {
