@@ -2,11 +2,11 @@ import { createRouter, createWebHistory } from "vue-router";
 import pageStateService from "../services/page-state-service";
 
 export const routes = {
-  PRACTITIONER_INFO: {
+  GET_STARTED: {
     path: "/",
-    title: "Practitioner information",
-    name: "PractitionerInfo",
-    component: () => import("@/views/PractitionerInfo.vue"),
+    title: "Get Started Page",
+    name: "GetStarted",
+    component: () => import("@/views/GetStarted.vue"),
   },
   PATIENT_INFO: {
     path: "/patient-info",
@@ -41,7 +41,7 @@ export const routes = {
 };
 
 export const stepRoutes = [
-  { ...routes.PRACTITIONER_INFO },
+  { ...routes.GET_STARTED },
   { ...routes.PATIENT_INFO },
   { ...routes.UPLOAD_DOCUMENTS },
   { ...routes.REVIEW_PAGE },
@@ -49,7 +49,7 @@ export const stepRoutes = [
 ];
 
 export const routeStepOrder = [
-  routes.PRACTITIONER_INFO,
+  routes.GET_STARTED,
   routes.PATIENT_INFO,
   routes.UPLOAD_DOCUMENTS,
   routes.REVIEW_PAGE,
@@ -61,8 +61,8 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "PractitionerInfo",
-      component: () => import("../views/PractitionerInfo.vue"),
+      name: "GetStarted",
+      component: () => import("../views/GetStarted.vue"),
     },
     {
       path: "/patient-info",
@@ -111,8 +111,8 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     //Otherwise check if page has been visited before allowing navigation
-    if (to.path !== routes.PRACTITIONER_INFO.path && !pageStateService.isPageVisited(to.path)) {
-      next({ path: routes.PRACTITIONER_INFO.path });
+    if (to.path !== routes.GET_STARTED.path && !pageStateService.isPageVisited(to.path)) {
+      next({ path: routes.GET_STARTED.path });
     } else {
       // Catch-all (navigation)
       next();

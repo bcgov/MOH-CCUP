@@ -1,4 +1,4 @@
-import Page from "@/views/PractitionerInfo.vue";
+import Page from "@/views/GetStarted.vue";
 import { shallowMount } from "@vue/test-utils";
 import { createRouter, createMemoryHistory } from "vue-router";
 import { setActivePinia, createPinia } from "pinia";
@@ -10,8 +10,8 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      title: "Practitioner information",
-      name: "PractitionerInfo",
+      title: "Get Started",
+      name: "GetStarted",
       component: { template: `<span style="display: none;"></span>` },
     },
   ],
@@ -24,7 +24,7 @@ vi.spyOn(logService, "logError").mockImplementation(() => {
 });
 vi.spyOn(logService, "logInfo").mockImplementation(() => Promise.resolve("logged"));
 
-describe("PractitionerInfo.vue", async () => {
+describe("GetStarted.vue", async () => {
   router.push("/");
   await router.isReady();
 

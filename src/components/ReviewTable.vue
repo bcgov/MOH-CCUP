@@ -12,9 +12,9 @@
                 class="col-4 icon-align-right"
               >
                 <a
-                  href="/ccup/practitioner-info"
+                  href="/ccup/"
                   class="link-icon"
-                  @click.prevent="Edit(routes.PRACTITIONER_INFO.path)"
+                  @click.prevent="Edit(routes.GET_STARTED.path)"
                 >
                   edit&nbsp;&nbsp;<IconPencil
                     class="icon-style"
