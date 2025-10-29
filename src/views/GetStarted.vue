@@ -39,7 +39,6 @@
         :items="radioUploadPortalOptions"
         cypress-id="upload-portal-options"
         :model-value="uploadPortalOptions"
-        @input="handleAPIValidationReset"
         @change="handleChangeField(v$.uploadPortalOptions, $event, formFieldParent, store)"
       />
       <div

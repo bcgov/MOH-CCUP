@@ -2,11 +2,11 @@ import { createRouter, createWebHistory } from "vue-router";
 import pageStateService from "../services/page-state-service";
 
 export const routes = {
-  GET_STARTED: {
+  PRACTITIONER_INFO: {
     path: "/",
-    title: "Get Started Page",
-    name: "GetStarted",
-    component: () => import("@/views/GetStarted.vue"),
+    title: "Practitioner information",
+    name: "PractitionerInfo",
+    component: () => import("@/views/PractitionerInfo.vue"),
   },
   PATIENT_INFO: {
     path: "/patient-info",
@@ -38,10 +38,16 @@ export const routes = {
     name: "MaintenancePage",
     component: () => import("@/views/MaintenancePage.vue"),
   },
+  GET_STARTED: {
+    path: "/get-started",
+    title: "Get Started",
+    name: "GetStarted",
+    component: () => import("@/views/GetStarted.vue"),
+  },
 };
 
 export const stepRoutes = [
-  { ...routes.GET_STARTED },
+  { ...routes.PRACTITIONER_INFO },
   { ...routes.PATIENT_INFO },
   { ...routes.UPLOAD_DOCUMENTS },
   { ...routes.REVIEW_PAGE },
@@ -49,7 +55,7 @@ export const stepRoutes = [
 ];
 
 export const routeStepOrder = [
-  routes.GET_STARTED,
+  routes.PRACTITIONER_INFO,
   routes.PATIENT_INFO,
   routes.UPLOAD_DOCUMENTS,
   routes.REVIEW_PAGE,
@@ -61,8 +67,8 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "GetStarted",
-      component: () => import("../views/GetStarted.vue"),
+      name: "PractitionerInfo",
+      component: () => import("../views/PractitionerInfo.vue"),
     },
     {
       path: "/patient-info",
@@ -89,6 +95,11 @@ const router = createRouter({
       name: "MaintenancePage",
       component: () => import("../views/MaintenancePage.vue"),
     },
+    {
+      path: "/get-started",
+      name: "GetStarted",
+      component: () => import("../views/GetStarted.vue"),
+    },
   ],
 });
 
@@ -107,12 +118,12 @@ pageStateService.importPageRoutes(routes);
 
 router.beforeEach((to, from, next) => {
   // If navigation destination is maintenance page, allow it
-  if (to.path === routes.MAINTENANCE_PAGE.path) {
+  if (to.path === routes.MAINTENANCE_PAGE.path || to.path === routes.GET_STARTED.path) {
     next();
   } else {
     //Otherwise check if page has been visited before allowing navigation
-    if (to.path !== routes.GET_STARTED.path && !pageStateService.isPageVisited(to.path)) {
-      next({ path: routes.GET_STARTED.path });
+    if (to.path !== routes.PRACTITIONER_INFO.path && !pageStateService.isPageVisited(to.path)) {
+      next({ path: routes.PRACTITIONER_INFO.path });
     } else {
       // Catch-all (navigation)
       next();
