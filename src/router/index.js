@@ -38,6 +38,12 @@ export const routes = {
     name: "MaintenancePage",
     component: () => import("@/views/MaintenancePage.vue"),
   },
+  GET_STARTED: {
+    path: "/get-started",
+    title: "Get Started",
+    name: "GetStarted",
+    component: () => import("@/views/GetStarted.vue"),
+  },
   OVER_AGE_PRACTITIONER_PAGE: {
     path: "/over-age-practitioner",
     title: "Over-age Practitioner",
@@ -96,6 +102,11 @@ const router = createRouter({
       component: () => import("../views/MaintenancePage.vue"),
     },
     {
+      path: "/get-started",
+      name: "GetStarted",
+      component: () => import("../views/GetStarted.vue"),
+    },
+    {
       path: "/over-age-practitioner",
       title: "Over-age Practitioner",
       name: "OverAgePractitioner",
@@ -121,6 +132,7 @@ router.beforeEach((to, from, next) => {
   // If navigation destination is maintenance page, allow it
   if (
     to.path === routes.MAINTENANCE_PAGE.path ||
+    to.path === routes.GET_STARTED.path ||
     to.path === routes.OVER_AGE_PRACTITIONER_PAGE.path
   ) {
     next();
