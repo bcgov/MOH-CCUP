@@ -44,6 +44,12 @@ export const routes = {
     name: "GetStarted",
     component: () => import("@/views/GetStarted.vue"),
   },
+  OVER_AGE_PRACTITIONER_PAGE: {
+    path: "/over-age-practitioner",
+    title: "Over-age Practitioner",
+    name: "OverAgePractitioner",
+    component: () => import("@/views/overAgeClaim/PractitionerInfo.vue"),
+  },
 };
 
 export const stepRoutes = [
@@ -100,6 +106,12 @@ const router = createRouter({
       name: "GetStarted",
       component: () => import("../views/GetStarted.vue"),
     },
+    {
+      path: "/over-age-practitioner",
+      title: "Over-age Practitioner",
+      name: "OverAgePractitioner",
+      component: () => import("@/views/overAgeClaim/PractitionerInfo.vue"),
+    },
   ],
 });
 
@@ -118,7 +130,11 @@ pageStateService.importPageRoutes(routes);
 
 router.beforeEach((to, from, next) => {
   // If navigation destination is maintenance page, allow it
-  if (to.path === routes.MAINTENANCE_PAGE.path || to.path === routes.GET_STARTED.path) {
+  if (
+    to.path === routes.MAINTENANCE_PAGE.path ||
+    to.path === routes.GET_STARTED.path ||
+    to.path === routes.OVER_AGE_PRACTITIONER_PAGE.path
+  ) {
     next();
   } else {
     //Otherwise check if page has been visited before allowing navigation
