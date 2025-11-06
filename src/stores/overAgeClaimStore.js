@@ -15,23 +15,23 @@ export const useOverAgeClaimStore = defineStore("overAgeClaimStore", {
         faxPhoneNumber: "",
       },
       claimsInformation: {
-        dateType: "",
-        claimServiceDate: "",
-        claimDateRangeFrom: "",
-        claimDateRangeTo: "",
-        approximateClaimNumber: "",
-        approximateDollarValue: "",
-        feeItems: "",
-        detailedExplanation: "",
+        dateType: null,
+        claimServiceDate: null,
+        claimDateRangeFrom: null,
+        claimDateRangeTo: null,
+        approximateClaimNumber: null,
+        approximateDollarValue: null,
+        feeItems: null,
+        detailedExplanation: null,
         individuals: [
           {
-            phn: "",
-            individualServiceDate: "",
-            individualFeeItem: "",
+            phn: null,
+            individualServiceDate: null,
+            individualFeeItem: null,
           },
         ],
-        supportDocuments: [],
-        documentComment: "",
+        claimSupportDocuments: [],
+        claimComment: null,
       },
     },
   }),
@@ -42,6 +42,19 @@ export const useOverAgeClaimStore = defineStore("overAgeClaimStore", {
      * @param {*} fieldName
      * @param {*} fieldValue
      */
+    addIndividual() {
+      this.formFields.claimsInformation.individuals.push({
+        phn: null,
+        individualServiceDate: null,
+        individualFeeItem: null,
+      });
+    },
+    deleteIndividual(index) {
+      this.formFields.claimsInformation.individuals.splice(index, 1);
+    },
+    updateIndividual(index, fieldName, newValue) {
+      this.formFields.claimsInformation.individuals[index][fieldName] = newValue;
+    },
     updateFormField(parentName, fieldName, fieldValue) {
       this.formFields[parentName][fieldName] = fieldValue;
     },
