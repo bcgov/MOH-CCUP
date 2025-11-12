@@ -50,8 +50,16 @@
           label="Date of service"
           class="mt-3"
           :required="true"
-          @input="handleChangeField(v$.claimServiceDate, $event, formFieldParent, store)"
+          @input="handleChangeDate(v$.claimServiceDate, $event, formFieldParent, store)"
         />
+      </div>
+
+      <div
+        v-if="v$.claimServiceDate.$dirty && v$.claimServiceDate.required.$invalid"
+        class="text-danger error"
+        aria-live="assertive"
+      >
+        <p>Date of service is required.</p>
       </div>
 
       <div v-if="dateType == 'range'">
@@ -61,8 +69,16 @@
           label="From"
           class="mt-3"
           :required="true"
-          @change="handleChangeField(v$.claimDateRangeFrom, $event, formFieldParent, store)"
+          @change="handleChangeDate(v$.claimDateRangeFrom, $event, formFieldParent, store)"
         />
+
+        <div
+          v-if="v$.claimDateRangeFrom.$dirty && v$.claimDateRangeFrom.required.$invalid"
+          class="text-danger error"
+          aria-live="assertive"
+        >
+          <p>This field is required.</p>
+        </div>
 
         <DateInput
           id="claim-date-range-to"
@@ -70,8 +86,16 @@
           label="To"
           class="mt-3"
           :required="true"
-          @change="handleChangeField(v$.claimDateRangeTo, $event, formFieldParent, store)"
+          @change="handleChangeDate(v$.claimDateRangeTo, $event, formFieldParent, store)"
         />
+
+        <div
+          v-if="v$.claimDateRangeTo.$dirty && v$.claimDateRangeTo.required.$invalid"
+          class="text-danger error"
+          aria-live="assertive"
+        >
+          <p>This field is required.</p>
+        </div>
       </div>
 
       <NumberInput
@@ -89,6 +113,14 @@
         @change="handleChangeField(v$.approximateClaimNumber, $event, formFieldParent, store)"
       />
 
+      <div
+        v-if="v$.approximateClaimNumber.$dirty && v$.approximateClaimNumber.$invalid"
+        class="text-danger error"
+        aria-live="assertive"
+      >
+        <p>Approximate number of claims is required.</p>
+      </div>
+
       <CurrencyInput
         id="approximate-dollar-value"
         v-model="approximateDollarValue"
@@ -104,6 +136,14 @@
         @change="handleChangeField(v$.approximateDollarValue, $event, formFieldParent, store)"
       />
 
+      <div
+        v-if="v$.approximateDollarValue.$dirty && v$.approximateDollarValue.$invalid"
+        class="text-danger error"
+        aria-live="assertive"
+      >
+        <p>Approximate dollar value of claims is required.</p>
+      </div>
+
       <Textarea
         id="fee-items"
         v-model="feeItems"
@@ -116,6 +156,44 @@
         @input="handleAPIValidationReset"
         @blur="handleChangeField(v$.feeItems, $event, formFieldParent, store)"
       />
+
+      <div
+        v-if="v$.feeItems.$dirty && v$.feeItems.required.$invalid"
+        class="text-danger error"
+        aria-live="assertive"
+      >
+        <p>Fee item(s) required.</p>
+      </div>
+
+      <div
+        v-if="
+          v$.feeItems.$dirty &&
+          !v$.feeItems.required.$invalid &&
+          v$.feeItems.numericCommaValidator.$invalid
+        "
+        class="text-danger error"
+        aria-live="assertive"
+      >
+        <p>
+          Fee item field cannot include alphabetical characters or special characters except commas.
+        </p>
+      </div>
+
+      <div
+        v-if="
+          v$.feeItems.$dirty &&
+          !v$.feeItems.required.$invalid &&
+          !v$.feeItems.numericCommaValidator.$invalid &&
+          v$.feeItems.feeItemValidator.$invalid
+        "
+        class="text-danger error"
+        aria-live="assertive"
+      >
+        <p>
+          Each fee item must contain exactly 5 numbers and be separated from the next fee item by a
+          comma.
+        </p>
+      </div>
 
       <p class="mt-3">
         <span class="bold">
@@ -134,6 +212,14 @@
         @input="handleAPIValidationReset"
         @blur="handleChangeField(v$.detailedExplanation, $event, formFieldParent, store)"
       />
+
+      <div
+        v-if="v$.detailedExplanation.$dirty && v$.detailedExplanation.$invalid"
+        class="text-danger error"
+        aria-live="assertive"
+      >
+        <p>Detailed explanation is required.</p>
+      </div>
 
       <p class="mt-3">
         For verification purposes, please provide the following claims information for up to ten
@@ -232,8 +318,9 @@ import { useVuelidate } from "@vuelidate/core";
 import { handleChangeField } from "@/helpers/handler.js";
 import { useCaptchaStore } from "@/stores/captchaStore";
 import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
-import { required } from "@vuelidate/validators";
+import { required, requiredIf } from "@vuelidate/validators";
 import OverAgeClaimsIndividual from "@/components/OverAgeClaimIndividual.vue";
+import { feeItemValidator, numericCommaValidator } from "@/helpers/validators.js";
 </script>
 
 <script>
@@ -288,21 +375,32 @@ export default {
       dateType: {
         required,
       },
-      claimServiceDate: {},
-      claimDateRangeFrom: {},
-      claimDateRangeTo: {},
-      approximateClaimNumber: {},
-      approximateDollarValue: {},
-      feeItems: {},
-      detailedExplanation: {},
+      claimServiceDate: {
+        required: requiredIf(this.dateType === "date"),
+      },
+      claimDateRangeFrom: {
+        required: requiredIf(this.dateType === "range"),
+      },
+      claimDateRangeTo: {
+        required: requiredIf(this.dateType === "range"),
+      },
+      approximateClaimNumber: {
+        required,
+      },
+      approximateDollarValue: {
+        required,
+      },
+      feeItems: {
+        required,
+        numericCommaValidator,
+        feeItemValidator,
+      },
+      detailedExplanation: {
+        required,
+      },
       claimSupportDocuments: {},
       claimComment: {},
     };
-
-    if (this.dateType === "date") {
-      validations.claimServiceDate.required = required;
-      validations.claimDateRangeFrom.required = required;
-    }
     return validations;
   },
   methods: {
@@ -323,6 +421,15 @@ export default {
     },
     handleAddIndividual() {
       this.store.addIndividual();
+    },
+    handleChangeDate(validationObject, newValue, formFieldParent, store) {
+      if (validationObject) {
+        validationObject.$touch();
+
+        if (!validationObject.$invalid && newValue != null && formFieldParent) {
+          store.updateFormField(formFieldParent, validationObject.$path, newValue);
+        }
+      }
     },
     assignDataFromStore() {
       this.dateType = this.store.formFields[this.formFieldParent]["dateType"];

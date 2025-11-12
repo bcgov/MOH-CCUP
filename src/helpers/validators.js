@@ -23,3 +23,13 @@ export const phnFirstDigitValidator = (value) => {
   }
   return value[0] === "9";
 };
+
+export const feeItemValidator = (value) => {
+  const criteria = /^([0-9]{5})( *?, *?[0-9]{5})*( *?,? *?)$/;
+  return criteria.test(value);
+};
+
+export const numericCommaValidator = (value) => {
+  const criteria = /^[0-9, ]+$/;
+  return criteria.test(value);
+};

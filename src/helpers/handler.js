@@ -1,3 +1,6 @@
+//TO-DO: Refactor this function to cover overAgeClaimsInfo's handleChangeDate() function.
+// Just need to change handleChangeField to accept an $event.target.value parameter instead of an $event, then update references to it
+
 /**
  * Updates formFields store
  * @param {object} validationObject //vuelidate validation info for the field
