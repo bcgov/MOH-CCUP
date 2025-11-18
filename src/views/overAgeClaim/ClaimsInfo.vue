@@ -50,16 +50,47 @@
           label="Date of service"
           class="mt-3"
           :required="true"
-          @input="handleChangeDate(v$.claimServiceDate, $event, formFieldParent, store)"
+          @process-date="
+            handleChangeDate(
+              v$.claimServiceDate,
+              $event,
+              formFieldParent,
+              store,
+              'claimServiceDate'
+            )
+          "
         />
-      </div>
 
-      <div
-        v-if="v$.claimServiceDate.$dirty && v$.claimServiceDate.required.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        <p>Date of service is required.</p>
+        <div
+          v-if="
+            v$.claimServiceDate.$dirty && v$.claimServiceDate.claimServiceDateValidator.$invalid
+          "
+          class="text-danger error"
+          aria-live="assertive"
+        >
+          <p>Date of service must be a valid date.</p>
+        </div>
+
+        <div
+          v-if="v$.claimServiceDate.$dirty && v$.claimServiceDate.moreThan90DaysValidator.$invalid"
+          class="text-danger error"
+          aria-live="assertive"
+        >
+          <p>
+            Claims from the previous 90 days can be submitted or resubmitted under submission code
+            R.
+          </p>
+        </div>
+
+        <div
+          v-if="
+            v$.claimServiceDate.$dirty && v$.claimServiceDate.lessThan18MonthsValidator.$invalid
+          "
+          class="text-danger error"
+          aria-live="assertive"
+        >
+          <p>Claims older than 18 months old cannot be submitted.</p>
+        </div>
       </div>
 
       <div v-if="dateType == 'range'">
@@ -69,15 +100,35 @@
           label="From"
           class="mt-3"
           :required="true"
-          @change="handleChangeDate(v$.claimDateRangeFrom, $event, formFieldParent, store)"
+          @process-date="
+            handleChangeDate(
+              v$.claimDateRangeFrom,
+              $event,
+              formFieldParent,
+              store,
+              'claimDateRangeFrom'
+            )
+          "
         />
 
         <div
-          v-if="v$.claimDateRangeFrom.$dirty && v$.claimDateRangeFrom.required.$invalid"
+          v-if="
+            v$.claimDateRangeFrom.$dirty && v$.claimDateRangeFrom.claimDateRangeValidator.$invalid
+          "
           class="text-danger error"
           aria-live="assertive"
         >
-          <p>This field is required.</p>
+          <p>This field must be a valid date.</p>
+        </div>
+
+        <div
+          v-if="
+            v$.claimDateRangeFrom.$dirty && v$.claimDateRangeFrom.lessThan18MonthsValidator.$invalid
+          "
+          class="text-danger error"
+          aria-live="assertive"
+        >
+          <p>Claims older than 18 months old cannot be submitted.</p>
         </div>
 
         <DateInput
@@ -86,15 +137,34 @@
           label="To"
           class="mt-3"
           :required="true"
-          @change="handleChangeDate(v$.claimDateRangeTo, $event, formFieldParent, store)"
+          @process-date="
+            handleChangeDate(
+              v$.claimDateRangeTo,
+              $event,
+              formFieldParent,
+              store,
+              'claimDateRangeTo'
+            )
+          "
         />
 
         <div
-          v-if="v$.claimDateRangeTo.$dirty && v$.claimDateRangeTo.required.$invalid"
+          v-if="v$.claimDateRangeTo.$dirty && v$.claimDateRangeTo.claimDateRangeValidator.$invalid"
           class="text-danger error"
           aria-live="assertive"
         >
-          <p>This field is required.</p>
+          <p>This field must be a valid date.</p>
+        </div>
+
+        <div
+          v-if="v$.claimDateRangeTo.$dirty && v$.claimDateRangeTo.moreThan90DaysValidator.$invalid"
+          class="text-danger error"
+          aria-live="assertive"
+        >
+          <p>
+            Claims from the previous 90 days can be submitted or resubmitted under submission code
+            R.
+          </p>
         </div>
       </div>
 
@@ -318,9 +388,16 @@ import { useVuelidate } from "@vuelidate/core";
 import { handleChangeField } from "@/helpers/handler.js";
 import { useCaptchaStore } from "@/stores/captchaStore";
 import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
-import { required, requiredIf } from "@vuelidate/validators";
+import { required } from "@vuelidate/validators";
 import OverAgeClaimsIndividual from "@/components/OverAgeClaimIndividual.vue";
-import { feeItemValidator, numericCommaValidator } from "@/helpers/validators.js";
+import {
+  feeItemValidator,
+  numericCommaValidator,
+  claimServiceDateValidator,
+  claimDateRangeValidator,
+  moreThan90DaysValidator,
+  lessThan18MonthsValidator,
+} from "@/helpers/validators.js";
 </script>
 
 <script>
@@ -376,13 +453,17 @@ export default {
         required,
       },
       claimServiceDate: {
-        required: requiredIf(this.dateType === "date"),
+        claimServiceDateValidator,
+        moreThan90DaysValidator,
+        lessThan18MonthsValidator,
       },
       claimDateRangeFrom: {
-        required: requiredIf(this.dateType === "range"),
+        claimDateRangeValidator,
+        lessThan18MonthsValidator,
       },
       claimDateRangeTo: {
-        required: requiredIf(this.dateType === "range"),
+        claimDateRangeValidator,
+        moreThan90DaysValidator,
       },
       approximateClaimNumber: {
         required,
@@ -422,7 +503,8 @@ export default {
     handleAddIndividual() {
       this.store.addIndividual();
     },
-    handleChangeDate(validationObject, newValue, formFieldParent, store) {
+    handleChangeDate(validationObject, newValue, formFieldParent, store, dataField) {
+      this[dataField] = newValue.date;
       if (validationObject) {
         validationObject.$touch();
 
