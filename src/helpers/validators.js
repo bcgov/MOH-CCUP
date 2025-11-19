@@ -9,12 +9,23 @@ export const nameValidator = (value) => {
   return criteria.test(value);
 };
 
-export const dateFormatValidator = (value) => {
-  if (value && value.date && value.date instanceof Date) {
+export const birthDateValidator = (_, vm) => {
+  const data = vm.patientBirthdate;
+  if (data instanceof Date && !isNaN(data)) {
     return true;
   } else {
     return false;
   }
+};
+
+export const dateDataValidator = (value) => {
+  if (value && value instanceof Date) {
+    //claimServiceDate is needed, and the date format is valid
+    return true;
+  }
+
+  //no valid condition met, return false
+  return false;
 };
 
 export const claimServiceDateValidator = (value, vm) => {
