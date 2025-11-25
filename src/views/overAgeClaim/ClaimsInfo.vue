@@ -77,8 +77,8 @@
           aria-live="assertive"
         >
           <p>
-            Claims from the previous 90 days can be submitted or resubmitted under submission code
-            R.
+            Claims that aren't older than 90 days can be submitted or resubmitted under submission
+            code R.
           </p>
         </div>
 
@@ -162,9 +162,23 @@
           aria-live="assertive"
         >
           <p>
-            Claims from the previous 90 days can be submitted or resubmitted under submission code
-            R.
+            Claims that aren't older than 90 days can be submitted or resubmitted under submission
+            code R.
           </p>
+        </div>
+
+        <div
+          v-if="
+            v$.claimDateRangeFrom.$dirty &&
+            !v$.claimDateRangeFrom.$invalid &&
+            v$.claimDateRangeTo.$dirty &&
+            !v$.claimDateRangeTo.$invalid &&
+            v$.dateRangeValidator.$invalid
+          "
+          class="text-danger error"
+          aria-live="assertive"
+        >
+          <p>"From" date must come before the "to" date.</p>
         </div>
       </div>
 
@@ -397,6 +411,7 @@ import {
   claimDateRangeValidator,
   moreThan90DaysValidator,
   lessThan18MonthsValidator,
+  dateRangeValidator,
 } from "@/helpers/validators.js";
 </script>
 
@@ -449,6 +464,7 @@ export default {
   },
   validations() {
     const validations = {
+      dateRangeValidator,
       dateType: {
         required,
       },

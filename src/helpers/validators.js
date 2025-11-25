@@ -1,4 +1,5 @@
-import { subDays, subMonths, startOfToday, isAfter, isBefore } from "date-fns";
+import { subDays, subMonths, startOfToday, isAfter, isBefore, isValid, parseISO } from "date-fns";
+import { getISODateString } from "common-lib-vue";
 
 export const valueLengthValidator = (value) => {
   return value.length == 5;
@@ -93,4 +94,11 @@ export const feeItemValidator = (value) => {
 export const numericCommaValidator = (value) => {
   const criteria = /^[0-9, ]+$/;
   return criteria.test(value);
+};
+
+export const dateRangeValidator = (value, vm) => {
+  if (vm.dateType === "date") {
+    return true;
+  }
+  return isBefore(vm.claimDateRangeFrom, vm.claimDateRangeTo);
 };
