@@ -95,26 +95,18 @@
 
       <div v-if="dateType == 'range'">
         <DateInput
-          id="claim-date-range-from"
-          v-model="claimDateRangeFrom"
+          id="claim-from-date"
+          v-model="claimFromDate"
           label="From"
           class="mt-3"
           :required="true"
           @process-date="
-            handleChangeDate(
-              v$.claimDateRangeFrom,
-              $event,
-              formFieldParent,
-              store,
-              'claimDateRangeFrom'
-            )
+            handleChangeDate(v$.claimFromDate, $event, formFieldParent, store, 'claimFromDate')
           "
         />
 
         <div
-          v-if="
-            v$.claimDateRangeFrom.$dirty && v$.claimDateRangeFrom.claimDateRangeValidator.$invalid
-          "
+          v-if="v$.claimFromDate.$dirty && v$.claimFromDate.claimDateRangeValidator.$invalid"
           class="text-danger error"
           aria-live="assertive"
         >
@@ -122,9 +114,7 @@
         </div>
 
         <div
-          v-if="
-            v$.claimDateRangeFrom.$dirty && v$.claimDateRangeFrom.lessThan18MonthsValidator.$invalid
-          "
+          v-if="v$.claimFromDate.$dirty && v$.claimFromDate.lessThan18MonthsValidator.$invalid"
           class="text-danger error"
           aria-live="assertive"
         >
@@ -132,24 +122,18 @@
         </div>
 
         <DateInput
-          id="claim-date-range-to"
-          v-model="claimDateRangeTo"
+          id="claim-to-date"
+          v-model="claimToDate"
           label="To"
           class="mt-3"
           :required="true"
           @process-date="
-            handleChangeDate(
-              v$.claimDateRangeTo,
-              $event,
-              formFieldParent,
-              store,
-              'claimDateRangeTo'
-            )
+            handleChangeDate(v$.claimToDate, $event, formFieldParent, store, 'claimToDate')
           "
         />
 
         <div
-          v-if="v$.claimDateRangeTo.$dirty && v$.claimDateRangeTo.claimDateRangeValidator.$invalid"
+          v-if="v$.claimToDate.$dirty && v$.claimToDate.claimDateRangeValidator.$invalid"
           class="text-danger error"
           aria-live="assertive"
         >
@@ -157,7 +141,7 @@
         </div>
 
         <div
-          v-if="v$.claimDateRangeTo.$dirty && v$.claimDateRangeTo.moreThan90DaysValidator.$invalid"
+          v-if="v$.claimToDate.$dirty && v$.claimToDate.moreThan90DaysValidator.$invalid"
           class="text-danger error"
           aria-live="assertive"
         >
@@ -169,10 +153,10 @@
 
         <div
           v-if="
-            v$.claimDateRangeFrom.$dirty &&
-            !v$.claimDateRangeFrom.$invalid &&
-            v$.claimDateRangeTo.$dirty &&
-            !v$.claimDateRangeTo.$invalid &&
+            v$.claimFromDate.$dirty &&
+            !v$.claimFromDate.$invalid &&
+            v$.claimToDate.$dirty &&
+            !v$.claimToDate.$invalid &&
             v$.dateRangeValidator.$invalid
           "
           class="text-danger error"
@@ -427,8 +411,8 @@ export default {
       formFieldParent: "claimsInformation",
       dateType: null,
       claimServiceDate: null,
-      claimDateRangeFrom: null,
-      claimDateRangeTo: null,
+      claimFromDate: null,
+      claimToDate: null,
       approximateClaimNumber: null,
       approximateDollarValue: null,
       feeItems: null,
@@ -473,11 +457,11 @@ export default {
         moreThan90DaysValidator,
         lessThan18MonthsValidator,
       },
-      claimDateRangeFrom: {
+      claimFromDate: {
         claimDateRangeValidator,
         lessThan18MonthsValidator,
       },
-      claimDateRangeTo: {
+      claimToDate: {
         claimDateRangeValidator,
         moreThan90DaysValidator,
       },
@@ -532,8 +516,8 @@ export default {
     assignDataFromStore() {
       this.dateType = this.store.formFields[this.formFieldParent]["dateType"];
       this.claimServiceDate = this.store.formFields[this.formFieldParent]["claimServiceDate"];
-      this.claimDateRangeFrom = this.store.formFields[this.formFieldParent]["claimDateRangeFrom"];
-      this.claimDateRangeTo = this.store.formFields[this.formFieldParent]["claimDateRangeTo"];
+      this.claimFromDate = this.store.formFields[this.formFieldParent]["claimFromDate"];
+      this.claimToDate = this.store.formFields[this.formFieldParent]["claimToDate"];
       this.approximateClaimNumber =
         this.store.formFields[this.formFieldParent]["approximateClaimNumber"];
       this.approximateDollarValue =
