@@ -133,7 +133,7 @@ const router = createRouter({
     {
       path: "/over-age-submission",
       title: "Over-age Submission",
-      name: "OverAgeClaims",
+      name: "OverAgeSubmission",
       component: () => import("@/views/overAgeClaim/SubmissionPage.vue"),
     },
   ],
