@@ -56,6 +56,12 @@ export const routes = {
     name: "OverAgeClaims",
     component: () => import("@/views/overAgeClaim/ClaimsInfo.vue"),
   },
+  OVER_AGE_SUBMISSION: {
+    path: "/over-age-submission",
+    title: "Over-age Submission",
+    name: "OverAgeSubmission",
+    component: () => import("@/views/overAgeClaim/SubmissionPage.vue"),
+  },
 };
 
 export const stepRoutes = [
@@ -124,6 +130,12 @@ const router = createRouter({
       name: "OverAgeClaims",
       component: () => import("@/views/overAgeClaim/ClaimsInfo.vue"),
     },
+    {
+      path: "/over-age-submission",
+      title: "Over-age Submission",
+      name: "OverAgeClaims",
+      component: () => import("@/views/overAgeClaim/SubmissionPage.vue"),
+    },
   ],
 });
 
@@ -146,7 +158,8 @@ router.beforeEach((to, from, next) => {
     to.path === routes.MAINTENANCE_PAGE.path ||
     to.path === routes.GET_STARTED.path ||
     to.path === routes.OVER_AGE_PRACTITIONER_PAGE.path ||
-    to.path === routes.OVER_AGE_CLAIMS_INFO.path
+    to.path === routes.OVER_AGE_CLAIMS_INFO.path ||
+    to.path === routes.OVER_AGE_SUBMISSION.path
   ) {
     next();
   } else {
