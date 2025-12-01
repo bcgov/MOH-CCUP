@@ -172,21 +172,21 @@
       <div v-if="isPreferredContactMethodFax">
         <PhoneNumberInput
           id="fax-phone-number"
-          v-model="faxPhoneNumber"
+          v-model="faxNumber"
           label="Fax phone number"
           class="mt-3"
           :input-style="smallStyles"
-          @blur="handleChangeField(v$.faxPhoneNumber, $event, formFieldParent, store)"
+          @blur="handleChangeField(v$.faxNumber, $event, formFieldParent, store)"
         />
         <div
-          v-if="v$.faxPhoneNumber.$dirty && v$.faxPhoneNumber.$invalid"
+          v-if="v$.faxNumber.$dirty && v$.faxNumber.$invalid"
           class="text-danger error"
           aria-live="assertive"
         >
           {{
-            v$.faxPhoneNumber.required.$invalid
+            v$.faxNumber.required.$invalid
               ? "Fax number is required."
-              : v$.faxPhoneNumber.phoneValidator.$invalid
+              : v$.faxNumber.phoneValidator.$invalid
                 ? "Fax number does not appear to be valid."
                 : null
           }}
@@ -240,7 +240,7 @@ export default {
       dataCenterNumber: null,
       contactPhoneNumber: null,
       preferredContactMethod: null,
-      faxPhoneNumber: null,
+      faxNumber: null,
       isLoading: false,
       isSystemUnavailable: false,
       isAPIValidationErrorShown: false,
@@ -293,20 +293,20 @@ export default {
       preferredContactMethod: {
         required,
       },
-      faxPhoneNumber: {
+      faxNumber: {
         phoneValidator: optionalValidator(phoneValidator),
       },
     };
 
     if (this.isPreferredContactMethodFax) {
-      validations.faxPhoneNumber.required = required;
+      validations.faxNumber.required = required;
     }
     return validations;
   },
   methods: {
     validatePage() {
       this.v$.$touch();
-      // console.log("validations: ", this.v$.faxPhoneNumber);
+      // console.log("validations: ", this.v$.faxNumber);
       // TO-DO: add navigation, block if validations fail
     },
     handleAPIValidationReset() {

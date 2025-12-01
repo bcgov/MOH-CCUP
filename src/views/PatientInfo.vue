@@ -135,7 +135,7 @@
         {{
           patientBirthdate == null && v$.patientBirthdate.required.$invalid
             ? "Birthdate is required."
-            : v$.patientBirthdate.dateDataValidator.$invalid ||
+            : v$.patientBirthdate.birthDateValidator.$invalid ||
                 v$.patientBirthdate.distantPastValidator.$invalid ||
                 v$.patientBirthdate.birthDatePastValidator.$invalid
               ? "Invalid birthdate."
@@ -217,7 +217,11 @@ import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
 import logService from "@/services/log-service.js";
 import { required } from "@vuelidate/validators";
-import { nameValidator, dateDataValidator, phnFirstDigitValidator } from "../helpers/validators.js";
+import {
+  nameValidator,
+  birthDateValidator,
+  phnFirstDigitValidator,
+} from "../helpers/validators.js";
 import { useVuelidate } from "@vuelidate/core";
 import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
@@ -297,7 +301,7 @@ export default {
       },
       patientBirthdate: {
         required,
-        dateDataValidator,
+        birthDateValidator,
         distantPastValidator,
         birthDatePastValidator,
       },
