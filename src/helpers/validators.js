@@ -99,5 +99,5 @@ export const dateRangeValidator = (value, vm) => {
   if (vm.dateType === "date") {
     return true;
   }
-  return isBefore(vm.claimDateRangeFrom, vm.claimDateRangeTo);
+  return isBefore(vm.claimFromDate, vm.claimToDate);
 };
