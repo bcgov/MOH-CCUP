@@ -1,4 +1,4 @@
-import sampleData from "@/stores/sample-data";
+import sampleData from "@/stores/sample-data-overage";
 import { defineStore } from "pinia";
 
 export const useOverAgeClaimStore = defineStore("overAgeClaimStore", {
