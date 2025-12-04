@@ -35,7 +35,7 @@
                     class="fs-5"
                     data-cy="reviewTablePracFirstName"
                   >
-                    {{ practitioner.firstName }}
+                    {{ practitioner.pracFirstName }}
                   </span>
                 </div>
               </div>
@@ -49,7 +49,7 @@
                     class="fs-5"
                     data-cy="reviewTablePracLastName"
                   >
-                    {{ practitioner.lastName }}
+                    {{ practitioner.pracLastName }}
                   </span>
                 </div>
               </div>
@@ -62,7 +62,7 @@
                   <span
                     class="fs-5"
                     data-cy="reviewTablePracNumber"
-                    >{{ practitioner.number }}
+                    >{{ practitioner.pracNumber }}
                   </span>
                 </div>
               </div>
@@ -160,9 +160,9 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableClaimsDateType"
+                  data-cy="reviewTableDateType"
                 >
-                  {{ claims.dateType }}
+                  {{ claimsInformation.dateType }}
                 </span>
               </div>
             </div>
@@ -174,9 +174,9 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTablePatientSupportDocuments"
+                  data-cy="reviewTableApproximateClaimNumber"
                 >
-                  {{ claims.approximateClaimNumber }}
+                  {{ claimsInformation.approximateClaimNumber }}
                 </span>
               </div>
             </div>
@@ -188,9 +188,9 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTablePatientSupportDocuments"
+                  data-cy="reviewTableApproximateDollarValue"
                 >
-                  {{ upload.patientSupportDocuments }}
+                  {{ claimsInformation.approximateDollarValue }}
                 </span>
               </div>
             </div>
@@ -201,10 +201,10 @@
               </div>
               <div
                 class="col-6 fs-5"
-                data-cy="reviewTableUploadNote"
+                data-cy="reviewTableFeeItems"
               >
                 <p>
-                  {{ upload.note }}
+                  {{ claimsInformation.feeItems }}
                 </p>
               </div>
             </div>
@@ -215,10 +215,10 @@
               </div>
               <div
                 class="col-6 fs-5"
-                data-cy="reviewTableUploadNote"
+                data-cy="reviewTableDetailedExplanation"
               >
                 <p>
-                  {{ upload.note }}
+                  {{ claimsInformation.detailedExplanation }}
                 </p>
               </div>
             </div>
@@ -229,44 +229,44 @@
               </div>
             </div>
             <div
-              v-for="index in storeIndividuals"
+              v-for="(individual, index) in claimsInformation.individuals"
               :key="index"
               class="row"
             >
               <!-- Individual's PHN -->
               <div class="col-6">
-                <span class="fs-5 fw-bold">PHN</span>
+                <span class="fs-5 fw-bold ms-5">PHN</span>
               </div>
               <div class="col-6">
                 <span
                   class="fs-5"
-                  :data-cy="'data-phn-' + index"
+                  :data-cy="'individual-phn-' + index"
                 >
-                  {{ storeIndividuals[index].phn }}
+                  {{ individual.phn }}
                 </span>
               </div>
               <!-- Individual's Service Date -->
               <div class="col-6">
-                <span class="fs-5 fw-bold">Date of service</span>
+                <span class="fs-5 fw-bold ms-5">Date of service</span>
               </div>
               <div class="col-6">
                 <span
                   class="fs-5"
-                  :data-cy="'data-phn-' + index"
+                  :data-cy="'individual-service-date-' + index"
                 >
-                  {{ storeIndividuals[index].individualServiceDate }}
+                  {{ individual.individualServiceDate }}
                 </span>
               </div>
               <!-- Individual's Fee Item -->
               <div class="col-6">
-                <span class="fs-5 fw-bold">Fee item</span>
+                <span class="fs-5 fw-bold ms-5">Fee item</span>
               </div>
               <div class="col-6">
                 <span
                   class="fs-5"
-                  :data-cy="'data-phn-' + index"
+                  :data-cy="'individual-fee-item-' + index"
                 >
-                  {{ storeIndividuals[index].individualFeeItem }}
+                  {{ individual.individualFeeItem }}
                 </span>
               </div>
               <hr />
@@ -307,9 +307,9 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTablePatientSupportDocuments"
+                  data-cy="reviewTableClaimSupportDocuments"
                 >
-                  {{ upload.patientSupportDocuments }}
+                  {{ claimsInformation.claimSupportDocuments }}
                 </span>
               </div>
             </div>
@@ -319,10 +319,10 @@
               </div>
               <div
                 class="col-6 fs-5"
-                data-cy="reviewTableUploadNote"
+                data-cy="reviewTableClaimComment"
               >
                 <p>
-                  {{ upload.note }}
+                  {{ claimsInformation.claimComment }}
                 </p>
               </div>
             </div>
@@ -334,12 +334,11 @@
 </template>
 
 <script setup>
-import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
-import { formatDateDisplay } from "../helpers/date.js";
 import pageStateService from "../services/page-state-service.js";
 import { IconPencil } from "common-lib-vue";
 import { routes } from "../router/index.js";
 import { scrollTo } from "../helpers/scroll";
+import { useOverAgeClaimStore } from "../stores/overAgeClaimStore.js";
 </script>
 
 <script>
@@ -354,47 +353,70 @@ export default {
   },
   data() {
     return {
-      store: useDocSubmissionStore(),
+      store: useOverAgeClaimStore(),
       formFieldPractitioner: "practitioner",
-      formFieldPatient: "patient",
+      formFieldClaims: "claimsInformation",
 
       practitioner: {
-        firstName: null,
-        lastName: null,
-        number: null,
+        pracFirstName: null,
+        pracLastName: null,
+        pracNumber: null,
         payeeNumber: null,
+        dataCenterNumber: null,
+        contactPhoneNumber: null,
+        preferredContactMethod: null,
+        faxNumber: null,
       },
-      patient: {
-        documentsCategory: null,
-        birthdate: null,
-        firstInitial: null,
-        lastName: null,
-        phn: null,
-        adjudicator: {
-          adjFirstName: null,
-          adjLastName: null,
-        },
-      },
-      upload: {
-        note: null,
-      },
-      review: {
-        isDeclarationAccuracy: null,
+      claimsInformation: {
+        dateType: null,
+        claimServiceDate: null,
+        claimFromDate: null,
+        claimToDate: null,
+        approximateClaimNumber: null,
+        approximateDollarValue: null,
+        feeItems: null,
+        detailedExplanation: null,
+        individuals: [
+          {
+            phn: null,
+            individualServiceDate: null,
+            individualFeeItem: null,
+          },
+        ],
+        claimSupportDocuments: [],
+        claimComment: null,
       },
     };
   },
   computed: {
-    radioOptionsDocumentsCategory() {
+    isPreferredContactMethodFax() {
+      return this.preferredContactMethod == "fax" ? true : false;
+    },
+    radioOptionsPreferredContactMethod() {
       return [
         {
-          id: "documents-category-claim",
-          label: "Claims document(s)",
-          value: "claims",
+          id: "preferred-contact-method-fax",
+          label: "Fax",
+          value: "fax",
         },
         {
-          id: "documents-category-pre-auth",
-          label: "Pre-authorization document(s)",
-          value: "pre-auth",
+          id: "preferred-contact-method-mail",
+          label: "Mail",
+          value: "mail",
+        },
+      ];
+    },
+    radioOptionsDateType() {
+      return [
+        {
+          id: "date-type-date",
+          label: "Date of service",
+          value: "date",
+        },
+        {
+          id: "date-type-range",
+          label: "Range of dates",
+          value: "range",
         },
       ];
     },
@@ -404,40 +426,33 @@ export default {
     this.practitioner.firstName =
       this.store.formFields[this.formFieldPractitioner]["pracFirstName"];
     this.practitioner.lastName = this.store.formFields[this.formFieldPractitioner]["pracLastName"];
-
     this.pracFullName =
       this.practitioner.firstName != null && this.practitioner.lastName != null
         ? this.practitioner.firstName + " " + this.practitioner.lastName
         : "";
-
     this.practitioner.number = this.store.formFields[this.formFieldPractitioner]["pracNumber"];
     this.practitioner.payeeNumber =
       this.store.formFields[this.formFieldPractitioner]["payeeNumber"];
+    this.practitioner.dataCenterNumber =
+      this.store.formFields[this.formFieldPractitioner]["dataCenterNumber"];
+    this.practitioner.contactPhoneNumber =
+      this.store.formFields[this.formFieldPractitioner]["contactPhoneNumber"];
+    this.practitioner.preferredContactMethod =
+      this.store.formFields[this.formFieldPractitioner]["preferredContactNumber"];
 
-    // patient details
-    this.patient.documentsCategory =
-      this.store.formFields[this.formFieldPatient]["documentsCategory"];
-    this.patient.lastName = this.store.formFields[this.formFieldPatient]["patientLastName"];
-    this.patient.firstInitial = this.store.formFields[this.formFieldPatient]["patientFirstInitial"];
-    this.patient.birthdate = this.store.formFields[this.formFieldPatient]["patientBirthdate"];
-    this.patient.phn = this.store.formFields[this.formFieldPatient]["patientPhn"];
-    this.patient.birthdate = formatDateDisplay(
-      this.store.formFields[this.formFieldPatient]["patientBirthdate"]
-    );
-
-    // adjudicator details
-    this.patient.adjudicator.adjFirstName =
-      this.store.formFields[this.formFieldPatient]["adjFirstName"];
-    this.patient.adjudicator.adjLastName =
-      this.store.formFields[this.formFieldPatient]["adjLastName"];
-
-    // upload
-    this.upload.note = this.store.formFields["upload"]["uploadNote"];
-    this.upload.patientSupportDocuments =
-      this.store.formFields["upload"]["patientSupportDocuments"].length;
-
-    //review
-    this.review.isDeclarationAccuracy = this.store.formFields["review"]["isDeclarationAccuracy"];
+    // claims info details
+    this.claimsInformation.dateType = this.store.formFields[this.formFieldClaims]["dateType"];
+    this.claimsInformation.approximateClaimNumber =
+      this.store.formFields[this.formFieldClaims]["approximateClaimNumber"];
+    this.claimsInformation.approximateDollarValue =
+      this.store.formFields[this.formFieldClaims]["approximateDollarValue"];
+    this.claimsInformation.feeItems = this.store.formFields[this.formFieldClaims]["feeItems"];
+    this.claimsInformation.detailedExplanation =
+      this.store.formFields[this.formFieldClaims]["detailedExplanation"];
+    this.claimsInformation.claimSupportDocuments =
+      this.store.formFields[this.formFieldClaims]["claimSupportDocuments"];
+    this.claimsInformation.claimComment =
+      this.store.formFields[this.formFieldClaims]["claimComment"];
   },
   methods: {
     Edit(toPath) {
