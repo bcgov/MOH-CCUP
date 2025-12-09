@@ -13,7 +13,7 @@
               <a
                 href="/ccup/practitioner-info"
                 class="link-icon"
-                @click.prevent="Edit(routes.OVER_AGE_PRACTITIONER_PAGE.path)"
+                @click.prevent="Edit(routes.OVER_AGE_PRACTITIONER_PAGE.path, $event)"
               >
                 edit&nbsp;&nbsp;<IconPencil
                   class="icon-style"
@@ -128,7 +128,7 @@
         </div>
       </div>
     </div>
-    <!-- Documents upload -->
+    <!-- Claims Info -->
     <div class="py-3 row pb-0">
       <div class="card border-0">
         <div class="card-header fw-bold px-0 py-0">
@@ -141,7 +141,7 @@
               <a
                 href="javascript:void(0)"
                 class="link-icon"
-                @click.prevent="Edit(routes.OVER_AGE_CLAIMS_INFO.path)"
+                @click.prevent="Edit(routes.OVER_AGE_CLAIMS_INFO.path, $event)"
               >
                 edit&nbsp;&nbsp;<IconPencil
                   class="icon-style"
@@ -286,9 +286,10 @@
               class="col-4 icon-align-right"
             >
               <a
+                id="claim-support-documents"
                 href="javascript:void(0)"
                 class="link-icon"
-                @click.prevent="Edit(routes.UPLOAD_DOCUMENTS.path)"
+                @click.prevent="Edit(routes.OVER_AGE_CLAIMS_INFO.path, $event)"
               >
                 edit&nbsp;&nbsp;<IconPencil
                   class="icon-style"
@@ -455,12 +456,22 @@ export default {
       this.store.formFields[this.formFieldClaims]["claimComment"];
   },
   methods: {
-    Edit(toPath) {
+    Edit(toPath, event) {
       //Navigate to path.
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
-      scrollTo(0);
+      if (event.target.id === "claim-support-documents") {
+        this.$nextTick(() => {
+          const anchor = document.getElementById(event.target.id);
+          anchor.scrollTo({
+            top: anchor.scrollHeight,
+            behavior: "smooth",
+          });
+        });
+      } else {
+        scrollTo(0);
+      }
     },
   },
 };

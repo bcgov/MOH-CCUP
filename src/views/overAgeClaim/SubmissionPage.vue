@@ -41,8 +41,7 @@
       <p>After printing or saving this page, please close the browser page.</p>
       <h2 class="mt-5 mb-0">Approval of over-age claims information</h2>
       <hr class="mt-0" />
-      <p>TO-DO: Insert review table here</p>
-      <!-- <ReviewTable :show-edit-buttons="false" /> -->
+      <OverAgeReviewTable :show-edit-buttons="false" />
       <h2 class="mt-5 mb-0">Declaration of accuracy and validity</h2>
       <hr class="mt-0" />
       <p>
@@ -72,6 +71,7 @@ import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
+import OverAgeReviewTable from "@/components/OverAgeReviewTable.vue";
 </script>
 
 <script>
