@@ -4,7 +4,14 @@ import { defineStore } from "pinia";
 export const useAuthInProvinceStore = defineStore("authInProvinceStore", {
   state: () => ({
     formFields: {
-      //replace with relevant data structure for this form
+      medicalInfo: {
+        proposedProcedure: null,
+        feeItems: null,
+        previousSurgeryDate: null,
+        traumaDate: null,
+        consultationReport: [],
+        description: null,
+      },
     },
   }),
   actions: {
