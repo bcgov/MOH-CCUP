@@ -68,6 +68,12 @@ export const routes = {
     name: "OverAgeSubmission",
     component: () => import("@/views/overAgeClaim/SubmissionPage.vue"),
   },
+  AUTH_IN_PROV_MEDICAL: {
+    path: "/auth-in-province-medical-info",
+    title: "Pre-authorization of Payment Medical Information",
+    name: "AuthInProvinceMedicalInfo",
+    component: () => import("@/views/authInProvince/MedicalInfo.vue"),
+  },
 };
 
 export const stepRoutes = [
@@ -148,6 +154,12 @@ const router = createRouter({
       name: "OverAgeSubmission",
       component: () => import("@/views/overAgeClaim/SubmissionPage.vue"),
     },
+    {
+      path: "/auth-in-province-medical-info",
+      title: "Pre-authorization of Payment Medical Information",
+      name: "AuthInProvinceMedicalInfo",
+      component: () => import("@/views/authInProvince/MedicalInfo.vue"),
+    },
   ],
 });
 
@@ -172,7 +184,8 @@ router.beforeEach((to, from, next) => {
     to.path === routes.OVER_AGE_PRACTITIONER_PAGE.path ||
     to.path === routes.OVER_AGE_CLAIMS_INFO.path ||
     to.path === routes.OVER_AGE_REVIEW_PAGE.path ||
-    to.path === routes.OVER_AGE_SUBMISSION.path
+    to.path === routes.OVER_AGE_SUBMISSION.path ||
+    to.path === routes.AUTH_IN_PROV_MEDICAL.path
   ) {
     next();
   } else {

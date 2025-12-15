@@ -19,8 +19,9 @@ export const birthDateValidator = (_, vm) => {
 };
 
 export const dateDataValidator = (value) => {
-  if (value && value instanceof Date) {
-    //claimServiceDate is needed, and the date format is valid
+  if (value && value instanceof Date && !isNaN(value)) {
+    //instance of date checks that the date is valid, eg. January 32nd
+    //!isNaN checks that the format isn't a string, eg. "Invalid Date"
     return true;
   }
 
@@ -56,6 +57,12 @@ export const claimDateRangeValidator = (value, vm) => {
 
   //no valid condition met, return false
   return false;
+};
+
+export const beforeTodayValidator = (value) => {
+  if (value && value instanceof Date) {
+    return isBefore(value, startOfToday());
+  }
 };
 
 export const moreThan90DaysValidator = (value) => {
@@ -100,4 +107,14 @@ export const dateRangeValidator = (value, vm) => {
     return true;
   }
   return isBefore(vm.claimFromDate, vm.claimToDate);
+};
+
+export const reportOrDescriptionValidator = (value, vm) => {
+  if (
+    (vm.consultationReport && vm.consultationReport.length !== 0) ||
+    (vm.description && vm.description.length !== 0)
+  ) {
+    return true;
+  }
+  return false;
 };
