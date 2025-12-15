@@ -250,7 +250,6 @@ export default {
       traumaDate: null,
       consultationReport: [],
       description: null,
-
       isLoading: false,
       isSystemUnavailable: false,
       isAPIValidationErrorShown: false,
@@ -315,7 +314,12 @@ export default {
       }
     },
     assignDataFromStore() {
-      // this.dateType = this.store.formFields[this.formFieldParent]["dateType"];
+      this.proposedProcedure = this.store.formFields[this.formFieldParent]["proposedProcedure"];
+      this.feeItems = this.store.formFields[this.formFieldParent]["feeItems"];
+      this.previousSurgeryDate = this.store.formFields[this.formFieldParent]["previousSurgeryDate"];
+      this.traumaDate = this.store.formFields[this.formFieldParent]["traumaDate"];
+      this.consultationReport = this.store.formFields[this.formFieldParent]["consultationReport"];
+      this.description = this.store.formFields[this.formFieldParent]["description"];
     },
   },
 };
