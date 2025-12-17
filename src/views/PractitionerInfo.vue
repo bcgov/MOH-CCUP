@@ -5,39 +5,9 @@
   />
   <PageContent>
     <main class="container pt-3 pt-sm-5 mb-5">
-      <h1 class="mb-0">Get started</h1>
+      <h1 class="mt-5 mb-0">Practitioner information</h1>
       <hr class="mt-0" />
-      <h2>Welcome</h2>
-      <p>
-        Welcome to the Claims Correspondence Upload Portal. This form simplifies the submission of
-        documents to support pre-authorization and claims.
-      </p>
-      <p>Before you begin:</p>
-      <ul>
-        <li>
-          Please submit documents for one individual (Personal Health Number (PHN)) at a time.
-          Submitting for more than one individual may delay the processing of your submission.
-        </li>
-        <li>
-          If you are submitting documents in response to a request letter from Health Insurance BC
-          (HIBC): for the quickest possible processing include all requested documents in your
-          submission.
-        </li>
-        <li>
-          Ensure that each document is in one of the following formats: JPG, PNG, GIF, BMP, or PDF.
-        </li>
-        <li>
-          Ensure that each file or image displays the entire document from corner to corner; is
-          oriented correctly (not upside down or sideways); and is in focus and readable.
-        </li>
-      </ul>
-      <p>
-        If you have any questions or need assistance, please contact the HIBC practitioner claim
-        support team. (Vancouver: (604) 456-6950, Elsewhere in B.C.: 1-866-456-6950)
-      </p>
-      <h2 class="mt-5 mb-0">Practitioner information</h2>
-      <hr class="mt-0" />
-      <h3>Practitioner</h3>
+      <h2>Practitioner</h2>
       <p class="mb-0">Please provide the necessary information about the practitioner.</p>
       <hr class="mt-0" />
       <InputComponent

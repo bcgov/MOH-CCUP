@@ -1,4 +1,8 @@
 <template>
+  <ProgressBar
+    :routes="overAgeRoutes"
+    :current-path="$route.path"
+  />
   <PageContent>
     <main class="container mb-5">
       <h1 class="my-0">Review</h1>
@@ -49,9 +53,12 @@ import { useCaptchaStore } from "@/stores/captchaStore";
 import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
 import { useVuelidate } from "@vuelidate/core";
 import { PageContent, ContinueBar, CheckboxComponent } from "common-lib-vue";
-import { scrollToError } from "@/helpers/scroll";
 import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 import OverAgeReviewTable from "../../components/OverAgeReviewTable.vue";
+import { overAgeRoutes, routes } from "@/router/index.js";
+import ProgressBar from "@/components/ProgressBar.vue";
+import pageStateService from "@/services/page-state-service.js";
+import { scrollTo, scrollToError } from "@/helpers/scroll";
 </script>
 
 <script>
@@ -60,6 +67,10 @@ const requiredTrue = (value) => {
 };
 
 export default {
+  name: "ReviewPage",
+  components: {
+    ProgressBar,
+  },
   data() {
     return {
       v$: useVuelidate(),
@@ -159,21 +170,29 @@ export default {
 
       //if no Vuelidate errors, move to API check, otherwise scroll to error
       if (!this.v$.$error) {
-        this.handleAttachments();
+        this.submitForm();
       } else {
         scrollToError();
       }
     },
-    handleAttachments() {
-      this.isLoading = true;
-      this.isSystemUnavailable = false;
-      this.isAPIValidationErrorShown = false;
-    },
+    // handleAttachments() {
+    //   this.isLoading = true;
+    //   this.isSystemUnavailable = false;
+    //   this.isAPIValidationErrorShown = false;
+    // },
     submitForm() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
+      this.isAPIValidationErrorShown = false;
+
+      //Navigate to the submission page
+      const toPath = routes.OVER_AGE_SUBMISSION.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
     },
-    nextPage() {},
+    // nextPage() {},
     handleCheckBoxChange(e) {
       this.v$.review.isDeclarationAccuracy.$touch();
       this.store.updateFormField("review", "isDeclarationAccuracy", e.target.checked);

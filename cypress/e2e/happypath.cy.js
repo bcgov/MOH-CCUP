@@ -3,6 +3,7 @@ import envData from "../fixtures/env-data.js";
 
 describe("happy path", () => {
   it("completes the happy path", () => {
+    // Get Started Page
     cy.visit("/");
     cy.location().should((loc) => {
       expect(loc.href).to.eq(Cypress.config("baseUrl"));
@@ -10,7 +11,16 @@ describe("happy path", () => {
     });
     cy.completeCaptcha();
 
+    // Choosing Pre Auth and Claims form
+    cy.get("[data-cy=upload-portal-optionsupload-portal-pre-auth-and-claims]").click({
+      force: true,
+    });
+    cy.get("[data-cy=continue-bar]").click();
+
     //Practitoner info
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/ccup/practitioner-info");
+    });
     cy.get("[data-cy=pracFirstName]").type(envData.pracFirstName);
     cy.get("[data-cy=pracLastName]").type(envData.pracLastName);
     cy.get("[data-cy=pracNumber]").type(envData.pracNumber);
