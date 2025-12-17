@@ -1,4 +1,8 @@
 <template>
+  <ProgressBar
+    :routes="overAgeRoutes"
+    :current-path="$route.path"
+  />
   <PageContent>
     <main class="container pt-3 pt-sm-5 mb-5">
       <h1 class="mb-0">Practitioner information</h1>
@@ -221,12 +225,18 @@ import { useCaptchaStore } from "@/stores/captchaStore";
 import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
 import { required } from "@vuelidate/validators";
 import { nameValidator, valueLengthValidator } from "@/helpers/validators.js";
+import { overAgeRoutes, routes } from "@/router/index.js";
+import ProgressBar from "@/components/ProgressBar.vue";
+import pageStateService from "@/services/page-state-service.js";
+import { scrollTo, scrollToError } from "@/helpers/scroll";
 </script>
 
 <script>
 export default {
   name: "PatientInfo",
-  components: {},
+  components: {
+    ProgressBar,
+  },
   data() {
     return {
       v$: useVuelidate(),
@@ -306,8 +316,19 @@ export default {
   methods: {
     validatePage() {
       this.v$.$touch();
-      // console.log("validations: ", this.v$.faxNumber);
-      // TO-DO: add navigation, block if validations fail
+      if (!this.v$.$error) {
+        this.nextPage();
+      } else {
+        scrollToError();
+      }
+    },
+    nextPage() {
+      //Navigate to next path.
+      const toPath = routes.OVER_AGE_CLAIMS_INFO.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
     },
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
