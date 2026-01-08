@@ -529,12 +529,17 @@ export default {
       this.store.addIndividual();
     },
     handleChangeDate(validationObject, newValue, formFieldParent, store, dataField) {
-      this[dataField] = newValue.date;
+      if (newValue.date) {
+        this[dataField] = newValue.date;
+      } else {
+        this[dataField] = null;
+      }
+
       if (validationObject) {
         validationObject.$touch();
 
         if (!validationObject.$invalid && newValue != null && formFieldParent) {
-          store.updateFormField(formFieldParent, validationObject.$path, newValue);
+          store.updateFormField(formFieldParent, validationObject.$path, newValue.date);
         }
       }
     },
