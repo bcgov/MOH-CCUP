@@ -44,31 +44,31 @@ describe("happy path doc submission", () => {
       force: true,
     });
     cy.get("select")
-      .find(`option[data-cy=claimServiceDateMonth${testMonth}]`)
+      .find(`option[data-cy=claim-service-dateMonth${testMonth}]`)
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=claimServiceDateDay]").type("11");
-    cy.get("[data-cy=claimServiceDateYear]").type(testYear);
+    cy.get("[data-cy=claim-service-dateDay]").type("11");
+    cy.get("[data-cy=claim-service-dateYear]").type(testYear);
     cy.get("[data-cy=date-typedate-type-range]").click({
       force: true,
     });
     cy.get("select")
-      .find(`option[data-cy=claimFromDateMonth${testMonth}]`)
+      .find(`option[data-cy=claim-from-dateMonth${testMonth}]`)
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=claimFromDateDay]").type("11");
-    cy.get("[data-cy=claimFromDateYear]").type(testYear);
+    cy.get("[data-cy=claim-from-dateDay]").type("11");
+    cy.get("[data-cy=claim-from-dateYear]").type(testYear);
     cy.get("select")
-      .find(`option[data-cy=claimToDateMonth${testMonth}]`)
+      .find(`option[data-cy=claim-to-dateMonth${testMonth}]`)
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=claimToDateDay]").type("12");
-    cy.get("[data-cy=claimToDateYear]").type(testYear);
-    cy.get("[data-cy=approximateClaimNumber]").type(envData.approximateClaimNumber);
-    cy.get("[data-cy=approximateDollarValue]").type(envData.approximateDollarValue);
+    cy.get("[data-cy=claim-to-dateDay]").type("12");
+    cy.get("[data-cy=claim-to-dateYear]").type(testYear);
+    cy.get("[data-cy=approximate-claim-number]").type(envData.approximateClaimNumber);
+    cy.get("[data-cy=approximate-dollar-value]").type(envData.approximateDollarValue);
     cy.get("[data-cy=fee-items]").type(envData.feeItems);
     cy.get("[data-cy=detailed-explanation]").type(envData.detailedExplanation);
     cy.get("[data-cy=phn-0]").type("9999999998");
