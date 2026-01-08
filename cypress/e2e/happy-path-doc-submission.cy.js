@@ -1,8 +1,8 @@
 import envData from "../fixtures/env-data.js";
 // NOTE: using cy.fixture for the sample pdf multiple times has issues, using dir works better with selectFile
 
-describe("happy path", () => {
-  it("completes the happy path", () => {
+describe("happy path doc submission", () => {
+  it("completes the happy path for document submission", () => {
     // Get Started Page
     cy.visit("/");
     cy.location().should((loc) => {
