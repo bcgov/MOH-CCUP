@@ -303,14 +303,14 @@
           <div>
             <div class="row">
               <div class="col-6">
-                <span class="fs-5 fw-bold">Document uploaded</span>
+                <span class="fs-5 fw-bold">Documents uploaded</span>
               </div>
               <div class="col-6">
                 <span
                   class="fs-5"
                   data-cy="reviewTableClaimSupportDocuments"
                 >
-                  {{ claimsInformation.claimSupportDocuments }}
+                  {{ claimsInformation.claimSupportDocuments.length }}
                 </span>
               </div>
             </div>
