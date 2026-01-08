@@ -136,6 +136,7 @@
       <PhoneNumberInput
         id="contact-phone-number"
         v-model="contactPhoneNumber"
+        cypress-id="contactPhoneNumber"
         label="Phone number (optional)"
         class="mt-3"
         :input-style="smallStyles"
@@ -177,6 +178,7 @@
         <PhoneNumberInput
           id="fax-phone-number"
           v-model="faxNumber"
+          cypress-id="faxNumber"
           label="Fax phone number"
           class="mt-3"
           :input-style="smallStyles"
@@ -275,7 +277,9 @@ export default {
       ];
     },
   },
-  created() {},
+  created() {
+    this.assignDataFromStore();
+  },
   validations() {
     const validations = {
       pracFirstName: {
@@ -333,6 +337,17 @@ export default {
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
       this.isSystemUnavailable = false;
+    },
+    assignDataFromStore() {
+      this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
+      this.pracLastName = this.store.formFields[this.formFieldParent]["pracLastName"];
+      this.pracNumber = this.store.formFields[this.formFieldParent]["pracNumber"];
+      this.payeeNumber = this.store.formFields[this.formFieldParent]["payeeNumber"];
+      this.dataCenterNumber = this.store.formFields[this.formFieldParent]["dataCenterNumber"];
+      this.contactPhoneNumber = this.store.formFields[this.formFieldParent]["contactPhoneNumber"];
+      this.preferredContactMethod =
+        this.store.formFields[this.formFieldParent]["preferredContactMethod"];
+      this.faxNumber = this.store.formFields[this.formFieldParent]["faxNumber"];
     },
   },
 };
