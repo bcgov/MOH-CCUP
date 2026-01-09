@@ -123,6 +123,24 @@
                   </span>
                 </div>
               </div>
+
+              <!-- Fax number-->
+              <div
+                v-if="practitioner.preferredContactMethod === 'fax'"
+                class="row"
+              >
+                <div class="col-6">
+                  <span class="fs-5 fw-bold"> Fax number</span>
+                </div>
+                <div class="col-6 mb-3">
+                  <span
+                    class="fs-5"
+                    data-cy="reviewTablePreferredContactMethod"
+                  >
+                    {{ practitioner.faxNumber }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -166,6 +184,50 @@
                 </span>
               </div>
             </div>
+
+            <!-- Service date -->
+            <div class="row">
+              <div class="col-6">
+                <span class="fs-5 fw-bold">Date of service</span>
+              </div>
+              <div class="col-6">
+                <span
+                  class="fs-5"
+                  data-cy="reviewTableServiceDate"
+                >
+                  {{ formatDate(claimsInformation.claimServiceDate) }}
+                </span>
+              </div>
+            </div>
+            <!-- Service date -->
+            <div class="row">
+              <div class="col-6">
+                <span class="fs-5 fw-bold">Range of dates (from)</span>
+              </div>
+              <div class="col-6">
+                <span
+                  class="fs-5"
+                  data-cy="reviewTableClaimFromDate"
+                >
+                  {{ formatDate(claimsInformation.claimFromDate) }}
+                </span>
+              </div>
+            </div>
+            <!-- Service date -->
+            <div class="row">
+              <div class="col-6">
+                <span class="fs-5 fw-bold">Range of dates (to)</span>
+              </div>
+              <div class="col-6">
+                <span
+                  class="fs-5"
+                  data-cy="reviewTableClaimToDate"
+                >
+                  {{ formatDate(claimsInformation.claimToDate) }}
+                </span>
+              </div>
+            </div>
+
             <!-- Approximate number of claims -->
             <div class="row">
               <div class="col-6">
@@ -254,7 +316,7 @@
                   class="fs-5"
                   :data-cy="'individual-service-date-' + index"
                 >
-                  {{ individual.individualServiceDate }}
+                  {{ formatDate(individual.individualServiceDate) }}
                 </span>
               </div>
               <!-- Individual's Fee Item -->
@@ -424,14 +486,15 @@ export default {
   },
   created() {
     //practitioner details
-    this.practitioner.firstName =
+    this.practitioner.pracFirstName =
       this.store.formFields[this.formFieldPractitioner]["pracFirstName"];
-    this.practitioner.lastName = this.store.formFields[this.formFieldPractitioner]["pracLastName"];
+    this.practitioner.pracLastName =
+      this.store.formFields[this.formFieldPractitioner]["pracLastName"];
     this.pracFullName =
       this.practitioner.firstName != null && this.practitioner.lastName != null
         ? this.practitioner.firstName + " " + this.practitioner.lastName
         : "";
-    this.practitioner.number = this.store.formFields[this.formFieldPractitioner]["pracNumber"];
+    this.practitioner.pracNumber = this.store.formFields[this.formFieldPractitioner]["pracNumber"];
     this.practitioner.payeeNumber =
       this.store.formFields[this.formFieldPractitioner]["payeeNumber"];
     this.practitioner.dataCenterNumber =
@@ -439,10 +502,16 @@ export default {
     this.practitioner.contactPhoneNumber =
       this.store.formFields[this.formFieldPractitioner]["contactPhoneNumber"];
     this.practitioner.preferredContactMethod =
-      this.store.formFields[this.formFieldPractitioner]["preferredContactNumber"];
+      this.store.formFields[this.formFieldPractitioner]["preferredContactMethod"];
+    this.practitioner.faxNumber = this.store.formFields[this.formFieldPractitioner]["faxNumber"];
 
     // claims info details
     this.claimsInformation.dateType = this.store.formFields[this.formFieldClaims]["dateType"];
+    this.claimsInformation.claimServiceDate =
+      this.store.formFields[this.formFieldClaims]["claimServiceDate"];
+    this.claimsInformation.claimFromDate =
+      this.store.formFields[this.formFieldClaims]["claimFromDate"];
+    this.claimsInformation.claimToDate = this.store.formFields[this.formFieldClaims]["claimToDate"];
     this.claimsInformation.approximateClaimNumber =
       this.store.formFields[this.formFieldClaims]["approximateClaimNumber"];
     this.claimsInformation.approximateDollarValue =
@@ -450,12 +519,22 @@ export default {
     this.claimsInformation.feeItems = this.store.formFields[this.formFieldClaims]["feeItems"];
     this.claimsInformation.detailedExplanation =
       this.store.formFields[this.formFieldClaims]["detailedExplanation"];
+    this.claimsInformation.individuals = this.store.formFields[this.formFieldClaims]["individuals"];
     this.claimsInformation.claimSupportDocuments =
       this.store.formFields[this.formFieldClaims]["claimSupportDocuments"];
     this.claimsInformation.claimComment =
       this.store.formFields[this.formFieldClaims]["claimComment"];
   },
   methods: {
+    formatDate(value) {
+      //if it's a date, format the date using toDateString()
+      //if it's not a date, calling toDateString() will fail, so don't do that
+      if (Object.prototype.toString.call(value) === "[object Date]") {
+        return value.toDateString();
+      } else {
+        return value;
+      }
+    },
     Edit(toPath, event) {
       //Navigate to path.
       pageStateService.setPageComplete(toPath);
