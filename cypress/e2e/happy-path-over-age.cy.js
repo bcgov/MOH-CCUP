@@ -157,5 +157,65 @@ describe("happy path doc submission", () => {
     cy.get("[data-cy=individual-fee-item-0]").should("contain", envData.individualFeeItem);
     cy.get("[data-cy=reviewTableClaimSupportDocuments]").should("contain", "2");
     cy.get("[data-cy=reviewTableClaimComment]").should("contain", envData.claimComment);
+    cy.get("[data-cy=isDeclarationAccuracy]").check({ force: true });
+    cy.get("[data-cy=continue-bar]").click();
+
+    //Submission page
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/ccup/over-age-submission");
+    });
+
+    //Submission page-- Practitioner information
+    cy.get("[data-cy=reviewTablePracFirstName]").should("contain", envData.pracFirstName);
+    cy.get("[data-cy=reviewTablePracLastName]").should("contain", envData.pracLastName);
+    cy.get("[data-cy=reviewTablePracNumber]").should("contain", envData.pracNumber);
+    cy.get("[data-cy=reviewTablePayeeNumber]").should("contain", envData.payeeNumber);
+    cy.get("[data-cy=reviewTableDataCenterNumber]").should("contain", envData.dataCenterNumber);
+    cy.get("[data-cy=reviewTableContactPhoneNumber]").should(
+      "contain",
+      envData.contactPhoneNumberFormatted
+    );
+    cy.get("[data-cy=reviewTablePreferredContactMethod]").should(
+      "contain",
+      envData.preferredContactMethod
+    );
+
+    //Submission page-- Claims information
+    cy.get("[data-cy=reviewTableDateType]").should("contain", "range");
+
+    cy.get("[data-cy=reviewTableServiceDate]").should(
+      "contain",
+      new Date(testYear, testMonth, 11).toDateString()
+    );
+    cy.get("[data-cy=reviewTableClaimFromDate]").should(
+      "contain",
+      new Date(testYear, testMonth, 12).toDateString()
+    );
+    cy.get("[data-cy=reviewTableClaimToDate]").should(
+      "contain",
+      new Date(testYear, testMonth, 13).toDateString()
+    );
+
+    cy.get("[data-cy=reviewTableApproximateClaimNumber]").should(
+      "contain",
+      envData.approximateClaimNumber
+    );
+    cy.get("[data-cy=reviewTableApproximateDollarValue]").should(
+      "contain",
+      envData.approximateDollarValue
+    );
+    cy.get("[data-cy=reviewTableFeeItems]").should("contain", envData.feeItems);
+    cy.get("[data-cy=reviewTableDetailedExplanation]").should(
+      "contain",
+      envData.detailedExplanation
+    );
+    cy.get("[data-cy=individual-phn-0]").should("contain", envData.individualPhnFormatted);
+    cy.get("[data-cy=individual-service-date-0]").should(
+      "contain",
+      new Date(testYear, testMonth, 14).toDateString()
+    );
+    cy.get("[data-cy=individual-fee-item-0]").should("contain", envData.individualFeeItem);
+    cy.get("[data-cy=reviewTableClaimSupportDocuments]").should("contain", "2");
+    cy.get("[data-cy=reviewTableClaimComment]").should("contain", envData.claimComment);
   });
 });
