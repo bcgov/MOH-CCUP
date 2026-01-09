@@ -58,14 +58,14 @@ describe("happy path doc submission", () => {
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=claim-from-dateDay]").type("11");
+    cy.get("[data-cy=claim-from-dateDay]").type("12");
     cy.get("[data-cy=claim-from-dateYear]").type(testYear);
     cy.get("select")
       .find(`option[data-cy=claim-to-dateMonth${testMonth}]`)
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=claim-to-dateDay]").type("12");
+    cy.get("[data-cy=claim-to-dateDay]").type("13");
     cy.get("[data-cy=claim-to-dateYear]").type(testYear);
     cy.get("[data-cy=approximate-claim-number]").type(envData.approximateClaimNumber);
     cy.get("[data-cy=approximate-dollar-value]").type(envData.approximateDollarValue);
@@ -87,7 +87,7 @@ describe("happy path doc submission", () => {
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=individual-service-date-1Day]").type("12");
+    cy.get("[data-cy=individual-service-date-1Day]").type("14");
     cy.get("[data-cy=individual-service-date-1Year]").type(testYear);
     cy.get("[data-cy=fee-item-1]").type(envData.individualFeeItem);
     cy.get("[data-cy=delete-individual-0]").click();
@@ -102,23 +102,40 @@ describe("happy path doc submission", () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/over-age-claims");
+      expect(loc.pathname).to.eq("/ccup/over-age-review");
     });
 
     //Review page-- Practitioner information
-    // cy.get("[data-cy=reviewTablePracFirstName]").should("contain", envData.pracFirstName);
-    // cy.get("[data-cy=reviewTablePracLastName]").should("contain", envData.pracLastName);
-    // cy.get("[data-cy=reviewTablePracNumber]").should("contain", envData.pracNumber);
+    cy.get("[data-cy=reviewTablePracFirstName]").should("contain", envData.pracFirstName);
+    cy.get("[data-cy=reviewTablePracLastName]").should("contain", envData.pracLastName);
+    cy.get("[data-cy=reviewTablePracNumber]").should("contain", envData.pracNumber);
     cy.get("[data-cy=reviewTablePayeeNumber]").should("contain", envData.payeeNumber);
     cy.get("[data-cy=reviewTableDataCenterNumber]").should("contain", envData.dataCenterNumber);
     cy.get("[data-cy=reviewTableContactPhoneNumber]").should(
       "contain",
       envData.contactPhoneNumberFormatted
     );
-    // cy.get("[data-cy=reviewTablePreferredContactMethod]").should("contain", envData.preferredContactMethod);
+    cy.get("[data-cy=reviewTablePreferredContactMethod]").should(
+      "contain",
+      envData.preferredContactMethod
+    );
 
     //Review page-- Claims information
     cy.get("[data-cy=reviewTableDateType]").should("contain", "range");
+
+    cy.get("[data-cy=reviewTableServiceDate]").should(
+      "contain",
+      new Date(testYear, testMonth, 11).toDateString()
+    );
+    cy.get("[data-cy=reviewTableClaimFromDate]").should(
+      "contain",
+      new Date(testYear, testMonth, 12).toDateString()
+    );
+    cy.get("[data-cy=reviewTableClaimToDate]").should(
+      "contain",
+      new Date(testYear, testMonth, 13).toDateString()
+    );
+
     cy.get("[data-cy=reviewTableApproximateClaimNumber]").should(
       "contain",
       envData.approximateClaimNumber
@@ -132,10 +149,12 @@ describe("happy path doc submission", () => {
       "contain",
       envData.detailedExplanation
     );
-    // cy.get("[data-cy=individual-phn-0]").should("contain", envData.individualPhn);
-    // cy.get("[data-cy=individual-service-date-0]").should("contain", envData.individualServiceDate);
-    // cy.get("[data-cy=individual-fee-item-0]").should("contain", envData.individualFeeItem);
-
+    cy.get("[data-cy=individual-phn-0]").should("contain", envData.individualPhnFormatted);
+    cy.get("[data-cy=individual-service-date-0]").should(
+      "contain",
+      new Date(testYear, testMonth, 14).toDateString()
+    );
+    cy.get("[data-cy=individual-fee-item-0]").should("contain", envData.individualFeeItem);
     cy.get("[data-cy=reviewTableClaimSupportDocuments]").should("contain", "2");
     cy.get("[data-cy=reviewTableClaimComment]").should("contain", envData.claimComment);
   });

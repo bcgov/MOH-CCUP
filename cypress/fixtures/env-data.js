@@ -20,7 +20,6 @@ const envData = {
   feeItems: "11111, 22222",
   detailedExplanation: "aaaaa",
   individualPhn: "9999999998",
-  individualServiceDate: "aaa",
   individualFeeItem: "222",
   claimComment: "comment",
 };
@@ -57,5 +56,6 @@ const formatContactPhone = (phone) => {
 envData.patients[0].patientPhnFormatted = formatPhn(envData.patients[0].patientPhn);
 envData.patients[1].patientPhnFormatted = formatPhn(envData.patients[1].patientPhn);
 envData.contactPhoneNumberFormatted = formatContactPhone(envData.contactPhoneNumber);
+envData.individualPhnFormatted = formatPhn(envData.individualPhn);
 
 export default envData;
