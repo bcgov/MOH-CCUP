@@ -186,7 +186,10 @@
             </div>
 
             <!-- Service date -->
-            <div class="row">
+            <div
+              v-if="claimsInformation.dateType === 'date'"
+              class="row"
+            >
               <div class="col-6">
                 <span class="fs-5 fw-bold">Date of service</span>
               </div>
@@ -200,7 +203,10 @@
               </div>
             </div>
             <!-- Service date -->
-            <div class="row">
+            <div
+              v-if="claimsInformation.dateType === 'range'"
+              class="row"
+            >
               <div class="col-6">
                 <span class="fs-5 fw-bold">Range of dates (from)</span>
               </div>
@@ -214,7 +220,10 @@
               </div>
             </div>
             <!-- Service date -->
-            <div class="row">
+            <div
+              v-if="claimsInformation.dateType === 'range'"
+              class="row"
+            >
               <div class="col-6">
                 <span class="fs-5 fw-bold">Range of dates (to)</span>
               </div>

@@ -123,10 +123,8 @@ describe("happy path doc submission", () => {
     //Review page-- Claims information
     cy.get("[data-cy=reviewTableDateType]").should("contain", "range");
 
-    cy.get("[data-cy=reviewTableServiceDate]").should(
-      "contain",
-      new Date(testYear, testMonth, 11).toDateString()
-    );
+    //Review page-- check service date
+    cy.get("body").find("[data-cy=reviewTableServiceDate]").should("not.exist");
     cy.get("[data-cy=reviewTableClaimFromDate]").should(
       "contain",
       new Date(testYear, testMonth, 12).toDateString()
@@ -136,6 +134,21 @@ describe("happy path doc submission", () => {
       new Date(testYear, testMonth, 13).toDateString()
     );
 
+    //go back to previous page to update service date
+    cy.get("[data-cy=backButton]").click();
+    cy.get("[data-cy=date-typedate-type-date]").click({
+      force: true,
+    });
+    cy.get("[data-cy=continue-bar]").click();
+
+    cy.get("body").find("[data-cy=reviewTableClaimFromDate]").should("not.exist");
+    cy.get("body").find("[data-cy=reviewTableClaimToDate]").should("not.exist");
+    // date-typedate-type-date
+
+    cy.get("[data-cy=reviewTableServiceDate]").should(
+      "contain",
+      new Date(testYear, testMonth, 11).toDateString()
+    );
     cy.get("[data-cy=reviewTableApproximateClaimNumber]").should(
       "contain",
       envData.approximateClaimNumber
@@ -181,20 +194,14 @@ describe("happy path doc submission", () => {
     );
 
     //Submission page-- Claims information
-    cy.get("[data-cy=reviewTableDateType]").should("contain", "range");
+    cy.get("[data-cy=reviewTableDateType]").should("contain", "date");
 
     cy.get("[data-cy=reviewTableServiceDate]").should(
       "contain",
       new Date(testYear, testMonth, 11).toDateString()
     );
-    cy.get("[data-cy=reviewTableClaimFromDate]").should(
-      "contain",
-      new Date(testYear, testMonth, 12).toDateString()
-    );
-    cy.get("[data-cy=reviewTableClaimToDate]").should(
-      "contain",
-      new Date(testYear, testMonth, 13).toDateString()
-    );
+    cy.get("body").find("[data-cy=reviewTableClaimFromDate]").should("not.exist");
+    cy.get("body").find("[data-cy=reviewTableClaimToDate]").should("not.exist");
 
     cy.get("[data-cy=reviewTableApproximateClaimNumber]").should(
       "contain",
