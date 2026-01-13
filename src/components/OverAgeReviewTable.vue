@@ -33,7 +33,7 @@
                 <div class="col-6 mb-3">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePracFirstName"
+                    data-cy="review-table-prac-first-name"
                   >
                     {{ practitioner.pracFirstName }}
                   </span>
@@ -47,7 +47,7 @@
                 <div class="mb-3 col-6">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePracLastName"
+                    data-cy="review-table-prac-last-name"
                   >
                     {{ practitioner.pracLastName }}
                   </span>
@@ -61,7 +61,7 @@
                 <div class="col-6">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePracNumber"
+                    data-cy="review-table-prac-number"
                     >{{ practitioner.pracNumber }}
                   </span>
                 </div>
@@ -74,7 +74,7 @@
                 <div class="col-6">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePayeeNumber"
+                    data-cy="review-table-payee-number"
                     >{{ practitioner.payeeNumber }}
                   </span>
                 </div>
@@ -89,7 +89,7 @@
                 <div class="col-6 mb-3">
                   <span
                     class="fs-5"
-                    data-cy="reviewTableDataCenterNumber"
+                    data-cy="review-table-data-center-number"
                   >
                     {{ practitioner.dataCenterNumber }}
                   </span>
@@ -103,7 +103,7 @@
                 <div class="col-6 mb-3">
                   <span
                     class="fs-5"
-                    data-cy="reviewTableContactPhoneNumber"
+                    data-cy="review-table-contact-phone-number"
                   >
                     {{ practitioner.contactPhoneNumber }}
                   </span>
@@ -117,9 +117,27 @@
                 <div class="col-6 mb-3">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePreferredContactMethod"
+                    data-cy="review-table-preferred-contact-method"
                   >
                     {{ practitioner.preferredContactMethod }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Fax number-->
+              <div
+                v-if="practitioner.preferredContactMethod === 'fax'"
+                class="row"
+              >
+                <div class="col-6">
+                  <span class="fs-5 fw-bold"> Fax number</span>
+                </div>
+                <div class="col-6 mb-3">
+                  <span
+                    class="fs-5"
+                    data-cy="review-table-fax-number"
+                  >
+                    {{ practitioner.faxNumber }}
                   </span>
                 </div>
               </div>
@@ -160,12 +178,65 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableDateType"
+                  data-cy="review-table-date-type"
                 >
                   {{ claimsInformation.dateType }}
                 </span>
               </div>
             </div>
+
+            <!-- Service date -->
+            <div
+              v-if="claimsInformation.dateType === 'date'"
+              class="row"
+            >
+              <div class="col-6">
+                <span class="fs-5 fw-bold">Date of service</span>
+              </div>
+              <div class="col-6">
+                <span
+                  class="fs-5"
+                  data-cy="review-table-service-date"
+                >
+                  {{ formatDate(claimsInformation.claimServiceDate) }}
+                </span>
+              </div>
+            </div>
+            <!-- Service date -->
+            <div
+              v-if="claimsInformation.dateType === 'range'"
+              class="row"
+            >
+              <div class="col-6">
+                <span class="fs-5 fw-bold">Range of dates (from)</span>
+              </div>
+              <div class="col-6">
+                <span
+                  class="fs-5"
+                  data-cy="review-table-claim-from-date"
+                >
+                  {{ formatDate(claimsInformation.claimFromDate) }}
+                </span>
+              </div>
+            </div>
+            <!-- Service date -->
+            <div
+              v-if="claimsInformation.dateType === 'range'"
+              class="row"
+            >
+              <div class="col-6">
+                <span class="fs-5 fw-bold">Range of dates (to)</span>
+              </div>
+              <div class="col-6">
+                <span
+                  class="fs-5"
+                  data-cy="review-table-claim-to-date"
+                >
+                  {{ formatDate(claimsInformation.claimToDate) }}
+                </span>
+              </div>
+            </div>
+
             <!-- Approximate number of claims -->
             <div class="row">
               <div class="col-6">
@@ -174,7 +245,7 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableApproximateClaimNumber"
+                  data-cy="review-table-approximate-claim-number"
                 >
                   {{ claimsInformation.approximateClaimNumber }}
                 </span>
@@ -188,7 +259,7 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableApproximateDollarValue"
+                  data-cy="review-table-approximate-dollar-value"
                 >
                   {{ claimsInformation.approximateDollarValue }}
                 </span>
@@ -201,7 +272,7 @@
               </div>
               <div
                 class="col-6 fs-5"
-                data-cy="reviewTableFeeItems"
+                data-cy="review-table-fee-items"
               >
                 <p>
                   {{ claimsInformation.feeItems }}
@@ -215,7 +286,7 @@
               </div>
               <div
                 class="col-6 fs-5"
-                data-cy="reviewTableDetailedExplanation"
+                data-cy="review-table-detailed-explanation"
               >
                 <p>
                   {{ claimsInformation.detailedExplanation }}
@@ -254,7 +325,7 @@
                   class="fs-5"
                   :data-cy="'individual-service-date-' + index"
                 >
-                  {{ individual.individualServiceDate }}
+                  {{ formatDate(individual.individualServiceDate) }}
                 </span>
               </div>
               <!-- Individual's Fee Item -->
@@ -303,14 +374,14 @@
           <div>
             <div class="row">
               <div class="col-6">
-                <span class="fs-5 fw-bold">Document uploaded</span>
+                <span class="fs-5 fw-bold">Documents uploaded</span>
               </div>
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableClaimSupportDocuments"
+                  data-cy="review-table-claim-support-documents"
                 >
-                  {{ claimsInformation.claimSupportDocuments }}
+                  {{ claimsInformation.claimSupportDocuments.length }}
                 </span>
               </div>
             </div>
@@ -320,7 +391,7 @@
               </div>
               <div
                 class="col-6 fs-5"
-                data-cy="reviewTableClaimComment"
+                data-cy="review-table-claim-comment"
               >
                 <p>
                   {{ claimsInformation.claimComment }}
@@ -424,14 +495,15 @@ export default {
   },
   created() {
     //practitioner details
-    this.practitioner.firstName =
+    this.practitioner.pracFirstName =
       this.store.formFields[this.formFieldPractitioner]["pracFirstName"];
-    this.practitioner.lastName = this.store.formFields[this.formFieldPractitioner]["pracLastName"];
+    this.practitioner.pracLastName =
+      this.store.formFields[this.formFieldPractitioner]["pracLastName"];
     this.pracFullName =
       this.practitioner.firstName != null && this.practitioner.lastName != null
         ? this.practitioner.firstName + " " + this.practitioner.lastName
         : "";
-    this.practitioner.number = this.store.formFields[this.formFieldPractitioner]["pracNumber"];
+    this.practitioner.pracNumber = this.store.formFields[this.formFieldPractitioner]["pracNumber"];
     this.practitioner.payeeNumber =
       this.store.formFields[this.formFieldPractitioner]["payeeNumber"];
     this.practitioner.dataCenterNumber =
@@ -439,10 +511,16 @@ export default {
     this.practitioner.contactPhoneNumber =
       this.store.formFields[this.formFieldPractitioner]["contactPhoneNumber"];
     this.practitioner.preferredContactMethod =
-      this.store.formFields[this.formFieldPractitioner]["preferredContactNumber"];
+      this.store.formFields[this.formFieldPractitioner]["preferredContactMethod"];
+    this.practitioner.faxNumber = this.store.formFields[this.formFieldPractitioner]["faxNumber"];
 
     // claims info details
     this.claimsInformation.dateType = this.store.formFields[this.formFieldClaims]["dateType"];
+    this.claimsInformation.claimServiceDate =
+      this.store.formFields[this.formFieldClaims]["claimServiceDate"];
+    this.claimsInformation.claimFromDate =
+      this.store.formFields[this.formFieldClaims]["claimFromDate"];
+    this.claimsInformation.claimToDate = this.store.formFields[this.formFieldClaims]["claimToDate"];
     this.claimsInformation.approximateClaimNumber =
       this.store.formFields[this.formFieldClaims]["approximateClaimNumber"];
     this.claimsInformation.approximateDollarValue =
@@ -450,12 +528,22 @@ export default {
     this.claimsInformation.feeItems = this.store.formFields[this.formFieldClaims]["feeItems"];
     this.claimsInformation.detailedExplanation =
       this.store.formFields[this.formFieldClaims]["detailedExplanation"];
+    this.claimsInformation.individuals = this.store.formFields[this.formFieldClaims]["individuals"];
     this.claimsInformation.claimSupportDocuments =
       this.store.formFields[this.formFieldClaims]["claimSupportDocuments"];
     this.claimsInformation.claimComment =
       this.store.formFields[this.formFieldClaims]["claimComment"];
   },
   methods: {
+    formatDate(value) {
+      //if it's a date, format the date using toDateString()
+      //if it's not a date, calling toDateString() will fail, so don't do that
+      if (Object.prototype.toString.call(value) === "[object Date]") {
+        return value.toDateString();
+      } else {
+        return value;
+      }
+    },
     Edit(toPath, event) {
       //Navigate to path.
       pageStateService.setPageComplete(toPath);

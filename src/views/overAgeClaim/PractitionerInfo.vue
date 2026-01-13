@@ -11,7 +11,7 @@
       <InputComponent
         id="prac-first-name"
         v-model="pracFirstName"
-        cypress-id="pracFirstName"
+        cypress-id="prac-first-name"
         label="First name"
         :maxlength="firstNameMaxLength"
         :required="true"
@@ -36,7 +36,7 @@
       <InputComponent
         id="prac-last-name"
         v-model="pracLastName"
-        cypress-id="pracLastName"
+        cypress-id="prac-last-name"
         label="Last name"
         :maxlength="lastNameMaxLength"
         :required="true"
@@ -63,7 +63,7 @@
         id="prac-number"
         v-model="pracNumber"
         label="Practitioner number"
-        cypress-id="pracNumber"
+        cypress-id="prac-number"
         class="mt-3"
         :input-style="extraSmallStyles"
         @input="handleAPIValidationReset"
@@ -88,7 +88,7 @@
         id="payee-number"
         v-model="payeeNumber"
         label="Payee number"
-        cypress-id="payeeNumber"
+        cypress-id="payee-number"
         class="mt-3"
         :input-style="extraSmallStyles"
         @input="handleAPIValidationReset"
@@ -114,7 +114,7 @@
         id="data-center-number"
         v-model="dataCenterNumber"
         label="Data center number (optional)"
-        cypress-id="dataCenterNumber"
+        cypress-id="data-center-number"
         class="mt-3"
         :maxlength="'5'"
         :input-style="extraSmallStyles"
@@ -136,6 +136,7 @@
       <PhoneNumberInput
         id="contact-phone-number"
         v-model="contactPhoneNumber"
+        cypress-id="contact-phone-number"
         label="Phone number (optional)"
         class="mt-3"
         :input-style="smallStyles"
@@ -177,6 +178,7 @@
         <PhoneNumberInput
           id="fax-phone-number"
           v-model="faxNumber"
+          cypress-id="fax-phone-number"
           label="Fax phone number"
           class="mt-3"
           :input-style="smallStyles"
@@ -275,7 +277,9 @@ export default {
       ];
     },
   },
-  created() {},
+  created() {
+    this.assignDataFromStore();
+  },
   validations() {
     const validations = {
       pracFirstName: {
@@ -333,6 +337,17 @@ export default {
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
       this.isSystemUnavailable = false;
+    },
+    assignDataFromStore() {
+      this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
+      this.pracLastName = this.store.formFields[this.formFieldParent]["pracLastName"];
+      this.pracNumber = this.store.formFields[this.formFieldParent]["pracNumber"];
+      this.payeeNumber = this.store.formFields[this.formFieldParent]["payeeNumber"];
+      this.dataCenterNumber = this.store.formFields[this.formFieldParent]["dataCenterNumber"];
+      this.contactPhoneNumber = this.store.formFields[this.formFieldParent]["contactPhoneNumber"];
+      this.preferredContactMethod =
+        this.store.formFields[this.formFieldParent]["preferredContactMethod"];
+      this.faxNumber = this.store.formFields[this.formFieldParent]["faxNumber"];
     },
   },
 };

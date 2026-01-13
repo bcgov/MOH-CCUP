@@ -3,6 +3,44 @@ import envData from "../fixtures/env-data.js";
 
 describe("navigation guards", () => {
   it("successfully navigates to the correct page in different circumstances", () => {
+    if (envData.enableIntercepts) {
+      console.log("intercepted captcha calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/captcha/captcha", {
+        statusCode: 200,
+        body: {
+          nonce: "1234567890",
+          captcha: "captcha",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      cy.intercept("POST", "/ccup/api/captcha/verify/captcha", {
+        statusCode: 200,
+        body: {
+          valid: true,
+          jwt: "1234567890",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      console.log("intercepted logging calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/logging", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      console.log("intercepted env calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/env", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
     cy.visit("/");
     cy.location().should((loc) => {
       expect(loc.href).to.eq(Cypress.config("baseUrl"));
@@ -158,17 +196,17 @@ describe("navigation guards", () => {
       expect(loc.pathname).to.eq("/ccup/review-page");
     });
 
-    cy.get("[data-cy=backButton]").click();
+    cy.get("[data-cy=back-button]").click();
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/upload-documents");
     });
 
-    cy.get("[data-cy=backButton]").click();
+    cy.get("[data-cy=back-button]").click();
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/patient-info");
     });
 
-    cy.get("[data-cy=backButton]").click();
+    cy.get("[data-cy=back-button]").click();
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/practitioner-info");
     });

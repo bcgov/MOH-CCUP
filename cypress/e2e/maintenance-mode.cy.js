@@ -1,3 +1,5 @@
+import envData from "../fixtures/env-data.js";
+
 const d = new Date();
 //dates are formatted to match the time format in the spa-env-service
 const startDate = `${d.getFullYear() - 1}-${d.getMonth().toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")} 01:00:00 AM`;
@@ -6,6 +8,35 @@ const testMessage = "this is a test maintenance message foobar";
 
 describe("maintenance mode", () => {
   it("redirects to the maintenance page when it receives correct input", () => {
+    if (envData.enableIntercepts) {
+      console.log("intercepted captcha calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/captcha/captcha", {
+        statusCode: 200,
+        body: {
+          nonce: "1234567890",
+          captcha: "captcha",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      cy.intercept("POST", "/ccup/api/captcha/verify/captcha", {
+        statusCode: 200,
+        body: {
+          valid: true,
+          jwt: "1234567890",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      console.log("intercepted logging calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/logging", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
     console.log("intercepted spa-env-server call with 200 OK response");
     cy.intercept("POST", "/ccup/api/env", {
       statusCode: 200,
