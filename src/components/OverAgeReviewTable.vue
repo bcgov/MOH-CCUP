@@ -33,7 +33,7 @@
                 <div class="col-6 mb-3">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePracFirstName"
+                    data-cy="review-table-prac-first-name"
                   >
                     {{ practitioner.pracFirstName }}
                   </span>
@@ -47,7 +47,7 @@
                 <div class="mb-3 col-6">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePracLastName"
+                    data-cy="review-table-prac-last-name"
                   >
                     {{ practitioner.pracLastName }}
                   </span>
@@ -61,7 +61,7 @@
                 <div class="col-6">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePracNumber"
+                    data-cy="review-table-prac-number"
                     >{{ practitioner.pracNumber }}
                   </span>
                 </div>
@@ -74,7 +74,7 @@
                 <div class="col-6">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePayeeNumber"
+                    data-cy="review-table-payee-number"
                     >{{ practitioner.payeeNumber }}
                   </span>
                 </div>
@@ -89,7 +89,7 @@
                 <div class="col-6 mb-3">
                   <span
                     class="fs-5"
-                    data-cy="reviewTableDataCenterNumber"
+                    data-cy="review-table-data-center-number"
                   >
                     {{ practitioner.dataCenterNumber }}
                   </span>
@@ -103,7 +103,7 @@
                 <div class="col-6 mb-3">
                   <span
                     class="fs-5"
-                    data-cy="reviewTableContactPhoneNumber"
+                    data-cy="review-table-contact-phone-number"
                   >
                     {{ practitioner.contactPhoneNumber }}
                   </span>
@@ -117,7 +117,7 @@
                 <div class="col-6 mb-3">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePreferredContactMethod"
+                    data-cy="review-table-preferred-contact-method"
                   >
                     {{ practitioner.preferredContactMethod }}
                   </span>
@@ -135,7 +135,7 @@
                 <div class="col-6 mb-3">
                   <span
                     class="fs-5"
-                    data-cy="reviewTablePreferredContactMethod"
+                    data-cy="review-table-fax-number"
                   >
                     {{ practitioner.faxNumber }}
                   </span>
@@ -178,7 +178,7 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableDateType"
+                  data-cy="review-table-date-type"
                 >
                   {{ claimsInformation.dateType }}
                 </span>
@@ -196,7 +196,7 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableServiceDate"
+                  data-cy="review-table-service-date"
                 >
                   {{ formatDate(claimsInformation.claimServiceDate) }}
                 </span>
@@ -213,7 +213,7 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableClaimFromDate"
+                  data-cy="review-table-claim-from-date"
                 >
                   {{ formatDate(claimsInformation.claimFromDate) }}
                 </span>
@@ -230,7 +230,7 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableClaimToDate"
+                  data-cy="review-table-claim-to-date"
                 >
                   {{ formatDate(claimsInformation.claimToDate) }}
                 </span>
@@ -245,7 +245,7 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableApproximateClaimNumber"
+                  data-cy="review-table-approximate-claim-number"
                 >
                   {{ claimsInformation.approximateClaimNumber }}
                 </span>
@@ -259,7 +259,7 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableApproximateDollarValue"
+                  data-cy="review-table-approximate-dollar-value"
                 >
                   {{ claimsInformation.approximateDollarValue }}
                 </span>
@@ -272,7 +272,7 @@
               </div>
               <div
                 class="col-6 fs-5"
-                data-cy="reviewTableFeeItems"
+                data-cy="review-table-fee-items"
               >
                 <p>
                   {{ claimsInformation.feeItems }}
@@ -286,7 +286,7 @@
               </div>
               <div
                 class="col-6 fs-5"
-                data-cy="reviewTableDetailedExplanation"
+                data-cy="review-table-detailed-explanation"
               >
                 <p>
                   {{ claimsInformation.detailedExplanation }}
@@ -379,7 +379,7 @@
               <div class="col-6">
                 <span
                   class="fs-5"
-                  data-cy="reviewTableClaimSupportDocuments"
+                  data-cy="review-table-claim-support-documents"
                 >
                   {{ claimsInformation.claimSupportDocuments.length }}
                 </span>
@@ -391,7 +391,7 @@
               </div>
               <div
                 class="col-6 fs-5"
-                data-cy="reviewTableClaimComment"
+                data-cy="review-table-claim-comment"
               >
                 <p>
                   {{ claimsInformation.claimComment }}

@@ -20,9 +20,9 @@
       </div>
       <div class="row px-3 fs-5">
         <CheckboxComponent
-          id="pratitioner-declaration-accuracy"
+          id="practitioner-declaration-accuracy"
           v-model="review.isDeclarationAccuracy"
-          cypress-id="isDeclarationAccuracy"
+          cypress-id="practitioner-declaration-accuracy"
           :required="true"
           :label="pracFullName"
           @change="handleCheckBoxChange"

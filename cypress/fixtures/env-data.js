@@ -45,7 +45,7 @@ const formatPhn = (phn) => {
   return result;
 };
 
-const formatContactPhone = (phone) => {
+const formatPhone = (phone) => {
   const result =
     "(" + phone.substring(0, 3) + ") " + phone.substring(4, 7) + "-" + phone.substring(7, 10);
 
@@ -55,7 +55,8 @@ const formatContactPhone = (phone) => {
 //add formatted Phn to the data for review table checks
 envData.patients[0].patientPhnFormatted = formatPhn(envData.patients[0].patientPhn);
 envData.patients[1].patientPhnFormatted = formatPhn(envData.patients[1].patientPhn);
-envData.contactPhoneNumberFormatted = formatContactPhone(envData.contactPhoneNumber);
+envData.contactPhoneNumberFormatted = formatPhone(envData.contactPhoneNumber);
+envData.faxNumberFormatted = formatPhone(envData.faxNumber);
 envData.individualPhnFormatted = formatPhn(envData.individualPhn);
 
 export default envData;
