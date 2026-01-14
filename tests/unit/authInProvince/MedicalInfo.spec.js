@@ -1,4 +1,4 @@
-import Page from "@/views/authInProvince/PractitionerInfo.vue";
+import Page from "@/views/authInProvince/MedicalInfo.vue";
 import { mount } from "@vue/test-utils";
 import { createRouter, createMemoryHistory } from "vue-router";
 import { setActivePinia, createPinia } from "pinia";
@@ -9,9 +9,9 @@ const router = createRouter({
   history: createMemoryHistory(),
   routes: [
     {
-      path: "/auth-in-province-practitioner-info",
-      title: "Practitioner info",
-      name: "PractitionerInfo",
+      path: "/auth-in-province-medical-info",
+      title: "Medical information",
+      name: "MedicalInfo",
       component: { template: `<span style="display: none;"></span>` },
     },
   ],
@@ -24,7 +24,7 @@ vi.spyOn(logService, "logError").mockImplementation(() => {
 });
 vi.spyOn(logService, "logInfo").mockImplementation(() => Promise.resolve("logged"));
 
-describe("PractitionerInfo.vue", async () => {
+describe("MedicalInfo.vue", async () => {
   router.push("/");
   await router.isReady();
 
