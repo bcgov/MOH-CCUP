@@ -33,6 +33,9 @@ export const useOverAgeClaimStore = defineStore("overAgeClaimStore", {
         claimSupportDocuments: [],
         claimComment: null,
       },
+      review: {
+        isDeclarationAccuracy: null,
+      },
     },
   }),
   actions: {

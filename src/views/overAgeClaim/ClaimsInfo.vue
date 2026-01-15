@@ -1,4 +1,8 @@
 <template>
+  <ProgressBar
+    :routes="overAgeRoutes"
+    :current-path="$route.path"
+  />
   <PageContent>
     <main class="container pt-3 pt-sm-5 mb-5">
       <h1 class="mb-0">Claims information</h1>
@@ -47,6 +51,7 @@
         <DateInput
           id="claim-service-date"
           v-model="claimServiceDate"
+          cypress-id="claim-service-date"
           label="Date of service"
           class="mt-3"
           :required="true"
@@ -97,6 +102,7 @@
         <DateInput
           id="claim-from-date"
           v-model="claimFromDate"
+          cypress-id="claim-from-date"
           label="From"
           class="mt-3"
           :required="true"
@@ -124,6 +130,7 @@
         <DateInput
           id="claim-to-date"
           v-model="claimToDate"
+          cypress-id="claim-to-date"
           label="To"
           class="mt-3"
           :required="true"
@@ -311,6 +318,7 @@
       <hr class="mt-3" />
       <ButtonComponent
         v-if="storeIndividuals.length < 10"
+        cypress-id="add-individual"
         label="Add individual"
         @click="handleAddIndividual"
       />
@@ -352,7 +360,7 @@
       <Textarea
         id="claim-comment"
         v-model="claimComment"
-        cypress-id="claimComment"
+        cypress-id="claim-comment"
         label="Comments (optional)"
         class="mt-3"
         :maxlength="'400'"
@@ -397,12 +405,18 @@ import {
   lessThan18MonthsValidator,
   dateRangeValidator,
 } from "@/helpers/validators.js";
+import { overAgeRoutes, routes } from "@/router/index.js";
+import ProgressBar from "@/components/ProgressBar.vue";
+import pageStateService from "@/services/page-state-service.js";
+import { scrollTo, scrollToError } from "@/helpers/scroll";
 </script>
 
 <script>
 export default {
   name: "ClaimsInfo",
-  components: {},
+  components: {
+    ProgressBar,
+  },
   data() {
     return {
       v$: useVuelidate(),
@@ -492,9 +506,20 @@ export default {
         this.claimSupportDocuments
       );
       this.v$.$touch();
-      console.log("validations: ", this.v$);
-      console.log("data: ", this.store.formFields.claimsInformation);
-      // TO-DO: add navigation, block if validations fail
+      if (!this.v$.$error) {
+        this.nextPage();
+      } else {
+        scrollToError();
+      }
+    },
+    nextPage() {
+      //Navigate to next path.
+      const toPath = routes.OVER_AGE_REVIEW_PAGE.path;
+      console.log(toPath);
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
     },
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
@@ -504,12 +529,17 @@ export default {
       this.store.addIndividual();
     },
     handleChangeDate(validationObject, newValue, formFieldParent, store, dataField) {
-      this[dataField] = newValue.date;
+      if (newValue.date) {
+        this[dataField] = newValue.date;
+      } else {
+        this[dataField] = null;
+      }
+
       if (validationObject) {
         validationObject.$touch();
 
         if (!validationObject.$invalid && newValue != null && formFieldParent) {
-          store.updateFormField(formFieldParent, validationObject.$path, newValue);
+          store.updateFormField(formFieldParent, validationObject.$path, newValue.date);
         }
       }
     },

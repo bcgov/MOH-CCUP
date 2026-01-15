@@ -1,8 +1,47 @@
 import envData from "../fixtures/env-data.js";
 // NOTE: using cy.fixture for the sample pdf multiple times has issues, using dir works better with selectFile
 
-describe("happy path", () => {
-  it("completes the happy path", () => {
+describe("happy path doc submission", () => {
+  it("completes the happy path for document submission", () => {
+    if (envData.enableIntercepts) {
+      console.log("intercepted captcha calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/captcha/captcha", {
+        statusCode: 200,
+        body: {
+          nonce: "1234567890",
+          captcha: "captcha",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      cy.intercept("POST", "/ccup/api/captcha/verify/captcha", {
+        statusCode: 200,
+        body: {
+          valid: true,
+          jwt: "1234567890",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      console.log("intercepted logging calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/logging", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      console.log("intercepted env calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/env", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
+    // Get Started Page
     cy.visit("/");
     cy.location().should((loc) => {
       expect(loc.href).to.eq(Cypress.config("baseUrl"));
@@ -10,7 +49,16 @@ describe("happy path", () => {
     });
     cy.completeCaptcha();
 
+    // Choosing Pre Auth and Claims form
+    cy.get("[data-cy=upload-portal-optionsupload-portal-pre-auth-and-claims]").click({
+      force: true,
+    });
+    cy.get("[data-cy=continue-bar]").click();
+
     //Practitoner info
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/ccup/practitioner-info");
+    });
     cy.get("[data-cy=pracFirstName]").type(envData.pracFirstName);
     cy.get("[data-cy=pracLastName]").type(envData.pracLastName);
     cy.get("[data-cy=pracNumber]").type(envData.pracNumber);

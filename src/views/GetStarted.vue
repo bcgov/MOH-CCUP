@@ -71,6 +71,9 @@ import { useVuelidate } from "@vuelidate/core";
 import { useCaptchaStore } from "@/stores/captchaStore";
 import { handleChangeField } from "../helpers/handler.js";
 import ConsentModal from "../components/ConsentModal.vue";
+import { routes } from "@/router/index.js";
+import pageStateService from "@/services/page-state-service.js";
+import { scrollTo, scrollToError } from "@/helpers/scroll";
 </script>
 
 <script>
@@ -115,7 +118,28 @@ export default {
   },
   methods: {
     validatePage() {
-      this.v$.$validate();
+      this.v$.$touch();
+      if (!this.v$.$error) {
+        this.nextPage();
+      } else {
+        scrollToError();
+      }
+    },
+    nextPage() {
+      var toPath;
+      if (this.uploadPortalOptions === "pre-auth-and-claims") {
+        toPath = routes.PRACTITIONER_INFO.path;
+      } else if (this.uploadPortalOptions === "over-age-claims") {
+        toPath = routes.OVER_AGE_PRACTITIONER_PAGE.path;
+      } else if (this.uploadPortalOptions === "auth-in-prov") {
+        toPath = routes.AUTH_IN_PROV_MEDICAL.path;
+      }
+      //Navigate to the corresponding page
+      console.log(toPath);
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
     },
     handleCloseConsentModal(value) {
       this.captchaStore.isShowConsentModal = !value;

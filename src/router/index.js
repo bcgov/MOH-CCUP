@@ -2,8 +2,14 @@ import { createRouter, createWebHistory } from "vue-router";
 import pageStateService from "../services/page-state-service";
 
 export const routes = {
-  PRACTITIONER_INFO: {
+  GET_STARTED: {
     path: "/",
+    title: "Get Started",
+    name: "GetStarted",
+    component: () => import("@/views/GetStarted.vue"),
+  },
+  PRACTITIONER_INFO: {
+    path: "/practitioner-info",
     title: "Practitioner information",
     name: "PractitionerInfo",
     component: () => import("@/views/PractitionerInfo.vue"),
@@ -32,21 +38,9 @@ export const routes = {
     name: "SubmissionPage",
     component: () => import("@/views/SubmissionPage.vue"),
   },
-  MAINTENANCE_PAGE: {
-    path: "/maintenance-page",
-    title: "Maintenance Page",
-    name: "MaintenancePage",
-    component: () => import("@/views/MaintenancePage.vue"),
-  },
-  GET_STARTED: {
-    path: "/get-started",
-    title: "Get Started",
-    name: "GetStarted",
-    component: () => import("@/views/GetStarted.vue"),
-  },
   OVER_AGE_PRACTITIONER_PAGE: {
     path: "/over-age-practitioner",
-    title: "Over-age Practitioner",
+    title: "Practitoner information",
     name: "OverAgePractitioner",
     component: () => import("@/views/overAgeClaim/PractitionerInfo.vue"),
   },
@@ -56,11 +50,29 @@ export const routes = {
     name: "OverAgeClaims",
     component: () => import("@/views/overAgeClaim/ClaimsInfo.vue"),
   },
+  OVER_AGE_REVIEW_PAGE: {
+    path: "/over-age-review",
+    title: "Over-age Review",
+    name: "OverAgeReview",
+    component: () => import("@/views/overAgeClaim/ReviewPage.vue"),
+  },
   OVER_AGE_SUBMISSION: {
     path: "/over-age-submission",
     title: "Over-age Submission",
     name: "OverAgeSubmission",
     component: () => import("@/views/overAgeClaim/SubmissionPage.vue"),
+  },
+  AUTH_IN_PROV_MEDICAL: {
+    path: "/auth-in-province-medical-info",
+    title: "Pre-authorization of Payment Medical Information",
+    name: "AuthInProvinceMedicalInfo",
+    component: () => import("@/views/authInProvince/MedicalInfo.vue"),
+  },
+  MAINTENANCE_PAGE: {
+    path: "/maintenance-page",
+    title: "Maintenance Page",
+    name: "MaintenancePage",
+    component: () => import("@/views/MaintenancePage.vue"),
   },
 };
 
@@ -72,6 +84,13 @@ export const stepRoutes = [
   { ...routes.SUBMISSION_PAGE },
 ];
 
+export const overAgeRoutes = [
+  { ...routes.OVER_AGE_PRACTITIONER_PAGE },
+  { ...routes.OVER_AGE_CLAIMS_INFO },
+  { ...routes.OVER_AGE_REVIEW_PAGE },
+  { ...routes.OVER_AGE_SUBMISSION },
+];
+
 export const routeStepOrder = [
   routes.PRACTITIONER_INFO,
   routes.PATIENT_INFO,
@@ -80,11 +99,23 @@ export const routeStepOrder = [
   routes.SUBMISSION_PAGE,
 ];
 
+export const overAgeStepOrder = [
+  routes.OVER_AGE_PRACTITIONER_PAGE,
+  routes.OVER_AGE_CLAIMS_INFO,
+  routes.OVER_AGE_REVIEW_PAGE,
+  routes.OVER_AGE_SUBMISSION,
+];
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
+      name: "GetStarted",
+      component: () => import("../views/GetStarted.vue"),
+    },
+    {
+      path: "/practitioner-info",
       name: "PractitionerInfo",
       component: () => import("../views/PractitionerInfo.vue"),
     },
@@ -109,16 +140,6 @@ const router = createRouter({
       component: () => import("../views/SubmissionPage.vue"),
     },
     {
-      path: "/maintenance-page",
-      name: "MaintenancePage",
-      component: () => import("../views/MaintenancePage.vue"),
-    },
-    {
-      path: "/get-started",
-      name: "GetStarted",
-      component: () => import("../views/GetStarted.vue"),
-    },
-    {
       path: "/over-age-practitioner",
       title: "Over-age Practitioner",
       name: "OverAgePractitioner",
@@ -131,10 +152,27 @@ const router = createRouter({
       component: () => import("@/views/overAgeClaim/ClaimsInfo.vue"),
     },
     {
+      path: "/over-age-review",
+      title: "Over-age Review",
+      name: "OverAgeReview",
+      component: () => import("@/views/overAgeClaim/ReviewPage.vue"),
+    },
+    {
       path: "/over-age-submission",
       title: "Over-age Submission",
       name: "OverAgeSubmission",
       component: () => import("@/views/overAgeClaim/SubmissionPage.vue"),
+    },
+    {
+      path: "/auth-in-province-medical-info",
+      title: "Pre-authorization of Payment Medical Information",
+      name: "AuthInProvinceMedicalInfo",
+      component: () => import("@/views/authInProvince/MedicalInfo.vue"),
+    },
+    {
+      path: "/maintenance-page",
+      name: "MaintenancePage",
+      component: () => import("../views/MaintenancePage.vue"),
     },
   ],
 });
@@ -150,22 +188,27 @@ export const isPastPath = (toPath, fromPath) => {
   return false;
 };
 
+export const isOverAgePath = (toPath, fromPath) => {
+  for (let i = 0; i < overAgeStepOrder.length; i++) {
+    if (overAgeStepOrder[i].path === fromPath) {
+      return false;
+    } else if (overAgeStepOrder[i].path === toPath) {
+      return true;
+    }
+  }
+  return false;
+};
+
 pageStateService.importPageRoutes(routes);
 
 router.beforeEach((to, from, next) => {
   // If navigation destination is maintenance page, allow it
-  if (
-    to.path === routes.MAINTENANCE_PAGE.path ||
-    to.path === routes.GET_STARTED.path ||
-    to.path === routes.OVER_AGE_PRACTITIONER_PAGE.path ||
-    to.path === routes.OVER_AGE_CLAIMS_INFO.path ||
-    to.path === routes.OVER_AGE_SUBMISSION.path
-  ) {
+  if (to.path === routes.MAINTENANCE_PAGE.path) {
     next();
   } else {
     //Otherwise check if page has been visited before allowing navigation
-    if (to.path !== routes.PRACTITIONER_INFO.path && !pageStateService.isPageVisited(to.path)) {
-      next({ path: routes.PRACTITIONER_INFO.path });
+    if (to.path !== routes.GET_STARTED.path && !pageStateService.isPageVisited(to.path)) {
+      next({ path: routes.GET_STARTED.path });
     } else {
       // Catch-all (navigation)
       next();

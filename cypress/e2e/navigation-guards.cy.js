@@ -3,9 +3,52 @@ import envData from "../fixtures/env-data.js";
 
 describe("navigation guards", () => {
   it("successfully navigates to the correct page in different circumstances", () => {
+    if (envData.enableIntercepts) {
+      console.log("intercepted captcha calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/captcha/captcha", {
+        statusCode: 200,
+        body: {
+          nonce: "1234567890",
+          captcha: "captcha",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      cy.intercept("POST", "/ccup/api/captcha/verify/captcha", {
+        statusCode: 200,
+        body: {
+          valid: true,
+          jwt: "1234567890",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      console.log("intercepted logging calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/logging", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+
+      console.log("intercepted env calls with 200 OK response");
+      cy.intercept("POST", "/ccup/api/env", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed test response from Cypress",
+        },
+      });
+    }
     cy.visit("/");
     cy.location().should((loc) => {
       expect(loc.href).to.eq(Cypress.config("baseUrl"));
+      expect(loc.pathname).to.eq("/ccup/");
+    });
+
+    cy.visit("/practitioner-info");
+    cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/");
     });
 
@@ -29,9 +72,42 @@ describe("navigation guards", () => {
       expect(loc.pathname).to.eq("/ccup/");
     });
 
+    cy.visit("/over-age-practitioner");
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/ccup/");
+    });
+
+    cy.visit("/over-age-claims");
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/ccup/");
+    });
+
+    cy.visit("/over-age-review");
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/ccup/");
+    });
+
+    cy.visit("/over-age-submission");
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/ccup/");
+    });
+
+    cy.visit("/auth-in-province-medical-info");
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/ccup/");
+    });
+
+    // Choosing Pre Auth and Claims form
     cy.completeCaptcha();
+    cy.get("[data-cy=upload-portal-optionsupload-portal-pre-auth-and-claims]").click({
+      force: true,
+    });
+    cy.get("[data-cy=continue-bar]").click();
 
     //Practitoner info
+    cy.location().should((loc) => {
+      expect(loc.pathname).to.eq("/ccup/practitioner-info");
+    });
     cy.get("[data-cy=pracFirstName]").type(envData.pracFirstName);
     cy.get("[data-cy=pracLastName]").type(envData.pracLastName);
     cy.get("[data-cy=pracNumber]").type(envData.pracNumber);
@@ -120,19 +196,19 @@ describe("navigation guards", () => {
       expect(loc.pathname).to.eq("/ccup/review-page");
     });
 
-    cy.get("[data-cy=backButton]").click();
+    cy.get("[data-cy=back-button]").click();
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/upload-documents");
     });
 
-    cy.get("[data-cy=backButton]").click();
+    cy.get("[data-cy=back-button]").click();
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/patient-info");
     });
 
-    cy.get("[data-cy=backButton]").click();
+    cy.get("[data-cy=back-button]").click();
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/");
+      expect(loc.pathname).to.eq("/ccup/practitioner-info");
     });
 
     // // The rest of these tests only work if you temporarily add RouterLinks to the application

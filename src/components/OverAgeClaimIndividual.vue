@@ -2,10 +2,10 @@
   <PhnInput
     :id="`phn-${index}`"
     v-model="phn"
+    :cypress-id="`phn-${index}`"
     label="PHN (Personal Health Number)"
     class="mt-3"
     :input-style="smallStyles"
-    @blur="v$.phn.$touch()"
     @change="updateIndividual(index, 'phn', $event.target.value)"
   />
 
@@ -31,10 +31,10 @@
   <DateInput
     :id="`individual-service-date${index}`"
     v-model="individualServiceDate"
+    :cypress-id="`individual-service-date-${index}`"
     label="Date of service"
     class="mt-3"
-    @blur="v$.individualServiceDate.$touch()"
-    @process-date="updateIndividual(index, 'individualServiceDate', $event)"
+    @process-date="updateIndividual(index, 'individualServiceDate', $event.date)"
   />
 
   <div
@@ -70,11 +70,11 @@
   <InputComponent
     :id="`fee-item${index}`"
     v-model="individualFeeItem"
+    :cypress-id="`fee-item-${index}`"
     label="Fee item"
     class="mt-3"
     maxlength="5"
     :input-style="extraSmallStyles"
-    @blur="v$.individualFeeItem.$touch()"
     @change="updateIndividual(index, 'individualFeeItem', $event.target.value)"
   />
 
@@ -88,6 +88,7 @@
 
   <ButtonComponent
     v-if="totalClaims > 1"
+    :cypress-id="`delete-individual-${index}`"
     label="Delete this individual"
     class="mt-3"
     :color="'gold'"
@@ -189,6 +190,7 @@ export default {
       this.store.deleteIndividual(index);
     },
     updateIndividual(index, fieldName, newValue) {
+      this.v$[fieldName].$touch();
       if (!this.v$[fieldName].$invalid) {
         this.store.updateIndividual(index, fieldName, newValue);
       }

@@ -1,4 +1,8 @@
 <template>
+  <ProgressBar
+    :routes="overAgeRoutes"
+    :current-path="$route.path"
+  />
   <PageContent>
     <main class="container pt-3 pt-sm-5 mb-5">
       <h1 class="mb-0">Practitioner information</h1>
@@ -7,7 +11,7 @@
       <InputComponent
         id="prac-first-name"
         v-model="pracFirstName"
-        cypress-id="pracFirstName"
+        cypress-id="prac-first-name"
         label="First name"
         :maxlength="firstNameMaxLength"
         :required="true"
@@ -32,7 +36,7 @@
       <InputComponent
         id="prac-last-name"
         v-model="pracLastName"
-        cypress-id="pracLastName"
+        cypress-id="prac-last-name"
         label="Last name"
         :maxlength="lastNameMaxLength"
         :required="true"
@@ -59,7 +63,7 @@
         id="prac-number"
         v-model="pracNumber"
         label="Practitioner number"
-        cypress-id="pracNumber"
+        cypress-id="prac-number"
         class="mt-3"
         :input-style="extraSmallStyles"
         @input="handleAPIValidationReset"
@@ -84,7 +88,7 @@
         id="payee-number"
         v-model="payeeNumber"
         label="Payee number"
-        cypress-id="payeeNumber"
+        cypress-id="payee-number"
         class="mt-3"
         :input-style="extraSmallStyles"
         @input="handleAPIValidationReset"
@@ -109,7 +113,7 @@
         id="data-center-number"
         v-model="dataCenterNumber"
         label="Data center number (optional)"
-        cypress-id="dataCenterNumber"
+        cypress-id="data-center-number"
         class="mt-3"
         :maxlength="'5'"
         :input-style="extraSmallStyles"
@@ -131,6 +135,7 @@
       <PhoneNumberInput
         id="contact-phone-number"
         v-model="contactPhoneNumber"
+        cypress-id="contact-phone-number"
         label="Phone number (optional)"
         class="mt-3"
         :input-style="smallStyles"
@@ -172,6 +177,7 @@
         <PhoneNumberInput
           id="fax-phone-number"
           v-model="faxNumber"
+          cypress-id="fax-phone-number"
           label="Fax phone number"
           class="mt-3"
           :input-style="smallStyles"
@@ -235,16 +241,20 @@ import { useCaptchaStore } from "@/stores/captchaStore";
 import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
 import { required } from "@vuelidate/validators";
 import { nameValidator, valueLengthValidator } from "@/helpers/validators.js";
+import { overAgeRoutes, routes } from "@/router/index.js";
+import ProgressBar from "@/components/ProgressBar.vue";
+import pageStateService from "@/services/page-state-service.js";
+import { scrollTo, scrollToError } from "@/helpers/scroll";
 import apiService from "@/services/api-service";
-import { scrollToError } from "@/helpers/scroll";
-import settings from "@/settings";
 import logService from "@/services/log-service.js";
 </script>
 
 <script>
 export default {
   name: "PatientInfo",
-  components: {},
+  components: {
+    ProgressBar,
+  },
   data() {
     return {
       v$: useVuelidate(),
@@ -283,7 +293,9 @@ export default {
       ];
     },
   },
-  created() {},
+  created() {
+    this.assignDataFromStore();
+  },
   validations() {
     const validations = {
       pracFirstName: {
@@ -323,6 +335,20 @@ export default {
   },
   methods: {
     validatePage() {
+      this.v$.$touch();
+      if (!this.v$.$error) {
+        this.nextPage();
+      } else {
+        scrollToError();
+      }
+    },
+    nextPage() {
+      //Navigate to next path.
+      const toPath = routes.OVER_AGE_CLAIMS_INFO.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
       //trigger Vuelidate validation
       this.v$.$validate();
 
@@ -390,6 +416,17 @@ export default {
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
       this.isSystemUnavailable = false;
+    },
+    assignDataFromStore() {
+      this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
+      this.pracLastName = this.store.formFields[this.formFieldParent]["pracLastName"];
+      this.pracNumber = this.store.formFields[this.formFieldParent]["pracNumber"];
+      this.payeeNumber = this.store.formFields[this.formFieldParent]["payeeNumber"];
+      this.dataCenterNumber = this.store.formFields[this.formFieldParent]["dataCenterNumber"];
+      this.contactPhoneNumber = this.store.formFields[this.formFieldParent]["contactPhoneNumber"];
+      this.preferredContactMethod =
+        this.store.formFields[this.formFieldParent]["preferredContactMethod"];
+      this.faxNumber = this.store.formFields[this.formFieldParent]["faxNumber"];
     },
     assignDataFromStore() {
       this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
