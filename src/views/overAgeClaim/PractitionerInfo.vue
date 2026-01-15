@@ -409,24 +409,9 @@ export default {
           scrollToError();
         });
     },
-    nextPage() {
-      //TO-DO: add page navigation
-      console.log("next page called");
-    },
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
       this.isSystemUnavailable = false;
-    },
-    assignDataFromStore() {
-      this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
-      this.pracLastName = this.store.formFields[this.formFieldParent]["pracLastName"];
-      this.pracNumber = this.store.formFields[this.formFieldParent]["pracNumber"];
-      this.payeeNumber = this.store.formFields[this.formFieldParent]["payeeNumber"];
-      this.dataCenterNumber = this.store.formFields[this.formFieldParent]["dataCenterNumber"];
-      this.contactPhoneNumber = this.store.formFields[this.formFieldParent]["contactPhoneNumber"];
-      this.preferredContactMethod =
-        this.store.formFields[this.formFieldParent]["preferredContactMethod"];
-      this.faxNumber = this.store.formFields[this.formFieldParent]["faxNumber"];
     },
     assignDataFromStore() {
       this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
