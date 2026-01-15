@@ -94,7 +94,6 @@
         @input="handleAPIValidationReset"
         @blur="handleChangeField(v$.payeeNumber, $event, formFieldParent, store)"
       />
-
       <div
         v-if="v$.payeeNumber.$dirty && v$.payeeNumber.$invalid"
         class="text-danger error"
@@ -198,6 +197,21 @@
           }}
         </div>
       </div>
+
+      <div
+        v-if="isSystemUnavailable"
+        class="text-danger error my-4"
+        aria-live="assertive"
+      >
+        Unable to continue, system unavailable. Please try again later.
+      </div>
+      <div
+        v-if="isAPIValidationErrorShown"
+        class="text-danger error my-4"
+        aria-live="assertive"
+      >
+        Practitioner information does not match our records.
+      </div>
     </main>
   </PageContent>
   <ContinueBar
@@ -231,6 +245,8 @@ import { overAgeRoutes, routes } from "@/router/index.js";
 import ProgressBar from "@/components/ProgressBar.vue";
 import pageStateService from "@/services/page-state-service.js";
 import { scrollTo, scrollToError } from "@/helpers/scroll";
+import apiService from "@/services/api-service";
+import logService from "@/services/log-service.js";
 </script>
 
 <script>
@@ -333,6 +349,65 @@ export default {
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
       scrollTo(0);
+      //trigger Vuelidate validation
+      this.v$.$validate();
+
+      //if no Vuelidate errors, move to API check, otherwise scroll to error
+      if (!this.v$.$error) {
+        this.validatePractitioner();
+      } else {
+        scrollToError();
+      }
+    },
+    validatePractitioner() {
+      console.log("validate practitioner API called");
+      this.isLoading = true;
+      this.isSystemUnavailable = false;
+      this.isAPIValidationErrorShown = false;
+
+      apiService
+        .validatePractitioner(this.store, this.captchaStore)
+        .then((response) => {
+          console.log("rutabaga success", response);
+          this.isLoading = false;
+          const returnCode = response.data.returnCode;
+
+          switch (returnCode) {
+            case "0": // Successfully executed API validation (data matches records)
+              logService.logInfo(this.captchaStore.applicationUuid, {
+                event: "validation success (validatePractitioner)",
+                response: response.data,
+              });
+              this.nextPage();
+              break;
+            case "1": // Successfully executed API validation (data does not match records)
+              this.isAPIValidationErrorShown = true;
+              logService.logInfo(this.captchaStore.applicationUuid, {
+                event: "validation failure (validatePractitioner)",
+                response: response.data,
+              });
+              scrollToError();
+              break;
+            default: // An API error occurred, eg. first name is too long.
+              this.isSystemUnavailable = true;
+              logService.logError(this.captchaStore.applicationUuid, {
+                event: "validation failure (validatePractitioner endpoint unavailable)",
+                response: response.data,
+              });
+              scrollToError();
+              break;
+          }
+        })
+        .catch((error) => {
+          //all other errors, eg. if the server is down
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          logService.logError(this.captchaStore.applicationUuid, {
+            event: "HTTP error (validatePractitioner unexpected problem)",
+            status: error.response.status,
+          });
+          scrollToError();
+        });
     },
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
