@@ -94,9 +94,7 @@ import { handleChangeField } from "@/helpers/handler.js";
 import { useAuthInProvinceStore } from "@/stores/authInProvinceStore.js";
 import { required } from "@vuelidate/validators";
 import { nameValidator, valueLengthValidator } from "@/helpers/validators.js";
-import { routes } from "@/router/index.js";
-import pageStateService from "@/services/page-state-service.js";
-import { scrollTo, scrollToError } from "@/helpers/scroll";
+import { scrollToError } from "@/helpers/scroll";
 </script>
 
 <script>
@@ -142,13 +140,13 @@ export default {
       }
     },
     nextPage() {
-      //Navigate to next path.
-      const toPath = routes.OVER_AGE_CLAIMS_INFO.path;
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-      this.$router.push(toPath);
-      scrollTo(0);
-      this.v$.$validate();
+      // TODO: Update path and connect to the next page once all the pages are working.
+      // const toPath = routes.OVER_AGE_CLAIMS_INFO.path;
+      // pageStateService.setPageComplete(toPath);
+      // pageStateService.visitPage(toPath);
+      // this.$router.push(toPath);
+      // scrollTo(0);
+      // this.v$.$validate();
     },
     assignDataFromStore() {
       this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
