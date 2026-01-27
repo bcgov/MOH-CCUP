@@ -62,17 +62,23 @@ export const routes = {
     name: "OverAgeSubmission",
     component: () => import("@/views/overAgeClaim/SubmissionPage.vue"),
   },
+  AUTH_IN_PROV_PATIENT_INFO: {
+    path: "/auth-in-province-patient-info",
+    title: "Pre-authorization of Payment Patient Information",
+    name: "AuthInProvincePatientInfo",
+    component: () => import("@/views/authInProvince/PatientInfo.vue"),
+  },
   AUTH_IN_PROV_MEDICAL: {
     path: "/auth-in-province-medical-info",
     title: "Pre-authorization of Payment Medical Information",
     name: "AuthInProvinceMedicalInfo",
     component: () => import("@/views/authInProvince/MedicalInfo.vue"),
   },
-  AUTH_IN_PROV_PATIENT_INFO: {
-    path: "/auth-in-province-patient-info",
-    title: "Pre-authorization of Payment Patient Information",
-    name: "AuthInProvincePatientInfo",
-    component: () => import("@/views/authInProvince/PatientInfo.vue"),
+  AUTH_IN_PROV_PRACTITIONER_INFO: {
+    path: "/auth-in-province-practitioner-info",
+    title: "Pre-authorization of Payment Practitioner Information",
+    name: "AuthInProvincePractitionerInfo",
+    component: () => import("@/views/authInProvince/PractitionerInfo.vue"),
   },
   MAINTENANCE_PAGE: {
     path: "/maintenance-page",
@@ -170,16 +176,22 @@ const router = createRouter({
       component: () => import("@/views/overAgeClaim/SubmissionPage.vue"),
     },
     {
+      path: "/auth-in-province-patient-info",
+      title: "Pre-authorization of Payment Patient Information",
+      name: "AuthInProvincePatientInfo",
+      component: () => import("@/views/authInProvince/PatientInfo.vue"),
+    },
+    {
       path: "/auth-in-province-medical-info",
       title: "Pre-authorization of Payment Medical Information",
       name: "AuthInProvinceMedicalInfo",
       component: () => import("@/views/authInProvince/MedicalInfo.vue"),
     },
     {
-      path: "/auth-in-province-patient-info",
-      title: "Pre-authorization of Payment Patient Information",
-      name: "AuthInProvincePatientInfo",
-      component: () => import("@/views/authInProvince/PatientInfo.vue"),
+      path: "/auth-in-province-practitioner-info",
+      title: "Pre-authorization of Payment Practitioner Information",
+      name: "AuthInProvincePractitionerInfo",
+      component: () => import("@/views/authInProvince/PractitionerInfo.vue"),
     },
     {
       path: "/maintenance-page",
@@ -217,7 +229,8 @@ router.beforeEach((to, from, next) => {
   // If navigation destination is maintenance page, allow it
   if (
     to.path === routes.MAINTENANCE_PAGE.path ||
-    to.path === routes.AUTH_IN_PROV_PATIENT_INFO.path
+    to.path === routes.AUTH_IN_PROV_PATIENT_INFO.path ||
+    to.path === routes.AUTH_IN_PROV_PRACTITIONER_INFO.path
   ) {
     next();
   } else {
