@@ -12,6 +12,12 @@ export const useAuthInProvinceStore = defineStore("authInProvinceStore", {
         consultationReport: [],
         description: null,
       },
+      patientInfo: {
+        patientFirstName: null,
+        patientLastName: null,
+        patientPhn: null,
+        patientBirthdate: null,
+      },
       practitionerInfo: {
         pracFirstName: null,
         pracLastName: null,
