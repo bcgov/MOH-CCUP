@@ -48,6 +48,7 @@
     @continue="validatePage()"
   />
 </template>
+
 <script setup>
 import { useCaptchaStore } from "@/stores/captchaStore";
 import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
@@ -59,6 +60,8 @@ import { overAgeRoutes, routes } from "@/router/index.js";
 import ProgressBar from "@/components/ProgressBar.vue";
 import pageStateService from "@/services/page-state-service.js";
 import { scrollTo, scrollToError } from "@/helpers/scroll";
+import apiService from "@/services/api-service";
+import logService from "@/services/log-service.js";
 </script>
 
 <script>
@@ -165,33 +168,101 @@ export default {
   },
   methods: {
     validatePage() {
-      //trigger Vuelidate validation
+      // trigger Vuelidate validation
       this.v$.$validate();
 
-      //if no Vuelidate errors, move to API check, otherwise scroll to error
+      // if no Vuelidate errors, move to API check, otherwise scroll to error
       if (!this.v$.$error) {
-        this.submitForm();
+        this.handleAttachments();
       } else {
         scrollToError();
       }
     },
-    // handleAttachments() {
-    //   this.isLoading = true;
-    //   this.isSystemUnavailable = false;
-    //   this.isAPIValidationErrorShown = false;
-    // },
-    submitForm() {
+
+    handleAttachments() {
+      if (!this.submitForm) {
+        // for dev debugging only
+        return this.submitForm();
+      }
+
       this.isLoading = true;
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
 
-      //Navigate to the submission page
+      const documents = this.store.formFields.claimsInformation.claimSupportDocuments;
+      apiService
+        .sendAttachments(documents, this.captchaStore)
+        .then(() => {
+          // if all image uploads are successful, submit the form
+          logService.logInfo(this.captchaStore.applicationUuid, {
+            event: "submission success (sendAttachments, all)",
+            response: "N/A",
+          });
+          this.submitForm();
+        })
+        .catch((error) => {
+          // this is the error code that runs if any attachments fail to send
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          logService.logError(this.captchaStore.applicationUuid, {
+            event: "submission failure (one or more sendAttachment calls failed)",
+            status: error,
+          });
+          scrollToError();
+        });
+    },
+
+    submitForm() {
+      this.isLoading = true;
+      this.isSystemUnavailable = false;
+
+      apiService
+        .submitOverAgeForm(this.store.formFields, this.captchaStore)
+        .then((response) => {
+          this.isLoading = false;
+          const returnCode = response.data.returnCode;
+
+          if (returnCode !== "success") {
+            const unavailable = returnCode === "failure" ? "" : "endpoint unavailable";
+
+            this.isSystemUnavailable = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: `submission failure (submitForm${unavailable})`,
+              response: response.data,
+            });
+            return scrollToError();
+          }
+
+          // Happy path - Submission success
+          this.store.updateFormField("review", "referenceNumber", response.data.refNumber);
+          logService.logInfo(this.captchaStore.applicationUuid, {
+            event: "submission success (submitForm)",
+            response: response.data,
+          });
+          return this.complete();
+        })
+
+        .catch((error) => {
+          // all other errors, eg. if the server is down
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          logService.logError(this.captchaStore.applicationUuid, {
+            event: "HTTP error (submitForm schema error or other unexpected problem)",
+            status: error.response.status,
+          });
+          scrollToError();
+        });
+    },
+
+    complete() {
+      // Render the submission complete page
       const toPath = routes.OVER_AGE_SUBMISSION.path;
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
       scrollTo(0);
     },
+
     // nextPage() {},
     handleCheckBoxChange(e) {
       this.v$.review.isDeclarationAccuracy.$touch();

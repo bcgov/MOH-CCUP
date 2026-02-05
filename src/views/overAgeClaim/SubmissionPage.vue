@@ -68,7 +68,7 @@ import pageStateService from "@/services/page-state-service.js";
 import logService from "@/services/log-service.js";
 import { routes } from "@/router/index.js";
 import { useCaptchaStore } from "@/stores/captchaStore";
-import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
+import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 import OverAgeReviewTable from "@/components/OverAgeReviewTable.vue";
@@ -82,7 +82,7 @@ export default {
   data() {
     return {
       captchaStore: useCaptchaStore(),
-      store: useDocSubmissionStore(),
+      store: useOverAgeClaimStore(),
       documentsCategory: null,
       isDeclarationAccuracy: null,
       pracFullName: null,
