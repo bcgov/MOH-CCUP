@@ -145,9 +145,9 @@ class ApiService {
       feeItems: formFields.claimsInformation.feeItems || undefined,
       detailedExplanation: formFields.claimsInformation.detailedExplanation || undefined,
 
-      declaration1: "Declaration 1",
-      declaration2: "Declaration 2",
-      signature: "Y",
+      declaration1: declarationAccuracy,
+      declaration2: declarationValidity,
+      // signature: "Y",
       supportingDocumentsFor: "OVERAGE",
 
       individuals,
