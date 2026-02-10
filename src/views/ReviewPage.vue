@@ -183,8 +183,9 @@ export default {
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
 
+      const documents = this.store.formFields.upload.patientSupportDocuments;
       apiService
-        .sendAttachments(this.store, this.captchaStore)
+        .sendAttachments(documents, this.captchaStore)
         .then(() => {
           //if all image uploads are successful, submit the form
           logService.logInfo(this.captchaStore.applicationUuid, {
@@ -274,10 +275,12 @@ export default {
 .icon-style {
   width: 16px;
 }
+
 .row-details {
   height: 30px;
   padding-bottom: 0.5rem !important;
 }
+
 .row-title {
   margin-bottom: 9px;
 }

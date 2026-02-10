@@ -46,7 +46,35 @@ describe("happy path doc submission", () => {
           testfield: "This is a stubbed test response from Cypress",
         },
       });
+
+      console.log("Intercept Validate POST with 200 OK response");
+      cy.intercept("POST", "/ccup/api/claims.supportDocIntegration/validatePractitioner/**", {
+        statusCode: 200,
+        body: {
+          returnCode: "0",
+          testfield: "This is a stubbed response from a Cypress Intercept",
+        },
+      });
+
+      console.log("Intercepted Attachment POST with 200 OK response");
+      cy.intercept("POST", "/ccup/api/submit-attachment/**", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed response from a Cypress Intercept",
+        },
+      });
+
+      console.log("intercept Submit POST with 200 OK response");
+      cy.intercept("POST", "/ccup/api/claims.supportDocIntegration/submitFormA/**", {
+        statusCode: 200,
+        body: {
+          returnCode: "success",
+          testfield: "This is a stubbed response from a Cypress Intercept",
+        },
+      });
     }
+
     // Get Started Page
     cy.visit("/");
     cy.location().should((loc) => {
@@ -211,7 +239,7 @@ describe("happy path doc submission", () => {
     cy.get("[data-cy=practitioner-declaration-accuracy]").check({ force: true });
     cy.get("[data-cy=continue-bar]").click();
 
-    //Submission page
+    //Submission Complete page
     cy.location().should((loc) => {
       expect(loc.pathname).to.eq("/ccup/over-age-submission");
     });

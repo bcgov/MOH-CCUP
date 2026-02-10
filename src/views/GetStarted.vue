@@ -135,7 +135,6 @@ export default {
         toPath = routes.AUTH_IN_PROV_MEDICAL.path;
       }
       //Navigate to the corresponding page
-      console.log(toPath);
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
