@@ -1,5 +1,5 @@
 import axios from "axios";
-import { formatISODate, stripSpaces } from "common-lib-vue";
+import { formatISODate, stripSpaces, stripPhoneFormatting } from "common-lib-vue";
 import { v4 as uuidv4 } from "uuid";
 import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 
@@ -7,6 +7,7 @@ const BASE_API_PATH = "/ccup/api";
 const VALIDATE_PRACTITIONER_URL = `${BASE_API_PATH}/claims.supportDocIntegration/validatePractitioner`;
 const VALIDATE_PATIENT_URL = `${BASE_API_PATH}/claims.supportDocIntegration/validatePerson`;
 const SUBMIT_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitForm`;
+const SUBMIT_OVERAGE_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitFormA`;
 const SUBMIT_ATTACHMENT_URL = `${BASE_API_PATH}/submit-attachment`;
 
 class ApiService {
@@ -53,11 +54,11 @@ class ApiService {
     );
   }
 
-  sendAttachments(formStore, captchaStore) {
+  sendAttachments(documents, captchaStore) {
     //create an array containing individual promises for each image upload
     const promises = [];
 
-    formStore.formFields.upload.patientSupportDocuments.forEach((image) => {
+    documents.forEach((image) => {
       promises.push(this._sendAttachment(image, captchaStore));
     });
 
@@ -66,16 +67,34 @@ class ApiService {
     return Promise.all(promises);
   }
 
-  _formatAttachments(originalAttachments) {
-    let formattedAttachments = [];
-    if (!originalAttachments || originalAttachments.length === 0) {
+  _formatIndividuals(individuals) {
+    let results = [];
+    if (!individuals || individuals.length === 0) {
+      return results;
+    }
+
+    for (const individual of individuals) {
+      results.push({
+        individualClaimDate: formatISODate(individual.individualServiceDate),
+        phn: stripSpaces(individual.phn),
+        // feeItem: individual.individualFeeItem,
+      });
+    }
+
+    return results;
+  }
+
+  _formatAttachments(attachments) {
+    const formattedAttachments = [];
+
+    if (!attachments || attachments.length === 0) {
       return formattedAttachments;
     }
 
-    for (let i = 0; i < originalAttachments.length; i++) {
+    for (let i = 0; i < attachments.length; i++) {
       formattedAttachments.push({
         attachmentDocumentType: "SUPPORTDOCUMENT",
-        attachmentUuid: originalAttachments[i].uuid,
+        attachmentUuid: attachments[i].uuid,
         attachmentOrder: i,
       });
     }
@@ -83,6 +102,73 @@ class ApiService {
     return formattedAttachments;
   }
 
+  /**
+   * Submit OverAge claims
+   *
+   * @param {*} formStore
+   * @param {*} captchaStore
+   * @returns
+   */
+  submitOverAgeForm(formFields, captchaStore) {
+    const captchaToken = captchaStore.captchaToken;
+
+    const attachments = this._formatAttachments(formFields.claimsInformation.claimSupportDocuments);
+    const individuals = this._formatIndividuals(formFields.claimsInformation.individuals);
+
+    const dateType = formFields.claimsInformation.dateType;
+    let claimFromDate = formatISODate(formFields.claimsInformation.claimFromDate) || null;
+    let claimToDate = formatISODate(formFields.claimsInformation.claimToDate) || null;
+    const claimServiceDate = formatISODate(formFields.claimsInformation.claimServiceDate);
+    claimFromDate = dateType == "date" ? claimServiceDate : claimFromDate;
+    claimToDate = dateType == "date" ? claimServiceDate : claimToDate;
+
+    const payload = {
+      applicationId: captchaStore.applicationUuid,
+      submissionDate: formatISODate(new Date()),
+
+      practitionerFirstName: formFields.practitioner.pracFirstName,
+      practitionerLastName: formFields.practitioner.pracLastName,
+      practitionerNumber: formFields.practitioner.pracNumber,
+      practitionerPayeeNumber: formFields.practitioner.payeeNumber,
+      dataCenterNumber: formFields.practitioner.dataCenterNumber || undefined,
+      contactPhoneNumber:
+        stripPhoneFormatting(formFields.practitioner.contactPhoneNumber) || undefined,
+      preferredContactMethod: formFields.practitioner.preferredContactMethod || undefined,
+      faxNumber: stripPhoneFormatting(formFields.practitioner.faxNumber) || undefined,
+
+      dateType: formFields.claimsInformation.dateType || undefined,
+      claimFromDate,
+      claimToDate,
+
+      approximateClaimNumber: formFields.claimsInformation.approximateClaimNumber || undefined,
+      approximateDollarValue: formFields.claimsInformation.approximateDollarValue || undefined,
+      feeItems: formFields.claimsInformation.feeItems || undefined,
+      detailedExplanation: formFields.claimsInformation.detailedExplanation || undefined,
+
+      declaration1: declarationAccuracy,
+      declaration2: declarationValidity,
+      // signature: "Y",
+      supportingDocumentsFor: "OVERAGE",
+
+      individuals,
+      attachments,
+    };
+
+    const headers = this._getHeaders(captchaToken);
+    return this._sendPostRequest(
+      `${SUBMIT_OVERAGE_FORM_URL}/${captchaStore.applicationUuid}`,
+      payload,
+      headers
+    );
+  }
+
+  /*
+   * Submit Pre-auth & Regular Claims
+   *
+   * @param {*} formStore
+   * @param {*} captchaStore
+   * @returns
+   */
   submitForm(formStore, captchaStore) {
     const captchaToken = captchaStore.captchaToken;
 

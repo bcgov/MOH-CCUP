@@ -515,7 +515,6 @@ export default {
     nextPage() {
       //Navigate to next path.
       const toPath = routes.OVER_AGE_REVIEW_PAGE.path;
-      console.log(toPath);
       pageStateService.setPageComplete(toPath);
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);

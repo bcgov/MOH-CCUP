@@ -29,7 +29,8 @@
           v$.pracFirstName.required.$invalid
             ? "First name is required."
             : v$.pracFirstName.nameValidator.$invalid
-              ? "First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
+              ? `First name must begin with a letter and cannot include special
+              characters except hyphens, periods, apostrophes and blank characters.`
               : null
         }}
       </div>
@@ -54,7 +55,8 @@
           v$.pracLastName.required.$invalid
             ? "Last name is required."
             : v$.pracLastName.nameValidator.$invalid
-              ? "Last name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
+              ? `Last name must begin with a letter and cannot include special 
+              characters except hyphens, periods, apostrophes and blank characters.`
               : null
         }}
       </div>
@@ -333,34 +335,19 @@ export default {
     }
     return validations;
   },
+
   methods: {
     validatePage() {
-      this.v$.$touch();
-      if (!this.v$.$error) {
-        this.nextPage();
-      } else {
-        scrollToError();
-      }
-    },
-    nextPage() {
-      //Navigate to next path.
-      const toPath = routes.OVER_AGE_CLAIMS_INFO.path;
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-      this.$router.push(toPath);
-      scrollTo(0);
-      //trigger Vuelidate validation
       this.v$.$validate();
 
-      //if no Vuelidate errors, move to API check, otherwise scroll to error
-      if (!this.v$.$error) {
-        this.validatePractitioner();
-      } else {
-        scrollToError();
+      if (this.v$.$error) {
+        return scrollToError();
       }
+
+      this.validatePractitioner();
     },
+
     validatePractitioner() {
-      console.log("validate practitioner API called");
       this.isLoading = true;
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
@@ -368,35 +355,28 @@ export default {
       apiService
         .validatePractitioner(this.store, this.captchaStore)
         .then((response) => {
-          console.log("rutabaga success", response);
           this.isLoading = false;
           const returnCode = response.data.returnCode;
 
-          switch (returnCode) {
-            case "0": // Successfully executed API validation (data matches records)
-              logService.logInfo(this.captchaStore.applicationUuid, {
-                event: "validation success (validatePractitioner)",
-                response: response.data,
-              });
-              this.nextPage();
-              break;
-            case "1": // Successfully executed API validation (data does not match records)
-              this.isAPIValidationErrorShown = true;
-              logService.logInfo(this.captchaStore.applicationUuid, {
-                event: "validation failure (validatePractitioner)",
-                response: response.data,
-              });
-              scrollToError();
-              break;
-            default: // An API error occurred, eg. first name is too long.
-              this.isSystemUnavailable = true;
-              logService.logError(this.captchaStore.applicationUuid, {
-                event: "validation failure (validatePractitioner endpoint unavailable)",
-                response: response.data,
-              });
-              scrollToError();
-              break;
+          // Something went wromg.  Bad code or system error
+          if (returnCode != "0") {
+            this.isAPIValidationErrorShown = returnCode == "1";
+            this.isSystemUnavailable = returnCode != "1";
+            const unavailable = this.isSystemUnavailable ? "" : "endpoint unavailable";
+
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: `validation failure (submitForm${unavailable})`,
+              response: response.data,
+            });
+            return scrollToError();
           }
+
+          // Successfully executed API validation (data matches records)
+          logService.logInfo(this.captchaStore.applicationUuid, {
+            event: "validation success (validatePractitioner)",
+            response: response.data,
+          });
+          this.nextPage();
         })
         .catch((error) => {
           //all other errors, eg. if the server is down
@@ -409,6 +389,16 @@ export default {
           scrollToError();
         });
     },
+
+    nextPage() {
+      //Navigate to next path.
+      const toPath = routes.OVER_AGE_CLAIMS_INFO.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+    },
+
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
       this.isSystemUnavailable = false;
