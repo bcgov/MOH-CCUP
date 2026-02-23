@@ -147,7 +147,7 @@ class ApiService {
 
       declaration1: declarationAccuracy,
       declaration2: declarationValidity,
-      // signature: "Y",
+      signature: "Y",
       supportingDocumentsFor: "OVERAGE",
 
       individuals,
