@@ -67,25 +67,6 @@
     <p>Claims older than 18 months old cannot be submitted.</p>
   </div>
 
-  <InputComponent
-    :id="`fee-item${index}`"
-    v-model="individualFeeItem"
-    :cypress-id="`fee-item-${index}`"
-    label="Fee item"
-    class="mt-3"
-    maxlength="5"
-    :input-style="extraSmallStyles"
-    @change="updateIndividual(index, 'individualFeeItem', $event.target.value)"
-  />
-
-  <div
-    v-if="v$.individualFeeItem.$dirty && v$.individualFeeItem.required.$invalid"
-    class="text-danger error"
-    aria-live="assertive"
-  >
-    <p>Fee item is required.</p>
-  </div>
-
   <ButtonComponent
     v-if="totalClaims > 1"
     :cypress-id="`delete-individual-${index}`"
@@ -97,9 +78,9 @@
 </template>
 
 <script setup>
-import { PhnInput, DateInput, InputComponent, ButtonComponent, phnValidator } from "common-lib-vue";
+import { PhnInput, DateInput, ButtonComponent, phnValidator } from "common-lib-vue";
 import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
-import { extraSmallStyles, smallStyles } from "@/constants/input-styles";
+import { smallStyles } from "@/constants/input-styles";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
 import {
@@ -135,7 +116,6 @@ export default {
       store: useOverAgeClaimStore(),
       phn: null,
       individualServiceDate: null,
-      individualFeeItem: null,
     };
   },
   watch: {
@@ -144,17 +124,12 @@ export default {
       if (newPropData.phn && newPropData.phn !== this.phn) {
         this.phn = newPropData.phn;
       }
+
       if (
         newPropData.individualServiceDate &&
         newPropData.individualServiceDate !== this.individualServiceDate
       ) {
         this.individualServiceDate = newPropData.individualServiceDate;
-      }
-      if (
-        newPropData.individualFeeItem &&
-        newPropData.individualFeeItem !== this.individualFeeItem
-      ) {
-        this.individualFeeItem = newPropData.individualFeeItem;
       }
     },
   },
@@ -173,9 +148,6 @@ export default {
         lessThan18MonthsValidator,
         dateDataValidator,
       },
-      individualFeeItem: {
-        required,
-      },
     };
 
     return validations;
@@ -184,7 +156,6 @@ export default {
     assignData() {
       this.phn = this.propData.phn;
       this.individualServiceDate = this.propData.individualServiceDate;
-      this.individualFeeItem = this.propData.individualFeeItem;
     },
     deleteIndividual(index) {
       this.store.deleteIndividual(index);

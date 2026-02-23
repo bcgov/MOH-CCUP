@@ -328,18 +328,7 @@
                   {{ formatDate(individual.individualServiceDate) }}
                 </span>
               </div>
-              <!-- Individual's Fee Item -->
-              <div class="col-6">
-                <span class="fs-5 fw-bold ms-5">Fee item</span>
-              </div>
-              <div class="col-6">
-                <span
-                  class="fs-5"
-                  :data-cy="'individual-fee-item-' + index"
-                >
-                  {{ individual.individualFeeItem }}
-                </span>
-              </div>
+
               <hr />
             </div>
           </div>
@@ -452,7 +441,6 @@ export default {
           {
             phn: null,
             individualServiceDate: null,
-            individualFeeItem: null,
           },
         ],
         claimSupportDocuments: [],
