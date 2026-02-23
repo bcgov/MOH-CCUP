@@ -27,7 +27,6 @@ export const useOverAgeClaimStore = defineStore("overAgeClaimStore", {
           {
             phn: null,
             individualServiceDate: null,
-            individualFeeItem: null,
           },
         ],
         claimSupportDocuments: [],
@@ -49,7 +48,6 @@ export const useOverAgeClaimStore = defineStore("overAgeClaimStore", {
       this.formFields.claimsInformation.individuals.push({
         phn: null,
         individualServiceDate: null,
-        individualFeeItem: null,
       });
     },
     deleteIndividual(index) {

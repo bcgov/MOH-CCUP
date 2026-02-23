@@ -20,7 +20,6 @@ const envData = {
   feeItems: "11111, 22222",
   detailedExplanation: "aaaaa",
   individualPhn: "9999999998",
-  individualFeeItem: "222",
   claimComment: "comment",
 };
 

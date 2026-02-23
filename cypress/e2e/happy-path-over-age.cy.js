@@ -145,7 +145,6 @@ describe("happy path doc submission", () => {
       .trigger("change");
     cy.get("[data-cy=individual-service-date-0Day]").type("12");
     cy.get("[data-cy=individual-service-date-0Year]").type(testYear);
-    cy.get("[data-cy=fee-item-0]").type("111");
     cy.get("[data-cy=add-individual]").click();
     cy.get("[data-cy=phn-1]").type(envData.individualPhn);
     cy.get("select")
@@ -155,7 +154,6 @@ describe("happy path doc submission", () => {
       .trigger("change");
     cy.get("[data-cy=individual-service-date-1Day]").type("14");
     cy.get("[data-cy=individual-service-date-1Year]").type(testYear);
-    cy.get("[data-cy=fee-item-1]").type(envData.individualFeeItem);
     cy.get("[data-cy=delete-individual-0]").click();
     cy.get("input#claim-support-documents").selectFile(samplePDF, { force: true });
     cy.get("#claim-support-documents")
@@ -233,7 +231,6 @@ describe("happy path doc submission", () => {
       "contain",
       new Date(testYear, testMonth, 14).toDateString()
     );
-    cy.get("[data-cy=individual-fee-item-0]").should("contain", envData.individualFeeItem);
     cy.get("[data-cy=review-table-claim-support-documents]").should("contain", "2");
     cy.get("[data-cy=review-table-claim-comment]").should("contain", envData.claimComment);
     cy.get("[data-cy=practitioner-declaration-accuracy]").check({ force: true });
@@ -288,7 +285,6 @@ describe("happy path doc submission", () => {
       "contain",
       new Date(testYear, testMonth, 14).toDateString()
     );
-    cy.get("[data-cy=individual-fee-item-0]").should("contain", envData.individualFeeItem);
     cy.get("[data-cy=review-table-claim-support-documents]").should("contain", "2");
     cy.get("[data-cy=review-table-claim-comment]").should("contain", envData.claimComment);
   });
