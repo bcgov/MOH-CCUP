@@ -74,7 +74,6 @@ import UploadPortalOptions from "@/components/UploadPortalOptions.vue";
 export default {
   name: "GetStarted",
   components: {},
-  emits: ["update:modelValue", "input"],
   data() {
     return {
       v$: useVuelidate(),
