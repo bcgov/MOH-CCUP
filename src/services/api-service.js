@@ -1,7 +1,6 @@
 import axios from "axios";
 import { formatISODate, stripSpaces, stripPhoneFormatting } from "common-lib-vue";
 import { v4 as uuidv4 } from "uuid";
-import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 
 const BASE_API_PATH = "/ccup/api";
 const VALIDATE_PRACTITIONER_URL = `${BASE_API_PATH}/claims.supportDocIntegration/validatePractitioner`;
@@ -109,7 +108,7 @@ class ApiService {
    * @param {*} captchaStore
    * @returns
    */
-  submitOverAgeForm(formFields, captchaStore) {
+  submitOverAgeForm(formFields, captchaStore, declarations) {
     const captchaToken = captchaStore.captchaToken;
 
     const attachments = this._formatAttachments(formFields.claimsInformation.claimSupportDocuments);
@@ -145,8 +144,8 @@ class ApiService {
       feeItems: formFields.claimsInformation.feeItems || undefined,
       detailedExplanation: formFields.claimsInformation.detailedExplanation || undefined,
 
-      declaration1: declarationAccuracy,
-      declaration2: declarationValidity,
+      declaration1: declarations?.declarationAccuracy,
+      declaration2: declarations?.declarationValidity,
       signature: "Y",
       supportingDocumentsFor: "OVERAGE",
 
@@ -169,7 +168,7 @@ class ApiService {
    * @param {*} captchaStore
    * @returns
    */
-  submitForm(formStore, captchaStore) {
+  submitClaimsForm(formStore, captchaStore, declarations) {
     const captchaToken = captchaStore.captchaToken;
 
     //the database stored procedure checks for these two keywords in order to sort documents
@@ -198,8 +197,10 @@ class ApiService {
       patientBirthDate: formatISODate(formStore.formFields.patient.patientBirthdate),
       adjudicatorFirstName: formStore.formFields.patient.adjFirstName,
       adjudicatorLastName: formStore.formFields.patient.adjLastName,
-      declaration1: declarationAccuracy,
-      declaration2: declarationValidity,
+
+      declaration1: declarations?.declarationAccuracy,
+      declaration2: declarations?.declarationValidity,
+
       supportingDocumentsFor: supportingDocumentsCode,
       attachments: finalAttachments,
     };

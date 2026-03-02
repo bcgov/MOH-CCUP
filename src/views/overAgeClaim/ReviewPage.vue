@@ -54,7 +54,6 @@ import { useCaptchaStore } from "@/stores/captchaStore";
 import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
 import { useVuelidate } from "@vuelidate/core";
 import { PageContent, ContinueBar, CheckboxComponent } from "common-lib-vue";
-import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 import OverAgeReviewTable from "../../components/OverAgeReviewTable.vue";
 import { overAgeRoutes, routes } from "@/router/index.js";
 import ProgressBar from "@/components/ProgressBar.vue";
@@ -62,6 +61,10 @@ import pageStateService from "@/services/page-state-service.js";
 import { scrollTo, scrollToError } from "@/helpers/scroll";
 import apiService from "@/services/api-service";
 import logService from "@/services/log-service.js";
+
+import { declarations } from "@/constants/declarations.js";
+const declarationAccuracy = declarations?.overAge?.declarationAccuracy;
+const declarationValidity = declarations?.overAge?.declarationValidity;
 </script>
 
 <script>
@@ -217,7 +220,7 @@ export default {
       this.isSystemUnavailable = false;
 
       apiService
-        .submitOverAgeForm(this.store.formFields, this.captchaStore)
+        .submitOverAgeForm(this.store.formFields, this.captchaStore, declarations.overAge)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;

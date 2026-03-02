@@ -82,7 +82,10 @@ import { routes } from "../router/index.js";
 import { useCaptchaStore } from "@/stores/captchaStore";
 import { useDocSubmissionStore } from "@/stores/docSubmissionStore";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
-import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
+
+import { declarations } from "@/constants/declarations.js";
+const declarationAccuracy = declarations?.claims?.declarationAccuracy;
+const declarationValidity = declarations?.claims?.declarationValidity;
 </script>
 
 <script>
