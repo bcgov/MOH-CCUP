@@ -6,31 +6,24 @@
       <h2>Welcome</h2>
       <p>
         Welcome to the Claims Correspondence Upload Portal. This form simplifies the submission of
-        documents to support pre-authorization and claims.
+        documents to support pre-authorizations and claims, including over-age claims.
       </p>
-      <p>Before you begin:</p>
+      <p>When uploading documents, ensure that:</p>
       <ul>
-        <li>Please submit documents for one Personal Health Number (PHN) at a time.</li>
+        <li>Each document is in one of the following formats: JPG, PNG, BMP, or PDF.</li>
         <li>
-          If you are submitting documents in response to a request letter from Health Insurance BC
-          (HIBC): for the quickest possible processing, include all requested documents in your
-          submission.
-        </li>
-        <li>
-          Ensure that each document is in one of the following formats: JPG, PNG, GIF, BMP, or PDF.
-        </li>
-        <li>
-          Ensure that each file or image displays the entire document from corner to corner; is
-          oriented correctly (not upside down or sideways); and is in focus and readable.
+          Each file or image displays the entire document from corner to corner; is oriented
+          correctly (not upside down or sideways); and is in focus and readable.
         </li>
       </ul>
       <p>
         If you have any questions or need assistance, please contact the HIBC practitioner claim
-        support team. In Vancouver: (604) 456-6950 Elsewhere in B.C.: 1-866-456-6950
+        support team. In Vancouver: (604) 456-6950. Elsewhere in B.C.: 1-866-456-6950.
       </p>
       <h2 class="mt-5 mb-0">Upload portal options</h2>
       <hr class="mt-0" />
-      <RadioComponent
+      <p>Select the type of correspondence you would like to upload.</p>
+      <UploadPortalOptions
         id="upload-portal-options"
         v-model="uploadPortalOptions"
         aria-labelledby="uploadPortalOptions"
@@ -65,7 +58,7 @@
 </template>
 
 <script setup>
-import { PageContent, RadioComponent, ContinueBar } from "common-lib-vue";
+import { PageContent, ContinueBar } from "common-lib-vue";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import { useCaptchaStore } from "@/stores/captchaStore";
@@ -74,12 +67,14 @@ import ConsentModal from "../components/ConsentModal.vue";
 import { routes } from "@/router/index.js";
 import pageStateService from "@/services/page-state-service.js";
 import { scrollTo, scrollToError } from "@/helpers/scroll";
+import UploadPortalOptions from "@/components/UploadPortalOptions.vue";
 </script>
 
 <script>
 export default {
   name: "GetStarted",
   components: {},
+  emits: ["update:modelValue", "input"],
   data() {
     return {
       v$: useVuelidate(),
@@ -92,19 +87,50 @@ export default {
     radioUploadPortalOptions() {
       return [
         {
-          id: "upload-portal-pre-auth-and-claims",
-          label: "Submission of documents to support pre-authorizations and claims",
-          value: "pre-auth-and-claims",
+          id: "upload-portal-auth-in-prov",
+          label:
+            "Application for pre-authorization of payment: surgery for alteration of appearance (HLTH 2769):",
+          value: "auth-in-prov",
+          points: [
+            [
+              "The Medical Services Plan's payment of surgery for the alteration of appearance is determined in accordance with the Payment Schedule of the Medical Services Commission.",
+            ],
+            [
+              "Surgery to alleviate significant physical symptoms or to restore or improve function to any area altered by disease, trauma or congenital deformity normally is a benefit under the Medical Services Plan. Surgery solely to alter or restore appearance is not a benefit of the Medical Services Plan except under the specific circumstances listed in the Preamble D.9 of the Payment Schedule of the Medical Services Commission. When pre-authorization of payment has been granted.",
+            ],
+          ],
         },
         {
           id: "upload-portal-over-age-claims",
-          label: "Approval of over-age claims",
+          label: "Request for approval of over-age claims (HLTH 2943):",
           value: "over-age-claims",
+          points: [
+            ["Use only for over-age claims (over 90 days) categorized as Submission Code A."],
+            [
+              "For more information on submission codes, visit ",
+              {
+                text: "gov.bc.ca//assets/gov/health/practitioner-pro/medical-services-plan/moa_7.pdf",
+                url: "https://www2.gov.bc.ca//assets/gov/health/practitioner-pro/medical-services-plan/moa_7.pdf",
+              },
+            ],
+            [
+              "All claims billed are subject to standard processing and adjudication rules and regulations as specified below. Pursuant to section 27(3) of the Mediocre Protection Act, section 33 of the Medical and Health Care Services Regulation prescribes 90 days as the period of time within which a claim for payment must be submitted to the Medical Services Commission. Pursuant to section 27(5) of the Medicare Protection Act, the Commission may, at its discretion, pay claims submitted outside the prescribed period.",
+            ],
+          ],
         },
         {
-          id: "upload-portal-auth-in-prov",
-          label: "Authorization in Province",
-          value: "auth-in-prov",
+          id: "upload-portal-pre-auth-and-claims",
+          label: "Documents to support pre-authorization and claims",
+          value: "pre-auth-and-claims",
+          points: [
+            [
+              "If you are submitting a new HLTH 2769 or HLTH 2943 form with supporting documents, use the options above. Use this option to support a previous submission, including HLTH 2769 and HLTH 2943.",
+            ],
+            ["Submit documents for one Personal Health Number (PHN) at a time."],
+            [
+              "If you are submitting documents in response to a request letter from Health Insurance BC (HIBC): for the quickets processing, include all requested documents in your submission.",
+            ],
+          ],
         },
       ];
     },
