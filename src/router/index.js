@@ -80,6 +80,12 @@ export const routes = {
     name: "AuthInProvincePractitionerInfo",
     component: () => import("@/views/authInProvince/PractitionerInfo.vue"),
   },
+  AUTH_IN_PROV_REVIEW_PAGE: {
+    path: "/auth-in-province-review",
+    title: "Pre-authorization of Payment Review",
+    name: "AuthInProvinceReview",
+    component: () => import("@/views/authInProvince/ReviewPage.vue"),
+  },
   MAINTENANCE_PAGE: {
     path: "/maintenance-page",
     title: "Maintenance Page",
@@ -194,6 +200,12 @@ const router = createRouter({
       component: () => import("@/views/authInProvince/PractitionerInfo.vue"),
     },
     {
+      path: "/auth-in-province-review",
+      title: "Pre-authorization of Payment Review",
+      name: "AuthInProvinceReview",
+      component: () => import("@/views/authInProvince/ReviewPage.vue"),
+    },
+    {
       path: "/maintenance-page",
       name: "MaintenancePage",
       component: () => import("../views/MaintenancePage.vue"),
@@ -230,7 +242,8 @@ router.beforeEach((to, from, next) => {
   if (
     to.path === routes.MAINTENANCE_PAGE.path ||
     to.path === routes.AUTH_IN_PROV_PATIENT_INFO.path ||
-    to.path === routes.AUTH_IN_PROV_PRACTITIONER_INFO.path
+    to.path === routes.AUTH_IN_PROV_PRACTITIONER_INFO.path ||
+    to.path === routes.AUTH_IN_PROV_REVIEW_PAGE.path
   ) {
     next();
   } else {
