@@ -157,7 +157,7 @@ export default {
       } else if (this.uploadPortalOptions === "over-age-claims") {
         toPath = routes.OVER_AGE_PRACTITIONER_PAGE.path;
       } else if (this.uploadPortalOptions === "auth-in-prov") {
-        toPath = routes.AUTH_IN_PROV_MEDICAL.path;
+        toPath = routes.AUTH_IN_PROV_PATIENT_INFO.path;
       }
       //Navigate to the corresponding page
       pageStateService.setPageComplete(toPath);
