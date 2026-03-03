@@ -23,6 +23,10 @@ export const useAuthInProvinceStore = defineStore("authInProvinceStore", {
         pracLastName: null,
         pracNumber: null,
       },
+      review: {
+        isDeclarationAccuracy: null,
+        referenceNumber: null,
+      },
     },
   }),
   actions: {
