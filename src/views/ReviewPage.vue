@@ -75,7 +75,10 @@ import ReviewTable from "../components/ReviewTable.vue";
 import { scrollTo, scrollToError } from "../helpers/scroll";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import apiService from "@/services/api-service";
-import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
+
+import { declarations } from "@/constants/declarations.js";
+const declarationAccuracy = declarations?.claims?.declarationAccuracy;
+const declarationValidity = declarations?.claims?.declarationValidity;
 </script>
 
 <script>
@@ -209,7 +212,7 @@ export default {
       this.isLoading = true;
       this.isSystemUnavailable = false;
       apiService
-        .submitForm(this.store, this.captchaStore)
+        .submitClaimsForm(this.store, this.captchaStore, declarations.claims)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;

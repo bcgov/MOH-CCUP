@@ -70,8 +70,11 @@ import { routes } from "@/router/index.js";
 import { useCaptchaStore } from "@/stores/captchaStore";
 import { useOverAgeClaimStore } from "@/stores/overAgeClaimStore";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
-import { declarationAccuracy, declarationValidity } from "@/constants/declarations.js";
 import OverAgeReviewTable from "@/components/OverAgeReviewTable.vue";
+
+import { declarations } from "@/constants/declarations.js";
+const declarationAccuracy = declarations?.overAge?.declarationAccuracy;
+const declarationValidity = declarations?.overAge?.declarationValidity;
 </script>
 
 <script>
