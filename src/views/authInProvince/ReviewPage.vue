@@ -1,4 +1,8 @@
 <template>
+  <ProgressBar
+    :routes="authInProvRoutes"
+    :current-path="$route.path"
+  />
   <PageContent>
     <main class="container mb-5">
       <h1 class="my-0">Review and declaration</h1>
@@ -53,6 +57,9 @@ import { PageContent, ContinueBar, CheckboxComponent } from "common-lib-vue";
 import { declarations } from "@/constants/declarations.js";
 import AuthInProvReviewTable from "../../components/AuthInProvReviewTable.vue";
 import { scrollTo, scrollToError } from "@/helpers/scroll";
+import ProgressBar from "@/components/ProgressBar.vue";
+import pageStateService from "@/services/page-state-service.js";
+import { authInProvRoutes, routes } from "../../router";
 </script>
 
 <script>
@@ -125,7 +132,6 @@ export default {
     validatePage() {
       // trigger Vuelidate validation
       this.v$.$validate();
-
       // if no Vuelidate errors, move to API check, otherwise scroll to error
       if (!this.v$.$error) {
         this.handleAttachments();
@@ -133,32 +139,28 @@ export default {
         scrollToError();
       }
     },
-
     handleAttachments() {
-      if (!this.submitForm) {
-        // for dev debugging only
-        return this.submitForm();
-      }
-
       this.isLoading = true;
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
-
       // TODO: Add API call here for sending attachments
+      this.submitForm();
     },
-
     submitForm() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
-
       // TODO: Add API call here for submitting the form
+      this.complete();
     },
-
     complete() {
-      // TODO: Add navigation to the Confirmation Page
+      // Navigate to Confirmation/Submission Page
+      const toPath = routes.AUTH_IN_PROV_SUBMISSION.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
       scrollTo(0);
+      this.v$.$validate();
     },
-
     handleCheckBoxChange(e) {
       this.v$.review.isDeclarationAccuracy.$touch();
       this.store.updateFormField("review", "isDeclarationAccuracy", e.target.checked);

@@ -253,7 +253,7 @@ import logService from "@/services/log-service.js";
 
 <script>
 export default {
-  name: "PatientInfo",
+  name: "PractitionerInfo",
   components: {
     ProgressBar,
   },

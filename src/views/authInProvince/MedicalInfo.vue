@@ -1,4 +1,8 @@
 <template>
+  <ProgressBar
+    :routes="authInProvRoutes"
+    :current-path="$route.path"
+  />
   <PageContent>
     <main class="container pt-3 pt-sm-5 mb-5">
       <h1 class="mb-0">Medical information</h1>
@@ -79,12 +83,13 @@
           comma.
         </p>
       </div>
-
+      <br />
+      <p><span class="bold">Provide both or one of the following dates </span>(optional):</p>
       <DateInput
         id="previous-surgery-date"
         v-model="previousSurgeryDate"
         cypress-id="previousSurgeryDate"
-        label="Previous surgery date (optional)"
+        label="Previous surgery"
         :use-invalid-state="true"
         class-name="mt-3"
         @process-date="
@@ -123,7 +128,7 @@
         id="trauma-date"
         v-model="traumaDate"
         cypress-id="traumaDate"
-        label="Trauma date (optional)"
+        label="Trauma date"
         :use-invalid-state="true"
         class-name="mt-3"
         @process-date="
@@ -152,7 +157,7 @@
         Trauma date must be in the past.
       </div>
 
-      <h4 class="mt-5">Attach consultation report or description of medical condition(s).</h4>
+      <p class="mt-5">Attach consultation report or description of medical condition(s).</p>
       <hr />
 
       <div class="row mt-3">
@@ -166,7 +171,7 @@
         <div class="col-md-5">
           <div class="tip-container rounded p-3">
             <p>
-              <span class="bold">For blepharoplasty:</span> Please indicate whether the patient
+              <span class="bold">For blepharoplasty:</span> please indicate whether the patient
               meets the criteria for “impairment of vision” as defined in the Payment Schedule.
             </p>
             <p>
@@ -185,7 +190,7 @@
         label="Description of medical condition(s)"
         :maxlength="'400'"
         :required="true"
-        class="mt-3"
+        class="mt-3 bold"
         :input-style="extraLargeStyles"
         @input="handleAPIValidationReset"
         @blur="handleChangeField(v$.description, $event, formFieldParent, store)"
@@ -223,7 +228,10 @@ import { useVuelidate } from "@vuelidate/core";
 import { handleChangeField } from "@/helpers/handler.js";
 import { useCaptchaStore } from "@/stores/captchaStore";
 import { useAuthInProvinceStore } from "@/stores/authInProvinceStore";
-import { scrollToError } from "@/helpers/scroll";
+import { scrollTo, scrollToError } from "@/helpers/scroll";
+import ProgressBar from "@/components/ProgressBar.vue";
+import pageStateService from "@/services/page-state-service.js";
+import { authInProvRoutes, routes } from "../../router";
 import { required } from "@vuelidate/validators";
 import {
   feeItemValidator,
@@ -236,8 +244,10 @@ import {
 
 <script>
 export default {
-  name: "ClaimsInfo",
-  components: {},
+  name: "MedicalInfo",
+  components: {
+    ProgressBar,
+  },
   data() {
     return {
       v$: useVuelidate(),
@@ -290,28 +300,41 @@ export default {
       } else {
         this.store.updateFormField("medicalInfo", "consultationReport", this.consultationReport);
       }
+
       this.v$.$touch();
-      console.log("validations: ", this.v$);
-      console.log("store: ", this.store.formFields.medicalInfo);
-      console.log("local data:", this.previousSurgeryDate);
-      // TO-DO: add navigation, block if validations fail
+      if (!this.v$.$error) {
+        this.nextPage();
+      } else {
+        scrollToError();
+      }
     },
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
       this.isSystemUnavailable = false;
     },
-    handleAddIndividual() {
-      this.store.addIndividual();
-    },
     handleChangeDate(validationObject, newValue, formFieldParent, store, dataField) {
-      this[dataField] = newValue.date;
+      if (newValue.date) {
+        this[dataField] = newValue.date;
+      } else {
+        this[dataField] = null;
+      }
+
       if (validationObject) {
         validationObject.$touch();
 
         if (!validationObject.$invalid && newValue != null && formFieldParent) {
-          store.updateFormField(formFieldParent, validationObject.$path, newValue);
+          store.updateFormField(formFieldParent, validationObject.$path, newValue.date);
         }
       }
+    },
+    nextPage() {
+      // Navigate to Practitioner Page
+      const toPath = routes.AUTH_IN_PROV_PRACTITIONER_INFO.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+      this.v$.$validate();
     },
     assignDataFromStore() {
       this.proposedProcedure = this.store.formFields[this.formFieldParent]["proposedProcedure"];

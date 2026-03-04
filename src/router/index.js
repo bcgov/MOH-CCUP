@@ -64,31 +64,31 @@ export const routes = {
   },
   AUTH_IN_PROV_PATIENT_INFO: {
     path: "/auth-in-province-patient-info",
-    title: "Pre-authorization of Payment Patient Information",
+    title: "Patient Information",
     name: "AuthInProvincePatientInfo",
     component: () => import("@/views/authInProvince/PatientInfo.vue"),
   },
   AUTH_IN_PROV_MEDICAL: {
     path: "/auth-in-province-medical-info",
-    title: "Pre-authorization of Payment Medical Information",
+    title: "Medical Information",
     name: "AuthInProvinceMedicalInfo",
     component: () => import("@/views/authInProvince/MedicalInfo.vue"),
   },
   AUTH_IN_PROV_PRACTITIONER_INFO: {
     path: "/auth-in-province-practitioner-info",
-    title: "Pre-authorization of Payment Practitioner Information",
+    title: "Practitioner Information",
     name: "AuthInProvincePractitionerInfo",
     component: () => import("@/views/authInProvince/PractitionerInfo.vue"),
   },
   AUTH_IN_PROV_REVIEW_PAGE: {
     path: "/auth-in-province-review",
-    title: "Pre-authorization of Payment Review",
+    title: "Review and declaration",
     name: "AuthInProvinceReview",
     component: () => import("@/views/authInProvince/ReviewPage.vue"),
   },
   AUTH_IN_PROV_SUBMISSION: {
     path: "/auth-in-province-submission",
-    title: "Pre-authorization of Payment Submission",
+    title: "Submission",
     name: "AuthInProvinceSubmission",
     component: () => import("@/views/authInProvince/SubmissionPage.vue"),
   },
@@ -115,6 +115,14 @@ export const overAgeRoutes = [
   { ...routes.OVER_AGE_SUBMISSION },
 ];
 
+export const authInProvRoutes = [
+  { ...routes.AUTH_IN_PROV_PATIENT_INFO },
+  { ...routes.AUTH_IN_PROV_MEDICAL },
+  { ...routes.AUTH_IN_PROV_PRACTITIONER_INFO },
+  { ...routes.AUTH_IN_PROV_REVIEW_PAGE },
+  { ...routes.AUTH_IN_PROV_SUBMISSION },
+];
+
 export const routeStepOrder = [
   routes.PRACTITIONER_INFO,
   routes.PATIENT_INFO,
@@ -128,6 +136,14 @@ export const overAgeStepOrder = [
   routes.OVER_AGE_CLAIMS_INFO,
   routes.OVER_AGE_REVIEW_PAGE,
   routes.OVER_AGE_SUBMISSION,
+];
+
+export const authInProvStepOrder = [
+  routes.AUTH_IN_PROV_PATIENT_INFO,
+  routes.AUTH_IN_PROV_MEDICAL,
+  routes.AUTH_IN_PROV_PRACTITIONER_INFO,
+  routes.AUTH_IN_PROV_REVIEW_PAGE,
+  routes.AUTH_IN_PROV_SUBMISSION,
 ];
 
 const router = createRouter({
@@ -247,17 +263,22 @@ export const isOverAgePath = (toPath, fromPath) => {
   return false;
 };
 
+export const isAuthInProvPath = (toPath, fromPath) => {
+  for (let i = 0; i < authInProvStepOrder.length; i++) {
+    if (authInProvStepOrder[i].path === fromPath) {
+      return false;
+    } else if (authInProvStepOrder[i].path === toPath) {
+      return true;
+    }
+  }
+  return false;
+};
+
 pageStateService.importPageRoutes(routes);
 
 router.beforeEach((to, from, next) => {
   // If navigation destination is maintenance page, allow it
-  if (
-    to.path === routes.MAINTENANCE_PAGE.path ||
-    to.path === routes.AUTH_IN_PROV_PATIENT_INFO.path ||
-    to.path === routes.AUTH_IN_PROV_PRACTITIONER_INFO.path ||
-    to.path === routes.AUTH_IN_PROV_REVIEW_PAGE.path ||
-    to.path === routes.AUTH_IN_PROV_SUBMISSION.path
-  ) {
+  if (to.path === routes.MAINTENANCE_PAGE.path) {
     next();
   } else {
     //Otherwise check if page has been visited before allowing navigation

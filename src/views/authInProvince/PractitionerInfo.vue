@@ -1,4 +1,8 @@
 <template>
+  <ProgressBar
+    :routes="authInProvRoutes"
+    :current-path="$route.path"
+  />
   <PageContent>
     <main class="container pt-3 pt-sm-5 mb-5">
       <h1 class="mb-0">Practitioner information</h1>
@@ -94,7 +98,10 @@ import { handleChangeField } from "@/helpers/handler.js";
 import { useAuthInProvinceStore } from "@/stores/authInProvinceStore.js";
 import { required } from "@vuelidate/validators";
 import { nameValidator, valueLengthValidator } from "@/helpers/validators.js";
-import { scrollToError } from "@/helpers/scroll";
+import { scrollTo, scrollToError } from "@/helpers/scroll";
+import ProgressBar from "@/components/ProgressBar.vue";
+import pageStateService from "@/services/page-state-service.js";
+import { authInProvRoutes, routes } from "../../router";
 </script>
 
 <script>
@@ -133,20 +140,27 @@ export default {
   methods: {
     validatePage() {
       this.v$.$touch();
+      this.validatePractitioner();
       if (!this.v$.$error) {
         this.nextPage();
       } else {
         scrollToError();
       }
     },
+    validatePractitioner() {
+      this.isLoading = true;
+      this.isSystemUnavailable = false;
+      this.isAPIValidationErrorShown = false;
+
+      //TODO: Add validation for practitioner
+    },
     nextPage() {
-      // TODO: Update path and connect to the next page once all the pages are working.
-      // const toPath = routes.OVER_AGE_CLAIMS_INFO.path;
-      // pageStateService.setPageComplete(toPath);
-      // pageStateService.visitPage(toPath);
-      // this.$router.push(toPath);
-      // scrollTo(0);
-      // this.v$.$validate();
+      const toPath = routes.AUTH_IN_PROV_REVIEW_PAGE.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+      this.v$.$validate();
     },
     assignDataFromStore() {
       this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];

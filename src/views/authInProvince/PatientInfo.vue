@@ -1,4 +1,8 @@
 <template>
+  <ProgressBar
+    :routes="authInProvRoutes"
+    :current-path="$route.path"
+  />
   <PageContent>
     <main class="container pt-3 pt-sm-5 mb-5">
       <h1 class="mb-0">Patient information</h1>
@@ -152,15 +156,19 @@ import { handleChangeField } from "@/helpers/handler.js";
 import { useCaptchaStore } from "@/stores/captchaStore";
 import { useAuthInProvinceStore } from "@/stores/authInProvinceStore";
 import { distantPastValidator, birthDatePastValidator } from "@/helpers/date.js";
-import { scrollToError } from "@/helpers/scroll";
+import { scrollTo, scrollToError } from "@/helpers/scroll";
 import { required } from "@vuelidate/validators";
 import { nameValidator, birthDateValidator, phnFirstDigitValidator } from "@/helpers/validators.js";
+import ProgressBar from "@/components/ProgressBar.vue";
+import pageStateService from "@/services/page-state-service.js";
+import { authInProvRoutes, routes } from "../../router";
 </script>
 
 <script>
 export default {
   name: "PatientInfo",
   components: {
+    ProgressBar,
     InputComponent,
     PageContent,
     ContinueBar,
@@ -235,13 +243,13 @@ export default {
       }
     },
     nextPage() {
-      // TODO -> Update Routes & Paths
-      // const toPath = routes.AUTH_IN_PROV_MEDICAL.path;
-      // pageStateService.setPageComplete(toPath);
-      // pageStateService.visitPage(toPath);
-      // this.$router.push(toPath);
-      // scrollTo(0);
-      // this.v$.$validate();
+      // Navigate to Medical Info Page
+      const toPath = routes.AUTH_IN_PROV_MEDICAL.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+      this.v$.$validate();
     },
     assignDataFromStore() {
       this.patientFirstName = this.store.formFields[this.formFieldParent]["patientFirstName"];

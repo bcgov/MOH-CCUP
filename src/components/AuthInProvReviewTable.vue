@@ -67,7 +67,7 @@
                 </div>
               </div>
               <!-- Patient's PHN-->
-              <div class="row">
+              <div class="row mt-3">
                 <div class="col-6">
                   <p class="mb-0 fs-5 fw-bold">PHN (Personal Health Number)</p>
                 </div>
@@ -166,7 +166,7 @@
               <a
                 href="/ccup/auth-in-province-medical-info"
                 class="link-icon"
-                @click.prevent="Edit(routes.AUTH_IN_PROV_MEDICAL_INFO.path)"
+                @click.prevent="Edit(routes.AUTH_IN_PROV_MEDICAL.path)"
               >
                 edit&nbsp;&nbsp;<IconPencil
                   class="icon-style"
@@ -215,7 +215,7 @@
                   <span
                     class="fs-5"
                     data-cy="review-table-medical-previous-surgery"
-                    >{{ medicalInfo.previousSurgeryDate }}
+                    >{{ formatDate(medicalInfo.previousSurgeryDate) }}
                   </span>
                 </div>
               </div>
