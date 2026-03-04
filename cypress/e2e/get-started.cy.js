@@ -52,7 +52,7 @@ describe("get started", () => {
     });
     cy.get("[data-cy=continue-bar]").click();
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/auth-in-province-medical-info");
+      expect(loc.pathname).to.eq("/ccup/auth-in-province-patient-info");
     });
 
     // Should navigate to Over Age Claims form
