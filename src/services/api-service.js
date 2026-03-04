@@ -5,8 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 const BASE_API_PATH = "/ccup/api";
 const VALIDATE_PRACTITIONER_URL = `${BASE_API_PATH}/claims.supportDocIntegration/validatePractitioner`;
 const VALIDATE_PATIENT_URL = `${BASE_API_PATH}/claims.supportDocIntegration/validatePerson`;
-const SUBMIT_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitForm`;
+const SUBMIT_CLAIMS_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitForm`;
 const SUBMIT_OVERAGE_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitFormA`;
+const SUBMIT_INPROV_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitFormAuth`;
 const SUBMIT_ATTACHMENT_URL = `${BASE_API_PATH}/submit-attachment`;
 
 class ApiService {
@@ -161,6 +162,57 @@ class ApiService {
     );
   }
 
+  /**
+   * Submit inProv claims
+   *
+   * @param {*} formStore
+   * @param {*} captchaStore
+   * @returns
+   */
+  submitInProvForm(formFields, captchaStore, declarations) {
+    const captchaToken = captchaStore.captchaToken;
+
+    // Stub promise return
+    if (captchaToken) {
+      return Promise.resolve(() => {
+        return { data: { response: "success" } };
+      });
+    }
+
+    const attachments = this._formatAttachments(formFields.claimsInformation.claimSupportDocuments);
+
+    const payload = {
+      applicationId: captchaStore.applicationUuid,
+      submissionDate: formatISODate(new Date()),
+
+      practitionerFirstName: formFields.practitioner.pracFirstName,
+      practitionerLastName: formFields.practitioner.pracLastName,
+      practitionerNumber: formFields.practitioner.pracNumber,
+      declaration1: declarations?.declarationAccuracy,
+      declaration2: declarations?.declarationValidity,
+      signature: "Y",
+      supportingDocumentsFor: "AUTHINPROV",
+
+      feeItems: formFields.claimsInformation.feeItems || undefined,
+      consulatationReportDescription:
+        formFields.claimsInformation.consulatationReportDescription || undefined,
+
+      patientFirstName: "John",
+      patientLastName: "Jonn",
+      patientPhn: "9999999999",
+      patientBirthDate: "2000-11-22",
+
+      attachments,
+    };
+
+    const headers = this._getHeaders(captchaToken);
+    return this._sendPostRequest(
+      `${SUBMIT_INPROV_FORM_URL}/${captchaStore.applicationUuid}`,
+      payload,
+      headers
+    );
+  }
+
   /*
    * Submit Pre-auth & Regular Claims
    *
@@ -207,7 +259,7 @@ class ApiService {
     const headers = this._getHeaders(captchaToken);
 
     return this._sendPostRequest(
-      `${SUBMIT_FORM_URL}/${captchaStore.applicationUuid}`,
+      `${SUBMIT_CLAIMS_FORM_URL}/${captchaStore.applicationUuid}`,
       jsonPayload,
       headers
     );
