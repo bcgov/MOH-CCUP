@@ -225,6 +225,7 @@
 </template>
 
 <script setup>
+import { toRaw } from "vue";
 import {
   PageContent,
   RadioComponent,
@@ -352,13 +353,18 @@ export default {
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
 
+      const practitioner = toRaw(this.store?.formFields?.practitioner);
+      if (import.meta.env.VITE_APP_ENV === "DEV") {
+        console.log("practitioner:", practitioner);
+      }
+
       apiService
-        .validatePractitioner(this.store, this.captchaStore)
+        .validatePractitioner(practitioner, this.captchaStore)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
 
-          // Something went wromg.  Bad code or system error
+          // Something went wrong.  Bad code or system error
           if (returnCode != "0") {
             this.isAPIValidationErrorShown = returnCode == "1";
             this.isSystemUnavailable = returnCode != "1";

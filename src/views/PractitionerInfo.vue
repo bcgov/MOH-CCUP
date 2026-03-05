@@ -143,6 +143,7 @@
 </template>
 
 <script setup>
+import { toRaw } from "vue";
 import { PageContent, ContinueBar, InputComponent, PractitionerNumberInput } from "common-lib-vue";
 import { extraSmallStyles, mediumStyles } from "@/constants/input-styles";
 import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
@@ -248,8 +249,13 @@ export default {
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
 
+      const practitioner = toRaw(this.store?.formFields?.practitioner);
+      if (import.meta.env.VITE_APP_ENV === "DEV") {
+        console.log("practitioner:", practitioner);
+      }
+
       apiService
-        .validatePractitioner(this.store, this.captchaStore)
+        .validatePractitioner(practitioner, this.captchaStore)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
