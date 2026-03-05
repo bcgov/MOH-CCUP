@@ -9,9 +9,10 @@
       </div>
       <hr class="mt-0" />
       <p class="heading">Date submitted: {{ submitDate }}</p>
-      <ValidationMessage class="mb-5">
-        Your Claims / Pre-authorization documents have been received.<br />Reference number is:
-        {{ store.formFields.review.referenceNumber }}
+      <ValidationMessage class="mb-5 heading">
+        Your "Request for approval of over-age claims (HLTH 2943)" has been received.
+        <br />
+        Reference number is: {{ store.formFields.review.referenceNumber }}
       </ValidationMessage>
 
       <h2 class="mb-0">Next steps</h2>
@@ -25,18 +26,16 @@
         </a>
         this page for your records.
       </p>
-      <!-- make print or save sentence bold-->
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras blandit ante et augue ornare
-        lacinia nec eget dolor. Cras gravida mi in accumsan luctus. Quisque at ex quis ligula
-        euismod sagittis. Pellentesque ut felis vel nisl mollis faucibus. In placerat a ligula nec
-        tincidunt. Aliquam in vestibulum erat. Suspendisse eget metus tempor, luctus ante tincidunt,
-        posuere ipsum. Nullam eu mi in neque tempor convallis. Cras facilisis et quam non semper.
-        Vivamus lectus purus, venenatis nec aliquam ac, viverra ut nulla. Phasellus nisl tortor,
-        ultricies eget sapien eu, posuere gravida nunc. Duis sit amet scelerisque elit. Ut vitae
-        euismod augue. Aenean condimentum, risus vitae porttitor pulvinar, odio lacus eleifend
-        libero, vel blandit velit felis semper urna.
+        If you have any questions, contact HIBC:
+        <a
+          href="https://www2.gov.bc.ca/gov/content/health/practitioner-professional-resources/msp/contact-us"
+          target="_blank"
+        >
+          Practitioner & Professional Resources: Contact Us - Province of British Columbia
+        </a>
       </p>
+      <br />
       <p class="heading">Important.</p>
       <p>After printing or saving this page, please close the browser page.</p>
       <h2 class="mt-5 mb-0">Approval of over-age claims information</h2>
