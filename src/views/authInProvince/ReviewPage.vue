@@ -132,6 +132,7 @@ export default {
     validatePage() {
       // trigger Vuelidate validation
       this.v$.$validate();
+
       // if no Vuelidate errors, move to API check, otherwise scroll to error
       if (!this.v$.$error) {
         this.handleAttachments();

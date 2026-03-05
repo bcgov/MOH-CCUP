@@ -90,11 +90,13 @@
 </template>
 
 <script setup>
+import { toRaw } from "vue";
 import { PageContent, ContinueBar, InputComponent, PractitionerNumberInput } from "common-lib-vue";
 import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
 import { extraSmallStyles, mediumStyles } from "@/constants/input-styles";
 import { useVuelidate } from "@vuelidate/core";
 import { handleChangeField } from "@/helpers/handler.js";
+import { useCaptchaStore } from "@/stores/captchaStore";
 import { useAuthInProvinceStore } from "@/stores/authInProvinceStore.js";
 import { required } from "@vuelidate/validators";
 import { nameValidator, valueLengthValidator } from "@/helpers/validators.js";
@@ -102,6 +104,8 @@ import { scrollTo, scrollToError } from "@/helpers/scroll";
 import ProgressBar from "@/components/ProgressBar.vue";
 import pageStateService from "@/services/page-state-service.js";
 import { authInProvRoutes, routes } from "../../router";
+import apiService from "@/services/api-service";
+import logService from "@/services/log-service.js";
 </script>
 
 <script>
@@ -110,6 +114,7 @@ export default {
   data() {
     return {
       v$: useVuelidate(),
+      captchaStore: useCaptchaStore(),
       store: useAuthInProvinceStore(),
       formFieldParent: "practitionerInfo",
       pracFirstName: null,
@@ -140,20 +145,60 @@ export default {
   methods: {
     validatePage() {
       this.v$.$touch();
-      this.validatePractitioner();
-      if (!this.v$.$error) {
-        this.nextPage();
-      } else {
-        scrollToError();
+      if (this.v$.$error) {
+        return scrollToError();
       }
+      this.validatePractitioner();
     },
+
     validatePractitioner() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
 
-      //TODO: Add validation for practitioner
+      const practitioner = toRaw(this.store?.formFields?.practitionerInfo);
+      if (import.meta.env.VITE_APP_ENV === "DEV") {
+        console.log("practitioner:", practitioner);
+      }
+
+      apiService
+        .validatePractitioner(practitioner, this.captchaStore)
+        .then((response) => {
+          this.isLoading = false;
+          const returnCode = response.data.returnCode;
+
+          // Something went wrong.  Bad code or system error
+          if (returnCode != "0") {
+            this.isAPIValidationErrorShown = returnCode == "1";
+            this.isSystemUnavailable = returnCode != "1";
+            const unavailable = this.isSystemUnavailable ? "" : "endpoint unavailable";
+
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: `validation failure (submitForm${unavailable})`,
+              response: response.data,
+            });
+            return scrollToError();
+          }
+
+          // Successfully executed API validation (data matches records)
+          logService.logInfo(this.captchaStore.applicationUuid, {
+            event: "validation success (validatePractitioner)",
+            response: response.data,
+          });
+          this.nextPage();
+        })
+        .catch((error) => {
+          //all other errors, eg. if the server is down
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          logService.logError(this.captchaStore.applicationUuid, {
+            event: "HTTP error (validatePractitioner unexpected problem)",
+            status: error.response.status,
+          });
+          scrollToError();
+        });
     },
+
     nextPage() {
       const toPath = routes.AUTH_IN_PROV_REVIEW_PAGE.path;
       pageStateService.setPageComplete(toPath);
@@ -162,6 +207,7 @@ export default {
       scrollTo(0);
       this.v$.$validate();
     },
+
     assignDataFromStore() {
       this.pracFirstName = this.store.formFields[this.formFieldParent]["pracFirstName"];
       this.pracLastName = this.store.formFields[this.formFieldParent]["pracLastName"];

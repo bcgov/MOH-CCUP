@@ -149,6 +149,7 @@ import {
   PhnInput,
   phnValidator,
 } from "common-lib-vue";
+import { toRaw } from "vue";
 import { smallStyles, mediumStyles } from "@/constants/input-styles";
 import { firstNameMaxLength, lastNameMaxLength } from "@/constants/html-validations.js";
 import { useVuelidate } from "@vuelidate/core";
@@ -162,6 +163,8 @@ import { nameValidator, birthDateValidator, phnFirstDigitValidator } from "@/hel
 import ProgressBar from "@/components/ProgressBar.vue";
 import pageStateService from "@/services/page-state-service.js";
 import { authInProvRoutes, routes } from "../../router";
+import apiService from "@/services/api-service";
+import logService from "@/services/log-service.js";
 </script>
 
 <script>
@@ -220,11 +223,74 @@ export default {
   methods: {
     validatePage() {
       this.v$.$touch();
-      if (!this.v$.$error) {
-        this.nextPage();
-      } else {
-        scrollToError();
+      if (this.v$.$error) {
+        return scrollToError();
       }
+      this.validatePatient();
+    },
+
+    validatePatient() {
+      this.isLoading = true;
+      this.isSystemUnavailable = false;
+      this.isAPIValidationErrorShown = false;
+
+      const patient = toRaw(this.store?.formFields?.patientInfo);
+      if (import.meta.env.VITE_APP_ENV === "DEV") {
+        console.log("patient:", patient);
+      }
+
+      apiService
+        .validatePatient(patient, this.captchaStore)
+        .then((response) => {
+          this.isLoading = false;
+          const returnCode = response.data.returnCode;
+
+          switch (returnCode) {
+            case "success": // Successfully executed API validation (data matches records)
+              logService.logInfo(this.captchaStore.applicationUuid, {
+                event: "validation success (validatePerson)",
+                response: response.data,
+              });
+              this.nextPage();
+              break;
+            case "failure": // Either the data does not match records, or the API didn't recognize one of the fields
+              this.isAPIValidationErrorShown = true;
+              logService.logInfo(this.captchaStore.applicationUuid, {
+                event: "validation failure (validatePerson)",
+                response: response.data,
+              });
+              scrollToError();
+              break;
+            default: // An API error occurred, eg. first name max length exceeded.
+              this.isSystemUnavailable = true;
+              logService.logError(this.captchaStore.applicationUuid, {
+                event: "validation failure (validatePerson endpoint unavailable)",
+                response: response.data,
+              });
+              scrollToError();
+              break;
+          }
+        })
+        .catch((error) => {
+          //all other errors, eg. if the server is down
+          this.isSystemUnavailable = true;
+          logService.logError(this.captchaStore.applicationUuid, {
+            event: "HTTP error (validatePerson unexpected problem)",
+            status: error.response.status,
+          });
+          scrollToError();
+          this.isLoading = false;
+        });
+    },
+
+    nextPage() {
+      // Navigate to Medical Info Page
+      const toPath = routes.AUTH_IN_PROV_MEDICAL.path;
+      pageStateService.setPageComplete(toPath);
+      pageStateService.visitPage(toPath);
+      this.$router.push(toPath);
+      scrollTo(0);
+      this.v$.$validate();
     },
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;
@@ -241,15 +307,6 @@ export default {
           store.updateFormField(formFieldParent, validationObject.$path, newValue);
         }
       }
-    },
-    nextPage() {
-      // Navigate to Medical Info Page
-      const toPath = routes.AUTH_IN_PROV_MEDICAL.path;
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-      this.$router.push(toPath);
-      scrollTo(0);
-      this.v$.$validate();
     },
     assignDataFromStore() {
       this.patientFirstName = this.store.formFields[this.formFieldParent]["patientFirstName"];
