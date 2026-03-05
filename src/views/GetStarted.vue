@@ -95,7 +95,7 @@ export default {
               "The Medical Services Plan's payment of surgery for the alteration of appearance is determined in accordance with the Payment Schedule of the Medical Services Commission.",
             ],
             [
-              "Surgery to alleviate significant physical symptoms or to restore or improve function to any area altered by disease, trauma or congenital deformity normally is a benefit under the Medical Services Plan. Surgery solely to alter or restore appearance is not a benefit of the Medical Services Plan except under the specific circumstances listed in the Preamble D.9 of the Payment Schedule of the Medical Services Commission. When pre-authorization of payment has been granted.",
+              "Surgery to alleviate significant physical symptoms or to restore or improve function to any area altered by disease, trauma or congenital deformity normally is a benefit under the Medical Services Plan. Surgery solely to alter or restore appearance is not a benefit of the Medical Services Plan except under the specific circumstances listed in the Preamble D.9 of the Payment Schedule of the Medical Services Commission.",
             ],
           ],
         },
@@ -127,7 +127,7 @@ export default {
             ],
             ["Submit documents for one Personal Health Number (PHN) at a time."],
             [
-              "If you are submitting documents in response to a request letter from Health Insurance BC (HIBC): for the quickets processing, include all requested documents in your submission.",
+              "If you are submitting documents in response to a request letter from Health Insurance BC (HIBC): for the quickest processing, include all requested documents in your submission.",
             ],
           ],
         },
