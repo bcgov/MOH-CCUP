@@ -197,6 +197,7 @@
 </template>
 
 <script setup>
+import { toRaw } from "vue";
 import {
   PageContent,
   ContinueBar,
@@ -215,7 +216,6 @@ import {
 import ProgressBar from "../components/ProgressBar.vue";
 import { stepRoutes, routes } from "../router/index.js";
 import pageStateService from "../services/page-state-service.js";
-import logService from "@/services/log-service.js";
 import { required } from "@vuelidate/validators";
 import {
   nameValidator,
@@ -230,6 +230,7 @@ import { handleChangeField } from "../helpers/handler.js";
 import { scrollTo, scrollToError } from "../helpers/scroll";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import apiService from "@/services/api-service";
+import logService from "@/services/log-service.js";
 </script>
 
 <script>
@@ -329,8 +330,13 @@ export default {
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
 
+      const patient = toRaw(this.store?.formFields?.patient);
+      if (import.meta.env.VITE_APP_ENV === "DEV") {
+        console.log("patient:", patient);
+      }
+
       apiService
-        .validatePatient(this.store, this.captchaStore)
+        .validatePatient(patient, this.captchaStore)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;

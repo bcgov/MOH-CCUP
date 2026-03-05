@@ -10,20 +10,28 @@ const SUBMIT_OVERAGE_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/s
 const SUBMIT_ATTACHMENT_URL = `${BASE_API_PATH}/submit-attachment`;
 
 class ApiService {
-  validatePractitioner(formStore, captchaStore) {
+  validatePractitioner(practitioner, captchaStore) {
     const applicationUuid = captchaStore.applicationUuid;
     const captchaToken = captchaStore.captchaToken;
 
     const jsonPayload = {
       applicationUuid: applicationUuid,
       requestUuid: uuidv4(),
-      firstName: formStore.formFields.practitioner.pracFirstName,
-      lastName: formStore.formFields.practitioner.pracLastName,
-      number: formStore.formFields.practitioner.pracNumber,
+      firstName: practitioner.pracFirstName,
+      lastName: practitioner.pracLastName,
+      number: practitioner.pracNumber,
       doctor: true,
     };
-    const headers = this._getHeaders(captchaToken);
 
+    // Bypass live API in Dev mode
+    if (import.meta.env.VITE_APP_ENV === "DEV") {
+      console.log("Development Mode: Bypassing validatePractitioner API");
+      return Promise.resolve({
+        data: { returnCode: "0" },
+      });
+    }
+
+    const headers = this._getHeaders(captchaToken);
     return this._sendPostRequest(
       `${VALIDATE_PRACTITIONER_URL}/${applicationUuid}`,
       jsonPayload,
@@ -31,21 +39,29 @@ class ApiService {
     );
   }
 
-  validatePatient(formStore, captchaStore) {
+  validatePatient(patient, captchaStore) {
     const applicationUuid = captchaStore.applicationUuid;
     const captchaToken = captchaStore.captchaToken;
 
     const jsonPayload = {
       uuid: applicationUuid,
       person: {
-        lastName: formStore.formFields.patient.patientLastName,
-        firstName: formStore.formFields.patient.patientFirstInitial,
-        phn: stripSpaces(formStore.formFields.patient.patientPhn),
-        birthDate: formatISODate(formStore.formFields.patient.patientBirthdate),
+        lastName: patient.patientLastName,
+        firstName: patient.patientFirstInitial,
+        phn: stripSpaces(patient.patientPhn),
+        birthDate: formatISODate(patient.patientBirthdate),
       },
     };
-    const headers = this._getHeaders(captchaToken);
 
+    // Bypass live API in Dev mode
+    if (import.meta.env.VITE_APP_ENV === "DEV") {
+      console.log("Development Mode: Bypassing validatePatient API");
+      return Promise.resolve({
+        data: { returnCode: "success" },
+      });
+    }
+
+    const headers = this._getHeaders(captchaToken);
     return this._sendPostRequest(
       `${VALIDATE_PATIENT_URL}/${applicationUuid}`,
       jsonPayload,
