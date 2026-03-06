@@ -250,10 +250,6 @@ export default {
       this.isAPIValidationErrorShown = false;
 
       const practitioner = toRaw(this.store?.formFields?.practitioner);
-      if (import.meta.env.VITE_APP_ENV === "DEV") {
-        console.log("practitioner:", practitioner);
-      }
-
       apiService
         .validatePractitioner(practitioner, this.captchaStore)
         .then((response) => {

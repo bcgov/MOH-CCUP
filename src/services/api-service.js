@@ -25,7 +25,9 @@ class ApiService {
 
     // Bypass live API in Dev mode
     if (import.meta.env.VITE_APP_ENV === "DEV") {
+      console.log("practitioner:", practitioner);
       console.log("Development Mode: Bypassing validatePractitioner API");
+      console.log("payload:", jsonPayload);
       return Promise.resolve({
         data: { returnCode: "0" },
       });
@@ -55,7 +57,9 @@ class ApiService {
 
     // Bypass live API in Dev mode
     if (import.meta.env.VITE_APP_ENV === "DEV") {
+      console.log("patient:", patient);
       console.log("Development Mode: Bypassing validatePatient API");
+      console.log("payload:", jsonPayload);
       return Promise.resolve({
         data: { returnCode: "success" },
       });

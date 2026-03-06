@@ -78,7 +78,7 @@ export default {
       formFieldPractitioner: "practitionerInfo",
       formFieldMedical: "medicalInfo",
       patientInfo: {
-        patientFirstName: null,
+        patientFirstInitial: null,
         patientLastName: null,
         patientBirthdate: null,
         patientPhn: null,

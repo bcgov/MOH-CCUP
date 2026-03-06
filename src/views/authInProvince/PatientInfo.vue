@@ -12,7 +12,7 @@
       <hr class="mt-0" />
       <InputComponent
         id="patient-first-name"
-        v-model="patientFirstName"
+        v-model="patientFirstInitial"
         cypress-id="patient-first-name"
         label="First name"
         :maxlength="firstNameMaxLength"
@@ -20,20 +20,21 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @change="handleChangeField(v$.patientFirstName, $event, formFieldParent, store)"
+        @change="handleChangeField(v$.patientFirstInitial, $event, formFieldParent, store)"
       />
       <div
         v-if="
-          v$.patientFirstName.$dirty &&
-          (v$.patientFirstName.required.$invalid || v$.patientFirstName.nameValidator.$invalid)
+          v$.patientFirstInitial.$dirty &&
+          (v$.patientFirstInitial.required.$invalid ||
+            v$.patientFirstInitial.nameValidator.$invalid)
         "
         class="text-danger error"
         aria-live="assertive"
       >
         {{
-          v$.patientFirstName.required.$invalid
+          v$.patientFirstInitial.required.$invalid
             ? "First name is required."
-            : v$.patientFirstName.nameValidator.$invalid
+            : v$.patientFirstInitial.nameValidator.$invalid
               ? "First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
               : null
         }}
@@ -184,7 +185,7 @@ export default {
       captchaStore: useCaptchaStore(),
       store: useAuthInProvinceStore(),
       formFieldParent: "patientInfo",
-      patientFirstName: null,
+      patientFirstInitial: null,
       patientLastName: null,
       patientPhn: null,
       patientBirthdate: null,
@@ -198,7 +199,7 @@ export default {
   },
   validations() {
     const validations = {
-      patientFirstName: {
+      patientFirstInitial: {
         required,
         nameValidator,
       },
@@ -235,10 +236,6 @@ export default {
       this.isAPIValidationErrorShown = false;
 
       const patient = toRaw(this.store?.formFields?.patientInfo);
-      if (import.meta.env.VITE_APP_ENV === "DEV") {
-        console.log("patient:", patient);
-      }
-
       apiService
         .validatePatient(patient, this.captchaStore)
         .then((response) => {
@@ -309,7 +306,7 @@ export default {
       }
     },
     assignDataFromStore() {
-      this.patientFirstName = this.store.formFields[this.formFieldParent]["patientFirstName"];
+      this.patientFirstInitial = this.store.formFields[this.formFieldParent]["patientFirstInitial"];
       this.patientLastName = this.store.formFields[this.formFieldParent]["patientLastName"];
       this.patientPhn = this.store.formFields[this.formFieldParent]["patientPhn"];
       this.patientBirthdate = this.store.formFields[this.formFieldParent]["patientBirthdate"];
