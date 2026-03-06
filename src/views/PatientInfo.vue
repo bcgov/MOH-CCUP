@@ -331,10 +331,6 @@ export default {
       this.isAPIValidationErrorShown = false;
 
       const patient = toRaw(this.store?.formFields?.patient);
-      if (import.meta.env.VITE_APP_ENV === "DEV") {
-        console.log("patient:", patient);
-      }
-
       apiService
         .validatePatient(patient, this.captchaStore)
         .then((response) => {

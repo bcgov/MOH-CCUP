@@ -13,7 +13,7 @@ export const useAuthInProvinceStore = defineStore("authInProvinceStore", {
         description: null,
       },
       patientInfo: {
-        patientFirstName: null,
+        patientFirstInitial: null,
         patientLastName: null,
         patientPhn: null,
         patientBirthdate: null,
