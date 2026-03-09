@@ -60,6 +60,8 @@ import { scrollTo, scrollToError } from "@/helpers/scroll";
 import ProgressBar from "@/components/ProgressBar.vue";
 import pageStateService from "@/services/page-state-service.js";
 import { authInProvRoutes, routes } from "../../router";
+import apiService from "@/services/api-service";
+import logService from "@/services/log-service.js";
 </script>
 
 <script>
@@ -78,7 +80,7 @@ export default {
       formFieldPractitioner: "practitionerInfo",
       formFieldMedical: "medicalInfo",
       patientInfo: {
-        patientFirstInitial: null,
+        patientFirstName: null,
         patientLastName: null,
         patientBirthdate: null,
         patientPhn: null,
@@ -144,12 +146,33 @@ export default {
       this.isLoading = true;
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;
-      // TODO: Add API call here for sending attachments
+
+      const documents = this.store.formFields.medicalInfo.consultationReport;
+      apiService
+        .sendAttachments(documents, this.captchaStore)
+        .then(() => {
+          logService.logInfo(this.captchaStore.applicationUuid, {
+            event: "submission success (sendAttachments, all)",
+            response: "N/A",
+          });
+          this.submitForm();
+        })
+        .catch((error) => {
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          logService.logError(this.captchaStore.applicationUuid, {
+            event: "submission failure (one or more sendAttachment calls failed)",
+            status: error,
+          });
+          scrollToError();
+        });
+
       this.submitForm();
     },
     submitForm() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
+
       // TODO: Add API call here for submitting the form
       this.complete();
     },

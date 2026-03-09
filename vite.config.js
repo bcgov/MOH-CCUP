@@ -17,7 +17,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/ccup/api/": {
-        target: "https://ccup-web-be8465-dev.apps.silver.devops.gov.bc.ca/",
+        target: "https://ccup-web-be8465-test.apps.silver.devops.gov.bc.ca/",
         changeOrigin: true,
         secure: false,
       },

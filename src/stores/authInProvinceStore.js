@@ -5,15 +5,15 @@ export const useAuthInProvinceStore = defineStore("authInProvinceStore", {
   state: () => ({
     formFields: {
       medicalInfo: {
-        proposedProcedure: null,
         feeItems: null,
+        proposedProcedure: null,
         previousSurgeryDate: null,
         traumaDate: null,
         consultationReport: [],
         description: null,
       },
       patientInfo: {
-        patientFirstInitial: null,
+        patientFirstName: null,
         patientLastName: null,
         patientPhn: null,
         patientBirthdate: null,

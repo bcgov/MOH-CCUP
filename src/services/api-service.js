@@ -7,6 +7,7 @@ const VALIDATE_PRACTITIONER_URL = `${BASE_API_PATH}/claims.supportDocIntegration
 const VALIDATE_PATIENT_URL = `${BASE_API_PATH}/claims.supportDocIntegration/validatePerson`;
 const SUBMIT_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitForm`;
 const SUBMIT_OVERAGE_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitFormA`;
+const SUBMIT_INPROV_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitFormAuth`;
 const SUBMIT_ATTACHMENT_URL = `${BASE_API_PATH}/submit-attachment`;
 
 class ApiService {
@@ -24,7 +25,7 @@ class ApiService {
     };
 
     // Bypass live API in Dev mode
-    if (import.meta.env.VITE_APP_ENV === "DEV") {
+    if (import.meta.env.VITE_MOCK_PRAC_API === "true") {
       console.log("practitioner:", practitioner);
       console.log("Development Mode: Bypassing validatePractitioner API");
       console.log("payload:", jsonPayload);
@@ -56,7 +57,7 @@ class ApiService {
     };
 
     // Bypass live API in Dev mode
-    if (import.meta.env.VITE_APP_ENV === "DEV") {
+    if (import.meta.env.VITE_MOCK_PATIENT_API === "true") {
       console.log("patient:", patient);
       console.log("Development Mode: Bypassing validatePatient API");
       console.log("payload:", jsonPayload);
@@ -119,6 +120,72 @@ class ApiService {
     }
 
     return formattedAttachments;
+  }
+
+  /**
+   * Submit inProv claims
+   *
+   * @param {*} data from form
+   * @param {*} captcha
+   * @returns
+   */
+  submitAuthInProvForm(data, captcha, declarations) {
+    const captchaToken = captcha.captchaToken;
+
+    // Stub promise return
+    if (captchaToken) {
+      return Promise.resolve(() => {
+        return { data: { response: "success" } };
+      });
+    }
+
+    const attachments = this._formatAttachments(data.claimsInformation.claimSupportDocuments);
+    const practitioner = data.practitioner;
+    const patient = data.patientInfo;
+    const info = data.medicalInformation;
+
+    const payload = {
+      applicationId: captcha.applicationUuid,
+      submissionDate: formatISODate(new Date()),
+
+      patientFirstName: patient.patientFirstInitial,
+      patientLastName: patient.patientLastName,
+      patientPhn: stripSpaces(patient.patientPhn),
+      patientBirthDate: formatISODate(patient.patientBirthdate),
+
+      practitionerFirstName: practitioner.pracFirstName,
+      practitionerLastName: practitioner.pracLastName,
+      practitionerNumber: practitioner.pracNumber,
+
+      feeItems: info.feeItems || undefined,
+      proposedSurgicalProcedure: info.proposedProcedure || undefined,
+      previousSurgeryDate: formatISODate(info.previousSurgeryDate),
+      traumaDate: formatISODate(info.traumaDate),
+      consulatationReportDescription: info.consultationReport || undefined,
+
+      declaration1: declarations?.declarationAccuracy,
+      declaration2: declarations?.declarationValidity,
+      signature: "Y",
+
+      supportingDocumentsFor: "AUTHINPROV",
+      attachments,
+    };
+
+    // Bypass live API in Dev mode
+    if (import.meta.env.VITE_MOCK_SUBMIT_API === "true") {
+      console.log("Development Mode: Bypassing AuthInProv API");
+      console.log("payload:", payload);
+      return Promise.resolve({
+        data: { returnCode: "success" },
+      });
+    }
+
+    const headers = this._getHeaders(captchaToken);
+    return this._sendPostRequest(
+      `${SUBMIT_INPROV_FORM_URL}/${captcha.applicationUuid}`,
+      payload,
+      headers
+    );
   }
 
   /**
@@ -255,9 +322,17 @@ class ApiService {
       });
     }
 
+    if (import.meta.env.VITE_MOCK_SUBMIT_API === "true") {
+      console.log("Development Mode: Bypassing sendAttachment API");
+      console.log("Data Size: ", blob.size);
+      console.log("Data Type: ", blob.type);
+      return Promise.resolve({
+        data: { returnCode: "0" },
+      });
+    }
+
     //then we return a promise that resolves if the image upload call is successful
     //or rejects if it catches an error or receives a returnCode other than "success"
-
     return new Promise((resolve, reject) => {
       this._sendPostRequest(url, blob, headers)
         .then((response) => {

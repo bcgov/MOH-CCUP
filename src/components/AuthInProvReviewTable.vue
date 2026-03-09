@@ -35,7 +35,7 @@
                     class="fs-5"
                     data-cy="review-table-patient-first-name"
                   >
-                    {{ patientInfo.patientFirstInitial }}
+                    {{ patientInfo.patientFirstName }}
                   </span>
                 </div>
               </div>
@@ -291,7 +291,7 @@ export default {
       formFieldPractitioner: "practitionerInfo",
       formFieldMedical: "medicalInfo",
       patientInfo: {
-        patientFirstInitial: null,
+        patientFirstName: null,
         patientLastName: null,
         patientBirthdate: null,
         patientPhn: null,
@@ -313,8 +313,8 @@ export default {
   },
   created() {
     // Patient Info
-    this.patientInfo.patientFirstInitial =
-      this.store.formFields[this.formFieldPatient]["patientFirstInitial"];
+    this.patientInfo.patientFirstName =
+      this.store.formFields[this.formFieldPatient]["patientFirstName"];
     this.patientInfo.patientLastName =
       this.store.formFields[this.formFieldPatient]["patientLastName"];
     this.patientInfo.patientBirthdate =
