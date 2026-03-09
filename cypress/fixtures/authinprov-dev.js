@@ -1,0 +1,49 @@
+export default {
+  applicationId: "01b041ce-d638-5961-e881-4b55d32c8cd2",
+  submissionDate: "2000-11-22-15:25.123",
+
+  patientFirstName: "John",
+  patientLastName: "Jonn",
+  patientPhn: "9999999999",
+  patientBirthDate: "2000-11-22",
+
+  practitionerFirstName: "aaa",
+  practitionerLastName: "Djonson",
+  practitionerNumber: "a2345",
+
+  feeItems: "10000, 20000",
+  proposedSurgicalProcedure: "A",
+  previousSurgeryDate: "2025-01-01",
+  traumaDate: "2025-01-01",
+  consulatationReportDescription: "sample text",
+
+  declaration: "Declaration",
+  supportingDocumentsFor: "AUTHINPROV",
+  attachments: [
+    {
+      attachmentDocumentType: "SUPPORTDOCUMENT",
+      attachmentUuid: "aaaaaaaaaa-eba3-5d25-71fe-180b9d2de03f",
+      attachmentOrder: "1",
+    },
+    {
+      attachmentDocumentType: "SUPPORTDOCUMENT",
+      attachmentUuid: "bbbbbbbb-eba3-5d25-71fe-180b9d2de03f",
+      attachmentOrder: "2",
+    },
+    {
+      attachmentDocumentType: "SUPPORTDOCUMENT",
+      attachmentUuid: "cccccccc-eba3-5d25-71fe-180b9d2de03f",
+      attachmentOrder: "3",
+    },
+    {
+      attachmentDocumentType: "SUPPORTDOCUMENT",
+      attachmentUuid: "dddddddd-eba3-5d25-71fe-180b9d2de03f",
+      attachmentOrder: "4",
+    },
+    {
+      attachmentDocumentType: "SUPPORTDOCUMENT",
+      attachmentUuid: "eeeeeeee-eba3-5d25-71fe-180b9d2de03f",
+      attachmentOrder: "5",
+    },
+  ],
+};

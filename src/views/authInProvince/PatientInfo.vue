@@ -12,7 +12,7 @@
       <hr class="mt-0" />
       <InputComponent
         id="patient-first-name"
-        v-model="patientFirstInitial"
+        v-model="patientFirstName"
         cypress-id="patient-first-name"
         label="First name"
         :maxlength="firstNameMaxLength"
@@ -20,21 +20,20 @@
         class="mt-3"
         :input-style="mediumStyles"
         @input="handleAPIValidationReset"
-        @change="handleChangeField(v$.patientFirstInitial, $event, formFieldParent, store)"
+        @change="handleChangeField(v$.patientFirstName, $event, formFieldParent, store)"
       />
       <div
         v-if="
-          v$.patientFirstInitial.$dirty &&
-          (v$.patientFirstInitial.required.$invalid ||
-            v$.patientFirstInitial.nameValidator.$invalid)
+          v$.patientFirstName.$dirty &&
+          (v$.patientFirstName.required.$invalid || v$.patientFirstName.nameValidator.$invalid)
         "
         class="text-danger error"
         aria-live="assertive"
       >
         {{
-          v$.patientFirstInitial.required.$invalid
+          v$.patientFirstName.required.$invalid
             ? "First name is required."
-            : v$.patientFirstInitial.nameValidator.$invalid
+            : v$.patientFirstName.nameValidator.$invalid
               ? "First name must begin with a letter and cannot include special characters except hyphens, periods, apostrophes and blank characters."
               : null
         }}
@@ -131,6 +130,13 @@
       >
         Unable to continue, system unavailable. Please try again later.
       </div>
+      <div
+        v-if="isAPIValidationErrorShown"
+        class="text-danger error my-4"
+        aria-live="assertive"
+      >
+        Patient information does not match our records.
+      </div>
     </main>
   </PageContent>
   <ContinueBar
@@ -185,7 +191,7 @@ export default {
       captchaStore: useCaptchaStore(),
       store: useAuthInProvinceStore(),
       formFieldParent: "patientInfo",
-      patientFirstInitial: null,
+      patientFirstName: null,
       patientLastName: null,
       patientPhn: null,
       patientBirthdate: null,
@@ -199,7 +205,7 @@ export default {
   },
   validations() {
     const validations = {
-      patientFirstInitial: {
+      patientFirstName: {
         required,
         nameValidator,
       },
@@ -236,40 +242,43 @@ export default {
       this.isAPIValidationErrorShown = false;
 
       const patient = toRaw(this.store?.formFields?.patientInfo);
+      patient.patientFirstInitial = patient.patientFirstName?.[0];
+      console.log(patient);
+
       apiService
         .validatePatient(patient, this.captchaStore)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
 
-          switch (returnCode) {
-            case "success": // Successfully executed API validation (data matches records)
-              logService.logInfo(this.captchaStore.applicationUuid, {
-                event: "validation success (validatePerson)",
-                response: response.data,
-              });
-              this.nextPage();
-              break;
-            case "failure": // Either the data does not match records, or the API didn't recognize one of the fields
-              this.isAPIValidationErrorShown = true;
-              logService.logInfo(this.captchaStore.applicationUuid, {
-                event: "validation failure (validatePerson)",
-                response: response.data,
-              });
-              scrollToError();
-              break;
-            default: // An API error occurred, eg. first name max length exceeded.
-              this.isSystemUnavailable = true;
-              logService.logError(this.captchaStore.applicationUuid, {
-                event: "validation failure (validatePerson endpoint unavailable)",
-                response: response.data,
-              });
-              scrollToError();
-              break;
+          // Validation error, bad phn, name, etc
+          if (returnCode == "failure") {
+            this.isAPIValidationErrorShown = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: "validation failure (validatePerson)",
+              response: response.data,
+            });
+            return scrollToError();
           }
+
+          // Something else went wrong (invalid data, wrong length, etc)
+          if (returnCode != "success") {
+            this.isSystemUnavailable = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: "validation failure (validatePerson endpoint unavailable)",
+              response: response.data,
+            });
+            return scrollToError();
+          }
+
+          logService.logInfo(this.captchaStore.applicationUuid, {
+            event: "validation success (validatePerson)",
+            response: response.data,
+          });
+          this.nextPage();
         })
         .catch((error) => {
-          //all other errors, eg. if the server is down
+          // all other errors, eg. if the server is down
           this.isSystemUnavailable = true;
           logService.logError(this.captchaStore.applicationUuid, {
             event: "HTTP error (validatePerson unexpected problem)",
@@ -306,7 +315,7 @@ export default {
       }
     },
     assignDataFromStore() {
-      this.patientFirstInitial = this.store.formFields[this.formFieldParent]["patientFirstInitial"];
+      this.patientFirstName = this.store.formFields[this.formFieldParent]["patientFirstName"];
       this.patientLastName = this.store.formFields[this.formFieldParent]["patientLastName"];
       this.patientPhn = this.store.formFields[this.formFieldParent]["patientPhn"];
       this.patientBirthdate = this.store.formFields[this.formFieldParent]["patientBirthdate"];
