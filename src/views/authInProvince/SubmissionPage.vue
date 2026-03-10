@@ -43,10 +43,10 @@
       <h2 class="mt-5 mb-0">Declaration of accuracy and validity</h2>
       <hr class="mt-0" />
       <p>
-        {{ declarations.inProv.declarationAccuracy }}
+        {{ declarations.authInProv.declarationAccuracy }}
       </p>
       <p>
-        {{ declarations.inProv.declarationValidity }}
+        {{ declarations.authInProv.declarationValidity }}
       </p>
       <CheckboxComponent
         id="pratitioner-declaration-accuracy"

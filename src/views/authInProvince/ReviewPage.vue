@@ -12,10 +12,10 @@
       <hr class="mt-0" />
       <div class="mt-1 row">
         <p>
-          {{ declarations.inProv.declarationAccuracy }}
+          {{ declarations.authInProv.declarationAccuracy }}
         </p>
         <p>
-          {{ declarations.inProv.declarationValidity }}
+          {{ declarations.authInProv.declarationValidity }}
         </p>
       </div>
       <div class="row px-3 fs-5">
@@ -166,15 +166,66 @@ export default {
           });
           scrollToError();
         });
-
-      this.submitForm();
     },
     submitForm() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
 
-      // TODO: Add API call here for submitting the form
-      this.complete();
+      const patient = this.store.formFields.patientInfo;
+      const practitioner = this.store.formFields.practitionerInfo;
+      const info = this.store.formFields.medicalInfo;
+      const documents = info.consultationReport;
+
+      apiService
+        .submitAuthInProvForm(
+          patient,
+          practitioner,
+          info,
+          documents,
+          this.captchaStore,
+          declarations.authInProv
+        )
+        .then((response) => {
+          this.isLoading = false;
+          const returnCode = response?.data?.returnCode;
+
+          if (returnCode == "failure") {
+            this.isAPIValidationErrorShown = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: `submission failure (submitForm)`,
+              response: response.data,
+            });
+            return scrollToError();
+          }
+
+          if (returnCode !== "success") {
+            this.isSystemUnavailable = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: `submission failure (submitForm bad response)`,
+              response: response.data,
+            });
+            return scrollToError();
+          }
+
+          // Happy path - Submission success
+          this.store.updateFormField("review", "referenceNumber", response.data.refNumber);
+          logService.logInfo(this.captchaStore.applicationUuid, {
+            event: "submission success (submitForm)",
+            response: response.data,
+          });
+          return this.complete();
+        })
+
+        .catch((error) => {
+          // all other errors, eg. if the server is down
+          this.isLoading = false;
+          this.isSystemUnavailable = true;
+          logService.logError(this.captchaStore.applicationUuid, {
+            event: "HTTP error (submitForm schema error or other unexpected problem)",
+            status: error?.response?.status,
+          });
+          scrollToError();
+        });
     },
     complete() {
       // Navigate to Confirmation/Submission Page
