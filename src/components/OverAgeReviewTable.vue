@@ -187,7 +187,7 @@
                 <div v-if="claimsInformation.dateType == 'date'">
                   <span
                     class="fs-5 ms-5"
-                    :data-cy="claim - service - date"
+                    data-cy="review-table-claim-service-date"
                   >
                     {{ formatDateDisplay(claimsInformation.claimServiceDate) }}
                   </span>
@@ -195,14 +195,14 @@
                 <div v-if="claimsInformation.dateType == 'range'">
                   <span
                     class="fs-5 ms-5"
-                    :data-cy="claim - from - date"
+                    data-cy="review-table-claim-from-date"
                   >
                     <strong>From:</strong> {{ formatDateDisplay(claimsInformation.claimFromDate) }}
                   </span>
                   <br />
                   <span
                     class="fs-5 ms-5"
-                    :data-cy="claim - to - date"
+                    data-cy="review-table-claim-to-date"
                   >
                     <strong>To:</strong> {{ formatDateDisplay(claimsInformation.claimToDate) }}
                   </span>
