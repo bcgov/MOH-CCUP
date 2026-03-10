@@ -46,6 +46,14 @@ class LogService {
       message: logMessage,
     };
 
+    if (import.meta.env.VITE_MOCK_LOGGER_API === "true") {
+      console.log("Development Mode: Mock Logger API");
+      console.log("Body", body);
+      return Promise.resolve({
+        data: { returnCode: "0" },
+      });
+    }
+
     return (
       axios
         .post(LOG_SERVICE_URL, body, options)

@@ -130,6 +130,13 @@
       >
         Unable to continue, system unavailable. Please try again later.
       </div>
+      <div
+        v-if="isAPIValidationErrorShown"
+        class="text-danger error my-4"
+        aria-live="assertive"
+      >
+        Patient information does not match our records.
+      </div>
     </main>
   </PageContent>
   <ContinueBar
@@ -235,9 +242,7 @@ export default {
       this.isAPIValidationErrorShown = false;
 
       const patient = toRaw(this.store?.formFields?.patientInfo);
-      if (import.meta.env.VITE_APP_ENV === "DEV") {
-        console.log("patient:", patient);
-      }
+      patient.patientFirstInitial = patient.patientFirstName?.[0];
 
       apiService
         .validatePatient(patient, this.captchaStore)
@@ -245,34 +250,34 @@ export default {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
 
-          switch (returnCode) {
-            case "success": // Successfully executed API validation (data matches records)
-              logService.logInfo(this.captchaStore.applicationUuid, {
-                event: "validation success (validatePerson)",
-                response: response.data,
-              });
-              this.nextPage();
-              break;
-            case "failure": // Either the data does not match records, or the API didn't recognize one of the fields
-              this.isAPIValidationErrorShown = true;
-              logService.logInfo(this.captchaStore.applicationUuid, {
-                event: "validation failure (validatePerson)",
-                response: response.data,
-              });
-              scrollToError();
-              break;
-            default: // An API error occurred, eg. first name max length exceeded.
-              this.isSystemUnavailable = true;
-              logService.logError(this.captchaStore.applicationUuid, {
-                event: "validation failure (validatePerson endpoint unavailable)",
-                response: response.data,
-              });
-              scrollToError();
-              break;
+          // Validation error, bad phn, name, etc
+          if (returnCode == "failure") {
+            this.isAPIValidationErrorShown = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: "validation failure (validatePerson)",
+              response: response.data,
+            });
+            return scrollToError();
           }
+
+          // Something else went wrong (invalid data, wrong length, etc)
+          if (returnCode != "success") {
+            this.isSystemUnavailable = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: "validation failure (validatePerson endpoint unavailable)",
+              response: response.data,
+            });
+            return scrollToError();
+          }
+
+          logService.logInfo(this.captchaStore.applicationUuid, {
+            event: "validation success (validatePerson)",
+            response: response.data,
+          });
+          this.nextPage();
         })
         .catch((error) => {
-          //all other errors, eg. if the server is down
+          // all other errors, eg. if the server is down
           this.isSystemUnavailable = true;
           logService.logError(this.captchaStore.applicationUuid, {
             event: "HTTP error (validatePerson unexpected problem)",

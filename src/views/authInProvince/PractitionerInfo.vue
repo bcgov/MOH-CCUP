@@ -80,6 +80,13 @@
               : null
         }}
       </div>
+      <div
+        v-if="isAPIValidationErrorShown"
+        class="text-danger error my-4"
+        aria-live="assertive"
+      >
+        Practitioner information does not match our records.
+      </div>
     </main>
   </PageContent>
   <ContinueBar
@@ -120,6 +127,8 @@ export default {
       pracFirstName: null,
       pracLastName: null,
       pracNumber: null,
+      isAPIValidationErrorShown: false,
+      isSystemUnavailable: false,
     };
   },
   created() {
@@ -157,24 +166,28 @@ export default {
       this.isAPIValidationErrorShown = false;
 
       const practitioner = toRaw(this.store?.formFields?.practitionerInfo);
-      if (import.meta.env.VITE_APP_ENV === "DEV") {
-        console.log("practitioner:", practitioner);
-      }
-
       apiService
         .validatePractitioner(practitioner, this.captchaStore)
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
 
-          // Something went wrong.  Bad code or system error
-          if (returnCode != "0") {
-            this.isAPIValidationErrorShown = returnCode == "1";
-            this.isSystemUnavailable = returnCode != "1";
-            const unavailable = this.isSystemUnavailable ? "" : "endpoint unavailable";
+          // Validation error - not found
+          if (returnCode == "1") {
+            this.isAPIValidationErrorShown = true;
 
             logService.logError(this.captchaStore.applicationUuid, {
-              event: `validation failure (submitForm${unavailable})`,
+              event: "validation failure (validatePractitioner)",
+              response: response.data,
+            });
+            return scrollToError();
+          }
+
+          // Something went wrong.  Bad code or system error
+          if (returnCode != "0") {
+            this.isSystemUnavailable = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: "validation failure (validatePractitioner endpoint unavailable)",
               response: response.data,
             });
             return scrollToError();

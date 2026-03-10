@@ -7,6 +7,7 @@ const VALIDATE_PRACTITIONER_URL = `${BASE_API_PATH}/claims.supportDocIntegration
 const VALIDATE_PATIENT_URL = `${BASE_API_PATH}/claims.supportDocIntegration/validatePerson`;
 const SUBMIT_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitForm`;
 const SUBMIT_OVERAGE_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitFormA`;
+const SUBMIT_INPROV_FORM_URL = `${BASE_API_PATH}/claims.supportDocIntegration/submitFormAuth`;
 const SUBMIT_ATTACHMENT_URL = `${BASE_API_PATH}/submit-attachment`;
 
 class ApiService {
@@ -23,9 +24,10 @@ class ApiService {
       doctor: true,
     };
 
-    // Bypass live API in Dev mode
-    if (import.meta.env.VITE_APP_ENV === "DEV") {
-      console.log("Development Mode: Bypassing validatePractitioner API");
+    // Mock live API in Dev mode
+    if (import.meta.env.VITE_MOCK_PRAC_API === "true") {
+      console.log("Development Mode: Mock validatePractitioner API");
+      console.log("payload:", jsonPayload);
       return Promise.resolve({
         data: { returnCode: "0" },
       });
@@ -53,9 +55,10 @@ class ApiService {
       },
     };
 
-    // Bypass live API in Dev mode
-    if (import.meta.env.VITE_APP_ENV === "DEV") {
-      console.log("Development Mode: Bypassing validatePatient API");
+    // Mock live API in Dev mode
+    if (import.meta.env.VITE_MOCK_PATIENT_API === "true") {
+      console.log("Development Mode: Mock validatePatient API");
+      console.log("payload:", jsonPayload);
       return Promise.resolve({
         data: { returnCode: "success" },
       });
@@ -118,47 +121,99 @@ class ApiService {
   }
 
   /**
+   * Submit inProv claims
+   *
+   * @param {*} data from form
+   * @param {*} captcha
+   * @returns
+   */
+  submitAuthInProvForm(patient, practitioner, info, documents, captcha, declarations) {
+    const captchaToken = captcha.captchaToken;
+    const attachments = this._formatAttachments(documents);
+
+    const payload = {
+      applicationId: captcha.applicationUuid,
+      submissionDate: formatISODate(new Date()),
+
+      patientFirstName: patient.patientFirstInitial,
+      patientLastName: patient.patientLastName,
+      patientPhn: stripSpaces(patient.patientPhn),
+      patientBirthDate: formatISODate(patient.patientBirthdate),
+
+      practitionerFirstName: practitioner.pracFirstName,
+      practitionerLastName: practitioner.pracLastName,
+      practitionerNumber: practitioner.pracNumber,
+
+      feeItems: info.feeItems || undefined,
+      proposedSurgicalProcedure: info.proposedProcedure || undefined,
+      previousSurgeryDate: formatISODate(info.previousSurgeryDate),
+      traumaDate: formatISODate(info.traumaDate),
+      consulatationReportDescription: info.description || undefined,
+
+      declaration: declarations?.declarationAccuracy,
+
+      supportingDocumentsFor: "AUTHINPROV",
+      attachments,
+    };
+
+    // Mock live API in Dev mode
+    if (import.meta.env.VITE_MOCK_SUBMIT_API === "true") {
+      console.log("Development Mode: Mock AuthInProv API");
+      console.log("payload:", payload);
+      return Promise.resolve({
+        data: { returnCode: "success" },
+      });
+    }
+
+    const headers = this._getHeaders(captchaToken);
+    return this._sendPostRequest(
+      `${SUBMIT_INPROV_FORM_URL}/${captcha.applicationUuid}`,
+      payload,
+      headers
+    );
+  }
+
+  /**
    * Submit OverAge claims
    *
    * @param {*} formStore
-   * @param {*} captchaStore
+   * @param {*} captcha
    * @returns
    */
-  submitOverAgeForm(formFields, captchaStore, declarations) {
-    const captchaToken = captchaStore.captchaToken;
+  submitOverAgeForm(data, captcha, declarations) {
+    const captchaToken = captcha.captchaToken;
 
-    const attachments = this._formatAttachments(formFields.claimsInformation.claimSupportDocuments);
-    const individuals = this._formatIndividuals(formFields.claimsInformation.individuals);
+    const attachments = this._formatAttachments(data.claimsInformation.claimSupportDocuments);
+    const individuals = this._formatIndividuals(data.claimsInformation.individuals);
 
-    const dateType = formFields.claimsInformation.dateType;
-    let claimFromDate = formatISODate(formFields.claimsInformation.claimFromDate) || null;
-    let claimToDate = formatISODate(formFields.claimsInformation.claimToDate) || null;
-    const claimServiceDate = formatISODate(formFields.claimsInformation.claimServiceDate);
+    const dateType = data.claimsInformation.dateType;
+    let claimFromDate = formatISODate(data.claimsInformation.claimFromDate) || null;
+    let claimToDate = formatISODate(data.claimsInformation.claimToDate) || null;
+    const claimServiceDate = formatISODate(data.claimsInformation.claimServiceDate);
     claimFromDate = dateType == "date" ? claimServiceDate : claimFromDate;
     claimToDate = dateType == "date" ? claimServiceDate : claimToDate;
 
     const payload = {
-      applicationId: captchaStore.applicationUuid,
+      applicationId: captcha.applicationUuid,
       submissionDate: formatISODate(new Date()),
 
-      practitionerFirstName: formFields.practitioner.pracFirstName,
-      practitionerLastName: formFields.practitioner.pracLastName,
-      practitionerNumber: formFields.practitioner.pracNumber,
-      practitionerPayeeNumber: formFields.practitioner.payeeNumber,
-      dataCenterNumber: formFields.practitioner.dataCenterNumber || undefined,
-      contactPhoneNumber:
-        stripPhoneFormatting(formFields.practitioner.contactPhoneNumber) || undefined,
-      preferredContactMethod: formFields.practitioner.preferredContactMethod || undefined,
-      faxNumber: stripPhoneFormatting(formFields.practitioner.faxNumber) || undefined,
+      practitionerFirstName: data.practitioner.pracFirstName,
+      practitionerLastName: data.practitioner.pracLastName,
+      practitionerNumber: data.practitioner.pracNumber,
+      practitionerPayeeNumber: data.practitioner.payeeNumber,
+      dataCenterNumber: data.practitioner.dataCenterNumber || undefined,
+      contactPhoneNumber: stripPhoneFormatting(data.practitioner.contactPhoneNumber) || undefined,
+      preferredContactMethod: data.practitioner.preferredContactMethod || undefined,
+      faxNumber: stripPhoneFormatting(data.practitioner.faxNumber) || undefined,
 
-      dateType: formFields.claimsInformation.dateType || undefined,
+      dateType: data.claimsInformation.dateType || undefined,
       claimFromDate,
       claimToDate,
 
-      approximateClaimNumber: formFields.claimsInformation.approximateClaimNumber || undefined,
-      approximateDollarValue: formFields.claimsInformation.approximateDollarValue || undefined,
-      feeItems: formFields.claimsInformation.feeItems || undefined,
-      detailedExplanation: formFields.claimsInformation.detailedExplanation || undefined,
+      approximateClaimNumber: data.claimsInformation.approximateClaimNumber || undefined,
+      approximateDollarValue: data.claimsInformation.approximateDollarValue || undefined,
+      feeItems: data.claimsInformation.feeItems || undefined,
+      detailedExplanation: data.claimsInformation.detailedExplanation || undefined,
 
       declaration1: declarations?.declarationAccuracy,
       declaration2: declarations?.declarationValidity,
@@ -171,7 +226,7 @@ class ApiService {
 
     const headers = this._getHeaders(captchaToken);
     return this._sendPostRequest(
-      `${SUBMIT_OVERAGE_FORM_URL}/${captchaStore.applicationUuid}`,
+      `${SUBMIT_OVERAGE_FORM_URL}/${captcha.applicationUuid}`,
       payload,
       headers
     );
@@ -184,8 +239,8 @@ class ApiService {
    * @param {*} captchaStore
    * @returns
    */
-  submitClaimsForm(formStore, captchaStore, declarations) {
-    const captchaToken = captchaStore.captchaToken;
+  submitClaimsForm(formStore, captcha, declarations) {
+    const captchaToken = captcha.captchaToken;
 
     //the database stored procedure checks for these two keywords in order to sort documents
     //so the API payloads need to match them exactly
@@ -201,7 +256,7 @@ class ApiService {
     );
 
     const jsonPayload = {
-      applicationId: captchaStore.applicationUuid,
+      applicationId: captcha.applicationUuid,
       submissionDate: formatISODate(new Date()),
       practitionerFirstName: formStore.formFields.practitioner.pracFirstName,
       practitionerLastName: formStore.formFields.practitioner.pracLastName,
@@ -223,7 +278,7 @@ class ApiService {
     const headers = this._getHeaders(captchaToken);
 
     return this._sendPostRequest(
-      `${SUBMIT_FORM_URL}/${captchaStore.applicationUuid}`,
+      `${SUBMIT_FORM_URL}/${captcha.applicationUuid}`,
       jsonPayload,
       headers
     );
@@ -251,9 +306,17 @@ class ApiService {
       });
     }
 
+    if (import.meta.env.VITE_MOCK_SUBMIT_API === "true") {
+      console.log("Development Mode: Mock sendAttachment API");
+      console.log("Data Size: ", blob.size);
+      console.log("Data Type: ", blob.type);
+      return Promise.resolve({
+        data: { returnCode: "0" },
+      });
+    }
+
     //then we return a promise that resolves if the image upload call is successful
     //or rejects if it catches an error or receives a returnCode other than "success"
-
     return new Promise((resolve, reject) => {
       this._sendPostRequest(url, blob, headers)
         .then((response) => {
