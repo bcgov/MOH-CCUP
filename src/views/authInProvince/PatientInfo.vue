@@ -243,7 +243,6 @@ export default {
 
       const patient = toRaw(this.store?.formFields?.patientInfo);
       patient.patientFirstInitial = patient.patientFirstName?.[0];
-      console.log(patient);
 
       apiService
         .validatePatient(patient, this.captchaStore)

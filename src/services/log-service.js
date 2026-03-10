@@ -47,7 +47,7 @@ class LogService {
     };
 
     if (import.meta.env.VITE_MOCK_LOGGER_API === "true") {
-      console.log("Development Mode: Bypassing Logger API");
+      console.log("Development Mode: Mock Logger API");
       console.log("Body", body);
       return Promise.resolve({
         data: { returnCode: "0" },
