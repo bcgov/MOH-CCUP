@@ -2,7 +2,7 @@
   <div>
     <div :aria-hidden="isModalOpen">
       <HeaderComponent
-        :title="pageTitle"
+        :title="editPageTitle()"
         image-path="/ccup/images/"
       />
 
@@ -25,7 +25,16 @@ import "@bcgov/bootstrap-v5-theme/css/bootstrap-theme.min.css";
 import "common-lib-vue/dist/common-lib-vue.css";
 import { HeaderComponent, FooterComponent } from "common-lib-vue";
 import { useCaptchaStore } from "@/stores/captchaStore";
-import { routes } from "@/router/index.js";
+import {
+  routes,
+  PRE_AUTH_AND_CLAIMS_BASE_URL,
+  OVER_AGE_BASE_URL,
+  AUTH_IN_PROV_BASE_URL,
+  CCUP_TITLE,
+  PRE_AUTH_AND_CLAIMS_TITLE,
+  OVER_AGE_TITLE,
+  AUTH_IN_PROV_TITLE,
+} from "@/router/index.js";
 import pageStateService from "@/services/page-state-service.js";
 
 export default {
@@ -44,6 +53,7 @@ export default {
     };
   },
   created() {
+    document.title = this.editPageTitle();
     spaEnvService
       .loadEnvs()
       .then(() => {
@@ -79,6 +89,18 @@ export default {
       });
       modalObserver.observe(this.$refs.modal, { childList: true });
       this.modalObserver = modalObserver;
+    },
+    editPageTitle() {
+      const currPath = this.$router.currentRoute.value.path;
+      if (currPath.includes(OVER_AGE_BASE_URL)) {
+        return OVER_AGE_TITLE;
+      } else if (currPath.includes(AUTH_IN_PROV_BASE_URL)) {
+        return AUTH_IN_PROV_TITLE;
+      } else if (currPath.includes(PRE_AUTH_AND_CLAIMS_BASE_URL)) {
+        return PRE_AUTH_AND_CLAIMS_TITLE;
+      } else {
+        return CCUP_TITLE;
+      }
     },
   },
 };

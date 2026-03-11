@@ -170,6 +170,43 @@
 
         <div class="col-md-5">
           <div class="tip-container rounded p-3">
+            <p class="bold">Tip</p>
+            <p>Scan the document, or take a photo of it.</p>
+            <p>Make sure that it's:</p>
+            <ul>
+              <li>The entire document, from corner to corner</li>
+              <li>Rotated correctly (not upside down or sideways)</li>
+              <li>In focus and easy to read</li>
+              <li>A JPG, PNG, GIF, BMP or PDF file</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-7">
+          <Textarea
+            id="description"
+            v-model="description"
+            cypress-id="description"
+            label="Description of medical condition(s)"
+            :maxlength="'400'"
+            :required="true"
+            class="mt-3 bold"
+            :input-style="extraLargeStyles"
+            @input="handleAPIValidationReset"
+            @blur="handleChangeField(v$.description, $event, formFieldParent, store)"
+          />
+          <div
+            v-if="v$.description.$dirty && v$.reportOrDescriptionValidator.$invalid"
+            class="text-danger error"
+            aria-live="assertive"
+          >
+            Either a consultation report or a description is required.
+          </div>
+        </div>
+        <div class="col md-5">
+          <div class="tip-container rounded p-3 mt-5">
             <p>
               <span class="bold">For blepharoplasty:</span> please indicate whether the patient
               meets the criteria for “impairment of vision” as defined in the Payment Schedule.
@@ -181,27 +218,6 @@
             </p>
           </div>
         </div>
-      </div>
-
-      <Textarea
-        id="description"
-        v-model="description"
-        cypress-id="description"
-        label="Description of medical condition(s)"
-        :maxlength="'400'"
-        :required="true"
-        class="mt-3 bold"
-        :input-style="extraLargeStyles"
-        @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.description, $event, formFieldParent, store)"
-      />
-
-      <div
-        v-if="v$.description.$dirty && v$.reportOrDescriptionValidator.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        Either a consultation report or a description is required.
       </div>
     </main>
   </PageContent>
