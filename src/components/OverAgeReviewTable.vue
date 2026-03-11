@@ -67,7 +67,7 @@
                 </div>
               </div>
               <!-- Payee number -->
-              <div class="row">
+              <div class="row mt-3">
                 <div class="col-6">
                   <span class="fs-5 fw-bold">Payee number</span>
                 </div>
@@ -114,31 +114,27 @@
                 <div class="col-6">
                   <span class="fs-5 fw-bold"> Preferred contact method</span>
                 </div>
-                <div class="col-6 mb-3">
-                  <span
-                    class="fs-5"
-                    data-cy="review-table-preferred-contact-method"
-                  >
-                    {{ practitioner.preferredContactMethod }}
-                  </span>
-                </div>
-              </div>
-
-              <!-- Fax number-->
-              <div
-                v-if="practitioner.preferredContactMethod === 'fax'"
-                class="row"
-              >
                 <div class="col-6">
-                  <span class="fs-5 fw-bold"> Fax number</span>
-                </div>
-                <div class="col-6 mb-3">
-                  <span
+                  <RadioComponent
+                    id="preferred-contact-method"
+                    v-model="practitioner.preferredContactMethod"
                     class="fs-5"
-                    data-cy="review-table-fax-number"
-                  >
-                    {{ practitioner.faxNumber }}
-                  </span>
+                    aria-labelledby="preferredContactMethod"
+                    name="preferred-contact-method"
+                    :required="true"
+                    :items="radioOptionsPreferredContactMethod"
+                    cypress-id="preferred-contact-method"
+                    :model-value="practitioner.preferredContactMethod"
+                    :disabled="true"
+                  />
+                  <div v-if="practitioner.preferredContactMethod == 'fax'">
+                    <span
+                      class="ms-5 fs-5"
+                      data-cy="review-table-fax-number"
+                    >
+                      {{ practitioner.faxNumber }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -172,77 +168,53 @@
           <div>
             <!-- Claim type of date -->
             <div class="row">
-              <div class="col-6">
+              <div class="col-4">
                 <span class="fs-5 fw-bold">Claims type of date</span>
               </div>
-              <div class="col-6">
-                <span
+              <div class="col-8">
+                <RadioComponent
+                  id="date-type"
+                  v-model="claimsInformation.dateType"
                   class="fs-5"
-                  data-cy="review-table-date-type"
-                >
-                  {{ claimsInformation.dateType }}
-                </span>
+                  aria-labelledby="dateType"
+                  name="date-type"
+                  :required="true"
+                  :items="radioOptionsDateType"
+                  cypress-id="date-type"
+                  :disabled="true"
+                  :model-value="claimsInformation.dateType"
+                />
+                <div v-if="claimsInformation.dateType == 'date'">
+                  <span
+                    class="fs-5 ms-5"
+                    data-cy="review-table-claim-service-date"
+                  >
+                    {{ formatDateDisplay(claimsInformation.claimServiceDate) }}
+                  </span>
+                </div>
+                <div v-if="claimsInformation.dateType == 'range'">
+                  <span
+                    class="fs-5 ms-5"
+                    data-cy="review-table-claim-from-date"
+                  >
+                    <strong>From:</strong> {{ formatDateDisplay(claimsInformation.claimFromDate) }}
+                  </span>
+                  <br />
+                  <span
+                    class="fs-5 ms-5"
+                    data-cy="review-table-claim-to-date"
+                  >
+                    <strong>To:</strong> {{ formatDateDisplay(claimsInformation.claimToDate) }}
+                  </span>
+                </div>
               </div>
             </div>
-
-            <!-- Service date -->
-            <div
-              v-if="claimsInformation.dateType === 'date'"
-              class="row"
-            >
-              <div class="col-6">
-                <span class="fs-5 fw-bold">Date of service</span>
-              </div>
-              <div class="col-6">
-                <span
-                  class="fs-5"
-                  data-cy="review-table-service-date"
-                >
-                  {{ formatDate(claimsInformation.claimServiceDate) }}
-                </span>
-              </div>
-            </div>
-            <!-- Service date -->
-            <div
-              v-if="claimsInformation.dateType === 'range'"
-              class="row"
-            >
-              <div class="col-6">
-                <span class="fs-5 fw-bold">Range of dates (from)</span>
-              </div>
-              <div class="col-6">
-                <span
-                  class="fs-5"
-                  data-cy="review-table-claim-from-date"
-                >
-                  {{ formatDate(claimsInformation.claimFromDate) }}
-                </span>
-              </div>
-            </div>
-            <!-- Service date -->
-            <div
-              v-if="claimsInformation.dateType === 'range'"
-              class="row"
-            >
-              <div class="col-6">
-                <span class="fs-5 fw-bold">Range of dates (to)</span>
-              </div>
-              <div class="col-6">
-                <span
-                  class="fs-5"
-                  data-cy="review-table-claim-to-date"
-                >
-                  {{ formatDate(claimsInformation.claimToDate) }}
-                </span>
-              </div>
-            </div>
-
             <!-- Approximate number of claims -->
-            <div class="row">
-              <div class="col-6">
+            <div class="row mt-3">
+              <div class="col-4">
                 <span class="fs-5 fw-bold">Approximate number of claims</span>
               </div>
-              <div class="col-6">
+              <div class="col-8">
                 <span
                   class="fs-5"
                   data-cy="review-table-approximate-claim-number"
@@ -252,26 +224,26 @@
               </div>
             </div>
             <!-- Approximate dollar value of claims-->
-            <div class="row">
-              <div class="col-6">
+            <div class="row mt-3">
+              <div class="col-4">
                 <span class="fs-5 fw-bold">Approximate dollar value of claims</span>
               </div>
-              <div class="col-6">
+              <div class="col-8">
                 <span
                   class="fs-5"
                   data-cy="review-table-approximate-dollar-value"
                 >
-                  {{ claimsInformation.approximateDollarValue }}
+                  $ {{ claimsInformation.approximateDollarValue }}
                 </span>
               </div>
             </div>
             <!-- Fee items involved -->
-            <div class="row">
-              <div class="col-6">
+            <div class="row mt-3">
+              <div class="col-4">
                 <span class="fs-5 fw-bold">Fee items involved</span>
               </div>
               <div
-                class="col-6 fs-5"
+                class="col-8 fs-5"
                 data-cy="review-table-fee-items"
               >
                 <p>
@@ -281,11 +253,11 @@
             </div>
             <!-- Explanation for late submission -->
             <div class="row">
-              <div class="col-6">
+              <div class="col-4">
                 <span class="fs-5 fw-bold">Explanation for late submission</span>
               </div>
               <div
-                class="col-6 fs-5"
+                class="col-8 fs-5"
                 data-cy="review-table-detailed-explanation"
               >
                 <p>
@@ -295,7 +267,7 @@
             </div>
             <!-- Individuals for verification purposes -->
             <div class="row">
-              <div class="col-6">
+              <div class="col-4">
                 <span class="fs-5 fw-bold">Individuals for verification purposes</span>
               </div>
             </div>
@@ -305,10 +277,10 @@
               class="row"
             >
               <!-- Individual's PHN -->
-              <div class="col-6">
+              <div class="col-4">
                 <span class="fs-5 fw-bold ms-5">PHN</span>
               </div>
-              <div class="col-6">
+              <div class="col-8">
                 <span
                   class="fs-5"
                   :data-cy="'individual-phn-' + index"
@@ -317,55 +289,25 @@
                 </span>
               </div>
               <!-- Individual's Service Date -->
-              <div class="col-6">
+              <div class="col-4">
                 <span class="fs-5 fw-bold ms-5">Date of service</span>
               </div>
-              <div class="col-6">
+              <div class="col-8">
                 <span
                   class="fs-5"
                   :data-cy="'individual-service-date-' + index"
                 >
-                  {{ formatDate(individual.individualServiceDate) }}
+                  {{ formatDateDisplay(individual.individualServiceDate) }}
                 </span>
               </div>
-
               <hr />
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Documents Upload-->
-    <div class="py-3 row pb-0">
-      <div class="card border-0">
-        <div class="card-header fw-bold px-0 py-0">
-          <div class="row">
-            <div class="col-8">Documents upload</div>
-            <div
-              v-if="showEditButtons"
-              class="col-4 icon-align-right"
-            >
-              <a
-                id="claim-support-documents"
-                href="javascript:void(0)"
-                class="link-icon"
-                @click.prevent="Edit(routes.OVER_AGE_CLAIMS_INFO.path, $event)"
-              >
-                edit&nbsp;&nbsp;<IconPencil
-                  class="icon-style"
-                  color="#1a5a96"
-              /></a>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-body bg-gray">
-          <div>
+            <!-- Documents uploaded -->
             <div class="row">
-              <div class="col-6">
+              <div class="col-4">
                 <span class="fs-5 fw-bold">Documents uploaded</span>
               </div>
-              <div class="col-6">
+              <div class="col-8">
                 <span
                   class="fs-5"
                   data-cy="review-table-claim-support-documents"
@@ -374,12 +316,13 @@
                 </span>
               </div>
             </div>
-            <div class="row">
-              <div class="col-6">
+            <!-- Note -->
+            <div class="row mt-3">
+              <div class="col-4">
                 <span class="fs-5 fw-bold">Note</span>
               </div>
               <div
-                class="col-6 fs-5"
+                class="col-8 fs-5"
                 data-cy="review-table-claim-comment"
               >
                 <p>
@@ -396,10 +339,11 @@
 
 <script setup>
 import pageStateService from "../services/page-state-service.js";
-import { IconPencil } from "common-lib-vue";
+import { IconPencil, RadioComponent } from "common-lib-vue";
 import { routes } from "../router/index.js";
 import { scrollTo } from "../helpers/scroll";
 import { useOverAgeClaimStore } from "../stores/overAgeClaimStore.js";
+import { formatDateDisplay } from "../helpers/date.js";
 </script>
 
 <script>

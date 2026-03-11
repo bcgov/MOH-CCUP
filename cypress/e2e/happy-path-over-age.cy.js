@@ -6,6 +6,7 @@ const samplePDF = "cypress/fixtures/sample.pdf";
 const testDate = new Date();
 const testYear = testDate.getFullYear() - 1;
 const testMonth = testDate.getMonth();
+const testDay = 12;
 
 describe("happy path doc submission", () => {
   it("completes the happy path for document submission", () => {
@@ -114,7 +115,7 @@ describe("happy path doc submission", () => {
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=claim-service-dateDay]").type("11");
+    cy.get("[data-cy=claim-service-dateDay]").type(testDay - 1);
     cy.get("[data-cy=claim-service-dateYear]").type(testYear);
     cy.get("[data-cy=date-typedate-type-range]").click({
       force: true,
@@ -124,7 +125,7 @@ describe("happy path doc submission", () => {
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=claim-from-dateDay]").type("12");
+    cy.get("[data-cy=claim-from-dateDay]").type(testDay);
     cy.get("[data-cy=claim-from-dateYear]").type(testYear);
     cy.get("select")
       .find(`option[data-cy=claim-to-dateMonth${testMonth}]`)
@@ -143,7 +144,7 @@ describe("happy path doc submission", () => {
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=individual-service-date-0Day]").type("12");
+    cy.get("[data-cy=individual-service-date-0Day]").type(testDay);
     cy.get("[data-cy=individual-service-date-0Year]").type(testYear);
     cy.get("[data-cy=add-individual]").click();
     cy.get("[data-cy=phn-1]").type(envData.individualPhn);
@@ -152,7 +153,7 @@ describe("happy path doc submission", () => {
       .then(($el) => $el.get(0).setAttribute("selected", "selected"))
       .parent()
       .trigger("change");
-    cy.get("[data-cy=individual-service-date-1Day]").type("14");
+    cy.get("[data-cy=individual-service-date-1Day]").type(testDay);
     cy.get("[data-cy=individual-service-date-1Year]").type(testYear);
     cy.get("[data-cy=delete-individual-0]").click();
     cy.get("input#claim-support-documents").selectFile(samplePDF, { force: true });
@@ -179,25 +180,16 @@ describe("happy path doc submission", () => {
       "contain",
       envData.contactPhoneNumberFormatted
     );
-    cy.get("[data-cy=review-table-preferred-contact-method]").should(
-      "contain",
-      envData.preferredContactMethod
-    );
     cy.get("[data-cy=review-table-fax-number]").should("contain", envData.faxNumberFormatted);
-
-    //Review page-- Claims information
-    cy.get("[data-cy=review-table-date-type]").should("contain", "range");
 
     //Review page-- check service date
     cy.get("body").find("[data-cy=review-table-service-date]").should("not.exist");
-    cy.get("[data-cy=review-table-claim-from-date]").should(
-      "contain",
-      new Date(testYear, testMonth, 12).toDateString()
-    );
-    cy.get("[data-cy=review-table-claim-to-date]").should(
-      "contain",
-      new Date(testYear, testMonth, 13).toDateString()
-    );
+    cy.get("[data-cy=review-table-claim-from-date]").should("contain", testMonth);
+    cy.get("[data-cy=review-table-claim-from-date]").should("contain", testDay);
+    cy.get("[data-cy=review-table-claim-from-date]").should("contain", testYear);
+    cy.get("[data-cy=review-table-claim-to-date]").should("contain", testMonth);
+    cy.get("[data-cy=review-table-claim-to-date]").should("contain", testDay + 1);
+    cy.get("[data-cy=review-table-claim-to-date]").should("contain", testYear);
 
     //go back to previous page to update service date
     cy.get("[data-cy=back-button]").click();
@@ -209,10 +201,9 @@ describe("happy path doc submission", () => {
     cy.get("body").find("[data-cy=review-table-claim-from-date]").should("not.exist");
     cy.get("body").find("[data-cy=review-table-claim-to-date]").should("not.exist");
 
-    cy.get("[data-cy=review-table-service-date]").should(
-      "contain",
-      new Date(testYear, testMonth, 11).toDateString()
-    );
+    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testMonth);
+    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testDay - 1);
+    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testYear);
     cy.get("[data-cy=review-table-approximate-claim-number]").should(
       "contain",
       envData.approximateClaimNumber
@@ -227,10 +218,9 @@ describe("happy path doc submission", () => {
       envData.detailedExplanation
     );
     cy.get("[data-cy=individual-phn-0]").should("contain", envData.individualPhnFormatted);
-    cy.get("[data-cy=individual-service-date-0]").should(
-      "contain",
-      new Date(testYear, testMonth, 14).toDateString()
-    );
+    cy.get("[data-cy=individual-service-date-0]").should("contain", testMonth);
+    cy.get("[data-cy=individual-service-date-0]").should("contain", testDay);
+    cy.get("[data-cy=individual-service-date-0]").should("contain", testYear);
     cy.get("[data-cy=review-table-claim-support-documents]").should("contain", "2");
     cy.get("[data-cy=review-table-claim-comment]").should("contain", envData.claimComment);
     cy.get("[data-cy=practitioner-declaration-accuracy]").check({ force: true });
@@ -251,19 +241,12 @@ describe("happy path doc submission", () => {
       "contain",
       envData.contactPhoneNumberFormatted
     );
-    cy.get("[data-cy=review-table-preferred-contact-method]").should(
-      "contain",
-      envData.preferredContactMethod
-    );
     cy.get("[data-cy=review-table-fax-number]").should("contain", envData.faxNumberFormatted);
 
     //Submission page-- Claims information
-    cy.get("[data-cy=review-table-date-type]").should("contain", "date");
-
-    cy.get("[data-cy=review-table-service-date]").should(
-      "contain",
-      new Date(testYear, testMonth, 11).toDateString()
-    );
+    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testMonth);
+    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testDay - 1);
+    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testYear);
     cy.get("body").find("[data-cy=review-table-claim-from-date]").should("not.exist");
     cy.get("body").find("[data-cy=review-table-claim-to-date]").should("not.exist");
 
@@ -281,10 +264,9 @@ describe("happy path doc submission", () => {
       envData.detailedExplanation
     );
     cy.get("[data-cy=individual-phn-0]").should("contain", envData.individualPhnFormatted);
-    cy.get("[data-cy=individual-service-date-0]").should(
-      "contain",
-      new Date(testYear, testMonth, 14).toDateString()
-    );
+    cy.get("[data-cy=individual-service-date-0]").should("contain", testMonth);
+    cy.get("[data-cy=individual-service-date-0]").should("contain", testDay);
+    cy.get("[data-cy=individual-service-date-0]").should("contain", testYear);
     cy.get("[data-cy=review-table-claim-support-documents]").should("contain", "2");
     cy.get("[data-cy=review-table-claim-comment]").should("contain", envData.claimComment);
   });

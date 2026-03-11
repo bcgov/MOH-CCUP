@@ -5,7 +5,7 @@
   />
   <PageContent>
     <main class="container mb-5">
-      <h1 class="my-0">Review</h1>
+      <h1 class="my-0">Review and declaration</h1>
       <hr class="mt-0" />
       <OverAgeReviewTable :show-edit-buttons="true" />
       <h2 class="my-0 mt-5">Declaration of accuracy and validity</h2>
