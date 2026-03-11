@@ -106,7 +106,7 @@ describe("navigation guards", () => {
 
     //Practitoner info
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/practitioner-info");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/practitioner-info");
     });
     cy.get("[data-cy=pracFirstName]").type(envData.pracFirstName);
     cy.get("[data-cy=pracLastName]").type(envData.pracLastName);
@@ -128,7 +128,7 @@ describe("navigation guards", () => {
 
     //Patient info
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/patient-info");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/patient-info");
     });
     cy.fillPatient(envData.patients[0]);
 
@@ -147,7 +147,7 @@ describe("navigation guards", () => {
 
     //Upload documents
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/upload-documents");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/upload-documents");
     });
     cy.checkUploadPageDoesContain(envData.patients[0]);
     cy.uploadDocument();
@@ -157,7 +157,7 @@ describe("navigation guards", () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/review-page");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/review-page");
     });
     cy.checkReviewTable(envData, 0);
     cy.get("[data-cy=isDeclarationAccuracy]").check({ force: true });
@@ -187,28 +187,28 @@ describe("navigation guards", () => {
 
     //Submission page
     cy.location({ timeout: 30000 }).should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/submission-page");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/submission-page");
     });
 
     // Verify successful navigation going backwards
     cy.go(-1);
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/review-page");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/review-page");
     });
 
     cy.get("[data-cy=back-button]").click();
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/upload-documents");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/upload-documents");
     });
 
     cy.get("[data-cy=back-button]").click();
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/patient-info");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/patient-info");
     });
 
     cy.get("[data-cy=back-button]").click();
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/practitioner-info");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/practitioner-info");
     });
 
     // // The rest of these tests only work if you temporarily add RouterLinks to the application
