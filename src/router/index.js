@@ -1,6 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
 import pageStateService from "../services/page-state-service";
 
+export const PRE_AUTH_AND_CLAIMS_BASE_URL = "/pre-auth-and-claims";
+export const OVER_AGE_BASE_URL = "/over-age";
+export const AUTH_IN_PROV_BASE_URL = "/auth-in-province";
+export const CCUP_TITLE = "Claims Correspondence Upload Portal";
+export const PRE_AUTH_AND_CLAIMS_TITLE = "Documents to support pre-authorization and claims";
+export const OVER_AGE_TITLE = "Request for approval of over-age claims (HLTH 2943)";
+export const AUTH_IN_PROV_TITLE =
+  "Application for pre-authorization of payment: surgery for alteration of appearance (HLTH 2769)";
+
 export const routes = {
   GET_STARTED: {
     path: "/",
@@ -9,31 +18,31 @@ export const routes = {
     component: () => import("@/views/GetStarted.vue"),
   },
   PRACTITIONER_INFO: {
-    path: "/practitioner-info",
+    path: "/pre-auth-and-claims/practitioner-info",
     title: "Practitioner information",
     name: "PractitionerInfo",
     component: () => import("@/views/PractitionerInfo.vue"),
   },
   PATIENT_INFO: {
-    path: "/patient-info",
+    path: "/pre-auth-and-claims/patient-info",
     title: "Patient Info",
     name: "PatientInfo",
     component: () => import("@/views/PatientInfo.vue"),
   },
   UPLOAD_DOCUMENTS: {
-    path: "/upload-documents",
+    path: "/pre-auth-and-claims/upload-documents",
     title: "Upload Documents",
     name: "UploadDocuments",
     component: () => import("@/views/UploadDocuments.vue"),
   },
   REVIEW_PAGE: {
-    path: "/review-page",
+    path: "/pre-auth-and-claims/review-page",
     title: "Review Page",
     name: "ReviewPage",
     component: () => import("@/views/ReviewPage.vue"),
   },
   SUBMISSION_PAGE: {
-    path: "/submission-page",
+    path: "/pre-auth-and-claims/submission-page",
     title: "Submission Page",
     name: "SubmissionPage",
     component: () => import("@/views/SubmissionPage.vue"),
@@ -155,27 +164,27 @@ const router = createRouter({
       component: () => import("../views/GetStarted.vue"),
     },
     {
-      path: "/practitioner-info",
+      path: "/pre-auth-and-claims/practitioner-info",
       name: "PractitionerInfo",
       component: () => import("../views/PractitionerInfo.vue"),
     },
     {
-      path: "/patient-info",
+      path: "/pre-auth-and-claims/patient-info",
       name: "PatientInfo",
       component: () => import("../views/PatientInfo.vue"),
     },
     {
-      path: "/upload-documents",
+      path: "/pre-auth-and-claims/upload-documents",
       name: "UploadDocuments",
       component: () => import("../views/UploadDocuments.vue"),
     },
     {
-      path: "/review-page",
+      path: "/pre-auth-and-claims/review-page",
       name: "ReviewPage",
       component: () => import("../views/ReviewPage.vue"),
     },
     {
-      path: "/submission-page",
+      path: "/pre-auth-and-claims/submission-page",
       name: "SubmissionPage",
       component: () => import("../views/SubmissionPage.vue"),
     },

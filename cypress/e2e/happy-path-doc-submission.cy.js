@@ -1,8 +1,8 @@
 import envData from "../fixtures/env-data.js";
 // NOTE: using cy.fixture for the sample pdf multiple times has issues, using dir works better with selectFile
 
-describe("happy path doc submission", () => {
-  it("completes the happy path for document submission", () => {
+describe("happy path pre-auth and claims", () => {
+  it("completes the happy path for pre-auth and claims submission", () => {
     if (envData.enableIntercepts) {
       console.log("intercepted captcha calls with 200 OK response");
       cy.intercept("POST", "/ccup/api/captcha/captcha", {
@@ -57,7 +57,7 @@ describe("happy path doc submission", () => {
 
     //Practitoner info
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/practitioner-info");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/practitioner-info");
     });
     cy.get("[data-cy=pracFirstName]").type(envData.pracFirstName);
     cy.get("[data-cy=pracLastName]").type(envData.pracLastName);
@@ -79,7 +79,7 @@ describe("happy path doc submission", () => {
 
     //Patient info
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/patient-info");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/patient-info");
     });
     cy.fillPatient(envData.patients[0]);
 
@@ -98,7 +98,7 @@ describe("happy path doc submission", () => {
 
     //Upload documents
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/upload-documents");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/upload-documents");
     });
     cy.checkUploadPageDoesContain(envData.patients[0]);
     cy.uploadDocument();
@@ -108,7 +108,7 @@ describe("happy path doc submission", () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/review-page");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/review-page");
     });
     cy.checkReviewTable(envData, 0);
     cy.get("[data-cy=isDeclarationAccuracy]").check({ force: true });
@@ -139,14 +139,14 @@ describe("happy path doc submission", () => {
 
     //Submission page
     cy.location({ timeout: 30000 }).should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/submission-page");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/submission-page");
     });
     cy.checkReviewTable(envData, 0);
     cy.get("[data-cy=UploadNewPatient]").click();
 
     //After Clear -- Patient Info
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/patient-info");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/patient-info");
     });
     cy.checkPatientPageDoesNotContain(envData.patients[0]);
     cy.fillPatient(envData.patients[1]);
@@ -154,7 +154,7 @@ describe("happy path doc submission", () => {
 
     //After Clear -- Upload documents
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/upload-documents");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/upload-documents");
     });
     cy.checkUploadPageDoesContain(envData.patients[1]);
     cy.uploadDocument();
@@ -163,7 +163,7 @@ describe("happy path doc submission", () => {
 
     //Review page
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/review-page");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/review-page");
     });
     cy.checkReviewTable(envData, 1);
     cy.get("[data-cy=isDeclarationAccuracy]").check({ force: true });
@@ -171,7 +171,7 @@ describe("happy path doc submission", () => {
 
     //Submission page
     cy.location({ timeout: 30000 }).should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/submission-page");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/submission-page");
     });
     cy.checkReviewTable(envData, 1);
   });

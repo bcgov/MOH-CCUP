@@ -8,8 +8,8 @@ const testYear = testDate.getFullYear() - 1;
 const testMonth = testDate.getMonth();
 const testDay = 12;
 
-describe("happy path doc submission", () => {
-  it("completes the happy path for document submission", () => {
+describe("happy path over age", () => {
+  it("completes the happy path for over age submission", () => {
     if (envData.enableIntercepts) {
       console.log("intercepted captcha calls with 200 OK response");
       cy.intercept("POST", "/ccup/api/captcha/captcha", {

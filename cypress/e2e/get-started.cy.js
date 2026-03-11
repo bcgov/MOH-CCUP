@@ -72,7 +72,7 @@ describe("get started", () => {
     });
     cy.get("[data-cy=continue-bar]").click();
     cy.location().should((loc) => {
-      expect(loc.pathname).to.eq("/ccup/practitioner-info");
+      expect(loc.pathname).to.eq("/ccup/pre-auth-and-claims/practitioner-info");
     });
   });
 });
