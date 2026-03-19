@@ -39,6 +39,20 @@
       >
         Field is required.
       </div>
+      <div
+        v-if="isSystemUnavailable"
+        class="text-danger error my-4"
+        aria-live="assertive"
+      >
+        Unable to continue, system unavailable. Please try again later.
+      </div>
+      <div
+        v-if="isAPIValidationErrorShown"
+        class="text-danger error my-4"
+        aria-live="assertive"
+      >
+        There was a problem with your submission. Please try again.
+      </div>
     </main>
   </PageContent>
   <ContinueBar
@@ -225,12 +239,21 @@ export default {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
 
-          if (returnCode !== "success") {
-            const unavailable = returnCode === "failure" ? "" : "endpoint unavailable";
+          // "Normal" submission errors
+          if (returnCode == "-1" || returnCode == "failure") {
+            this.isAPIValidationErrorShown = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: `submission failure (submitForm)`,
+              response: response.data,
+            });
+            return scrollToError();
+          }
 
+          // Anything else is unexpected
+          if (returnCode !== "success") {
             this.isSystemUnavailable = true;
             logService.logError(this.captchaStore.applicationUuid, {
-              event: `submission failure (submitForm${unavailable})`,
+              event: `submission failure (submitForm bad response)`,
               response: response.data,
             });
             return scrollToError();
