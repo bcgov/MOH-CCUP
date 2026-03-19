@@ -62,7 +62,7 @@
                   <span
                     class="fs-5"
                     data-cy="review-table-patient-birthdate"
-                    >{{ formatDate(patientInfo.patientBirthdate) }}
+                    >{{ formatDateDisplay(patientInfo.patientBirthdate) }}
                   </span>
                 </div>
               </div>
@@ -215,7 +215,7 @@
                   <span
                     class="fs-5"
                     data-cy="review-table-medical-previous-surgery"
-                    >{{ formatDate(medicalInfo.previousSurgeryDate) }}
+                    >{{ formatDateDisplay(medicalInfo.previousSurgeryDate) }}
                   </span>
                 </div>
               </div>
@@ -228,7 +228,7 @@
                   <span
                     class="fs-5"
                     data-cy="review-table-medical-trauma-date"
-                    >{{ formatDate(medicalInfo.traumaDate) }}
+                    >{{ formatDateDisplay(medicalInfo.traumaDate) }}
                   </span>
                 </div>
               </div>
@@ -271,12 +271,13 @@ import pageStateService from "../services/page-state-service.js";
 import { IconPencil } from "common-lib-vue";
 import { routes } from "../router/index.js";
 import { scrollTo } from "../helpers/scroll";
+import { formatDateDisplay } from "../helpers/date.js";
 import { useAuthInProvinceStore } from "../stores/authInProvinceStore.js";
 </script>
 
 <script>
 export default {
-  name: "OverAgeReviewTable",
+  name: "AuthInProvReviewTable",
   components: {},
   props: {
     showEditButtons: {
@@ -345,15 +346,6 @@ export default {
     this.medicalInfo.description = this.store.formFields[this.formFieldMedical]["description"];
   },
   methods: {
-    formatDate(value) {
-      //if it's a date, format the date using toDateString()
-      //if it's not a date, calling toDateString() will fail, so don't do that
-      if (Object.prototype.toString.call(value) === "[object Date]") {
-        return value.toDateString();
-      } else {
-        return value;
-      }
-    },
     Edit(toPath) {
       //Navigate to path.
       pageStateService.setPageComplete(toPath);

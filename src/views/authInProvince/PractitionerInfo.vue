@@ -127,6 +127,7 @@ export default {
       pracFirstName: null,
       pracLastName: null,
       pracNumber: null,
+      isLoading: false,
       isAPIValidationErrorShown: false,
       isSystemUnavailable: false,
     };
@@ -218,7 +219,6 @@ export default {
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
       scrollTo(0);
-      this.v$.$validate();
     },
 
     assignDataFromStore() {

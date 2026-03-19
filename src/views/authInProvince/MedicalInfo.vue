@@ -259,6 +259,8 @@ import {
 </script>
 
 <script>
+const INVALID_DATE = new Date(NaN);
+
 export default {
   name: "MedicalInfo",
   components: {
@@ -329,18 +331,23 @@ export default {
       this.isSystemUnavailable = false;
     },
     handleChangeDate(validationObject, newValue, formFieldParent, store, dataField) {
-      if (newValue.date) {
-        this[dataField] = newValue.date;
-      } else {
-        this[dataField] = null;
+      const date = newValue.date;
+      const isValidDate = date instanceof Date && !isNaN(date);
+      const isAllEmpty = newValue.month === null && !newValue.day && !newValue.year;
+
+      // Valid → use date; all empty → null; partial → Invalid Date triggers dateDataValidator
+      this[dataField] = isValidDate ? date : isAllEmpty ? null : INVALID_DATE;
+
+      if (!validationObject) return;
+
+      if (isAllEmpty) {
+        validationObject.$reset();
+        return;
       }
 
-      if (validationObject) {
-        validationObject.$touch();
-
-        if (!validationObject.$invalid && newValue != null && formFieldParent) {
-          store.updateFormField(formFieldParent, validationObject.$path, newValue.date);
-        }
+      validationObject.$touch();
+      if (isValidDate && !validationObject.$invalid && formFieldParent) {
+        store.updateFormField(formFieldParent, validationObject.$path, date);
       }
     },
     nextPage() {
