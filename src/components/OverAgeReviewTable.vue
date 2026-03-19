@@ -467,15 +467,6 @@ export default {
       this.store.formFields[this.formFieldClaims]["claimComment"];
   },
   methods: {
-    formatDate(value) {
-      //if it's a date, format the date using toDateString()
-      //if it's not a date, calling toDateString() will fail, so don't do that
-      if (Object.prototype.toString.call(value) === "[object Date]") {
-        return value.toDateString();
-      } else {
-        return value;
-      }
-    },
     Edit(toPath, event) {
       //Navigate to path.
       pageStateService.setPageComplete(toPath);

@@ -250,7 +250,6 @@ export default {
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
       scrollTo(0);
-      this.v$.$validate();
     },
     handleCheckBoxChange(e) {
       this.v$.review.isDeclarationAccuracy.$touch();
