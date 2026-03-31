@@ -22,14 +22,14 @@
           </div>
           <div class="modal-body">
             <p>
-              Personal information is collected under the authority of the
-              <span class="i">Medicare Protection Act</span> and section 26 (a), (c) and (e) of the
-              <span class="i">Freedom of Information and Protection of Privacy Act (FIPPA)</span>
-              for the purposes of administration of the Medical Services Plan. If you have any
-              questions about the collection and use of your personal information, please contact
-              the Health Insurance BC Chief Privacy Office at Health Insurance BC, Chief Privacy
-              Office, PO Box 9035 STN Prov Govt, Victoria BC V8W 9E3 or call 604-683-7151
-              (Vancouver) or 1-800-663-7100 (toll free).
+              Personal information is collected under the Authority of the
+              <span class="i"> Medicare Protection Act, Hospital Insurance Act,</span> and section
+              26 (a), (c) and (e) of the Freedom of Information and Protection of Privacy Act
+              (FOIPPA) for the purposes of administration of the Medical Services Plan and/or
+              insured hospital services. If you have any questions about the collection and use of
+              your personal information, please contact the Health Insurance BC Chief Privacy Office
+              at Health Insurance BC, Chief Privacy Office, PO Box 9035 STN Prov Govt, Victoria BC
+              V8W 9E3 or call 604-683-7151 (Vancouver) or 1-800-663-7100 (toll free).
             </p>
             <CaptchaComponent
               v-if="!isCaptchaValid"
