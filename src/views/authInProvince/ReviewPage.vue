@@ -187,14 +187,14 @@ export default {
 
       const patient = this.store.formFields.patientInfo;
       const practitioner = this.store.formFields.practitionerInfo;
-      const info = this.store.formFields.medicalInfo;
-      const documents = info.consultationReport;
+      const medicalInfo = this.store.formFields.medicalInfo;
+      const documents = medicalInfo.consultationReport;
 
       apiService
         .submitAuthInProvForm(
-          patient,
           practitioner,
-          info,
+          patient,
+          medicalInfo,
           documents,
           this.captchaStore,
           declarations.authInProv

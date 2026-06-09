@@ -127,12 +127,12 @@ class ApiService {
    * @param {*} captcha
    * @returns
    */
-  submitAuthInProvForm(patient, practitioner, info, documents, captcha, declarations) {
-    const captchaToken = captcha.captchaToken;
+  submitAuthInProvForm(practitioner, patient, medicalInfo, documents, captchaStore, declarations) {
+    const captchaToken = captchaStore.captchaToken;
     const attachments = this._formatAttachments(documents);
 
     const payload = {
-      applicationId: captcha.applicationUuid,
+      applicationId: captchaStore.applicationUuid,
       submissionDate: formatISODate(new Date()),
 
       patientFirstName: patient.patientFirstInitial,
@@ -144,11 +144,11 @@ class ApiService {
       practitionerLastName: practitioner.pracLastName,
       practitionerNumber: practitioner.pracNumber,
 
-      feeItems: info.feeItems || undefined,
-      proposedSurgicalProcedure: info.proposedProcedure || undefined,
-      previousSurgeryDate: formatISODate(info.previousSurgeryDate),
-      traumaDate: formatISODate(info.traumaDate),
-      consulatationReportDescription: info.description || undefined,
+      feeItems: medicalInfo.feeItems || undefined,
+      proposedSurgicalProcedure: medicalInfo.proposedProcedure || undefined,
+      previousSurgeryDate: formatISODate(medicalInfo.previousSurgeryDate),
+      traumaDate: formatISODate(medicalInfo.traumaDate),
+      consulatationReportDescription: medicalInfo.description || undefined,
 
       declaration: declarations?.declarationAccuracy,
 
@@ -167,7 +167,7 @@ class ApiService {
 
     const headers = this._getHeaders(captchaToken);
     return this._sendPostRequest(
-      `${SUBMIT_INPROV_FORM_URL}/${captcha.applicationUuid}`,
+      `${SUBMIT_INPROV_FORM_URL}/${captchaStore.applicationUuid}`,
       payload,
       headers
     );
