@@ -34,7 +34,7 @@
     "@vue/test-utils": "^2.4.11",
     "cypress": "^15.18.1",
     "eslint": "^9.17.0",
-    "eslint-plugin-compat": "^6.0.2",
+    "eslint-plugin-compat": "^7.0.2",
     "eslint-plugin-cypress": "^4.1.0",
     "eslint-plugin-vue": "^9.32.0",
     "globals": "^15.9.0",
