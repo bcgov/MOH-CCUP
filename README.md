@@ -60,4 +60,4 @@ This project uses Prettier for code formatting.
 
 ## Other important notes
 
-This library requires a minimum of Node 18. This is because this project uses Vite, and at the time of this document's writing, [Vite requires node 18+](https://vitejs.dev/guide/#scaffolding-your-first-vite-project) in order to function.
+This library requires a minimum of Node 22 to be compatible with all packages.
