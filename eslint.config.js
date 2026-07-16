@@ -1,7 +1,7 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import pluginVue from "eslint-plugin-vue";
-import pluginCypress from "eslint-plugin-cypress/flat";
+import pluginCypress from "eslint-plugin-cypress";
 import compat from "eslint-plugin-compat";
 
 export default [
