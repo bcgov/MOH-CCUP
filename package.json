@@ -15,6 +15,7 @@
     "test:e2e:test": "cypress open --e2e --browser electron --config baseUrl=https://ccup-web-be8465-test.apps.silver.devops.gov.bc.ca/ccup/ --env environment=test",
     "lint": "eslint .",
     "format": "prettier .  --write",
+    "precommit": "lint-staged",
     "prepare": "node .husky/install.mjs"
   },
   "dependencies": {
@@ -39,7 +40,7 @@
     "globals": "^15.9.0",
     "husky": "^9.1.7",
     "jsdom": "^26.0.0",
-    "lint-staged": "^15.2.11",
+    "lint-staged": "^17.0.8",
     "prettier": "^3.4.2",
     "start-server-and-test": "^3.0.11",
     "vite": "^8.1.4",
