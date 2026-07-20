@@ -15,38 +15,39 @@
     "test:e2e:test": "cypress open --e2e --browser electron --config baseUrl=https://ccup-web-be8465-test.apps.silver.devops.gov.bc.ca/ccup/ --env environment=test",
     "lint": "eslint .",
     "format": "prettier .  --write",
+    "precommit": "lint-staged",
     "prepare": "node .husky/install.mjs"
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
-    "common-lib-vue": "^3.1.1-alpha.5",
+    "common-lib-vue": "^3.1.1-alpha.7",
     "date-fns": "^4.1.0",
     "pinia": "^2.3.0",
-    "vue": "^3.4.35",
+    "vue": "^3.5.39",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
-    "@vitejs/plugin-vue": "^5.2.1",
-    "@vitest/coverage-v8": "^3.0.7",
-    "@vue/test-utils": "^2.4.6",
-    "cypress": "^14.0.2",
-    "eslint": "^9.17.0",
-    "eslint-plugin-compat": "^6.0.2",
-    "eslint-plugin-cypress": "^4.1.0",
-    "eslint-plugin-vue": "^9.32.0",
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vitest/coverage-v8": "^4.1.10",
+    "@vue/test-utils": "^2.4.11",
+    "cypress": "^15.18.1",
+    "eslint": "^10.7.0",
+    "eslint-plugin-compat": "^7.0.2",
+    "eslint-plugin-cypress": "^6.4.3",
+    "eslint-plugin-vue": "^10.9.2",
     "globals": "^15.9.0",
     "husky": "^9.1.7",
-    "jsdom": "^26.0.0",
-    "lint-staged": "^15.2.11",
+    "jsdom": "^29.1.1",
+    "lint-staged": "^17.0.8",
     "prettier": "^3.4.2",
-    "start-server-and-test": "^2.0.9",
-    "vite": "^6.2.0",
-    "vitest": "^3.0.7"
+    "start-server-and-test": "^3.0.11",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "browserslist": [
     "> 1%",
