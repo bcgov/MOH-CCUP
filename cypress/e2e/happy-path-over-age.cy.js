@@ -3,9 +3,25 @@ import envData from "../fixtures/env-data.js";
 const samplePDF = "cypress/fixtures/sample.pdf";
 // NOTE: using cy.fixture for the sample pdf multiple times has issues, using dir works better with selectFile
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const testDate = new Date();
 const testYear = testDate.getFullYear() - 1;
 const testMonth = testDate.getMonth();
+const testMonthString = months[testDate.getMonth()];
 const testDay = 12;
 
 describe("happy path over age", () => {
@@ -184,10 +200,10 @@ describe("happy path over age", () => {
 
     //Review page-- check service date
     cy.get("body").find("[data-cy=review-table-service-date]").should("not.exist");
-    cy.get("[data-cy=review-table-claim-from-date]").should("contain", testMonth);
+    cy.get("[data-cy=review-table-claim-from-date]").should("contain", testMonthString);
     cy.get("[data-cy=review-table-claim-from-date]").should("contain", testDay);
     cy.get("[data-cy=review-table-claim-from-date]").should("contain", testYear);
-    cy.get("[data-cy=review-table-claim-to-date]").should("contain", testMonth);
+    cy.get("[data-cy=review-table-claim-to-date]").should("contain", testMonthString);
     cy.get("[data-cy=review-table-claim-to-date]").should("contain", testDay + 1);
     cy.get("[data-cy=review-table-claim-to-date]").should("contain", testYear);
 
@@ -201,7 +217,7 @@ describe("happy path over age", () => {
     cy.get("body").find("[data-cy=review-table-claim-from-date]").should("not.exist");
     cy.get("body").find("[data-cy=review-table-claim-to-date]").should("not.exist");
 
-    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testMonth);
+    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testMonthString);
     cy.get("[data-cy=review-table-claim-service-date]").should("contain", testDay - 1);
     cy.get("[data-cy=review-table-claim-service-date]").should("contain", testYear);
     cy.get("[data-cy=review-table-approximate-claim-number]").should(
@@ -218,7 +234,7 @@ describe("happy path over age", () => {
       envData.detailedExplanation
     );
     cy.get("[data-cy=individual-phn-0]").should("contain", envData.individualPhnFormatted);
-    cy.get("[data-cy=individual-service-date-0]").should("contain", testMonth);
+    cy.get("[data-cy=individual-service-date-0]").should("contain", testMonthString);
     cy.get("[data-cy=individual-service-date-0]").should("contain", testDay);
     cy.get("[data-cy=individual-service-date-0]").should("contain", testYear);
     cy.get("[data-cy=review-table-claim-support-documents]").should("contain", "2");
@@ -244,7 +260,7 @@ describe("happy path over age", () => {
     cy.get("[data-cy=review-table-fax-number]").should("contain", envData.faxNumberFormatted);
 
     //Submission page-- Claims information
-    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testMonth);
+    cy.get("[data-cy=review-table-claim-service-date]").should("contain", testMonthString);
     cy.get("[data-cy=review-table-claim-service-date]").should("contain", testDay - 1);
     cy.get("[data-cy=review-table-claim-service-date]").should("contain", testYear);
     cy.get("body").find("[data-cy=review-table-claim-from-date]").should("not.exist");
@@ -264,7 +280,7 @@ describe("happy path over age", () => {
       envData.detailedExplanation
     );
     cy.get("[data-cy=individual-phn-0]").should("contain", envData.individualPhnFormatted);
-    cy.get("[data-cy=individual-service-date-0]").should("contain", testMonth);
+    cy.get("[data-cy=individual-service-date-0]").should("contain", testMonthString);
     cy.get("[data-cy=individual-service-date-0]").should("contain", testDay);
     cy.get("[data-cy=individual-service-date-0]").should("contain", testYear);
     cy.get("[data-cy=review-table-claim-support-documents]").should("contain", "2");
