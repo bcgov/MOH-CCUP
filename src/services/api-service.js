@@ -73,16 +73,8 @@ class ApiService {
   }
 
   sendAttachments(documents, captchaStore) {
-    //create an array containing individual promises for each image upload
-    const promises = [];
-
-    documents.forEach((image) => {
-      promises.push(this._sendAttachment(image, captchaStore));
-    });
-
-    //then try to resolve them all at once in one promise
-    //if any of the promises reject, the whole sendAttachments() call will trigger an error
-    return Promise.all(promises);
+    //if any upload rejects, the whole sendAttachments() call rejects
+    return Promise.all(documents.map((image) => this._sendAttachment(image, captchaStore)));
   }
 
   _formatIndividuals(individuals) {
@@ -103,21 +95,15 @@ class ApiService {
   }
 
   _formatAttachments(attachments) {
-    const formattedAttachments = [];
-
     if (!attachments || attachments.length === 0) {
-      return formattedAttachments;
+      return [];
     }
 
-    for (let i = 0; i < attachments.length; i++) {
-      formattedAttachments.push({
-        attachmentDocumentType: "SUPPORTDOCUMENT",
-        attachmentUuid: attachments[i].uuid,
-        attachmentOrder: i,
-      });
-    }
-
-    return formattedAttachments;
+    return attachments.map((attachment, index) => ({
+      attachmentDocumentType: "SUPPORTDOCUMENT",
+      attachmentUuid: attachment.uuid,
+      attachmentOrder: index,
+    }));
   }
 
   /**
@@ -224,6 +210,15 @@ class ApiService {
       attachments,
     };
 
+    // Mock live API in Dev mode
+    if (import.meta.env.VITE_MOCK_SUBMIT_API === "true") {
+      console.log("Development Mode: Mock OverAge API");
+      console.log("payload:", payload);
+      return Promise.resolve({
+        data: { returnCode: "success" },
+      });
+    }
+
     const headers = this._getHeaders(captchaToken);
     return this._sendPostRequest(
       `${SUBMIT_OVERAGE_FORM_URL}/${captcha.applicationUuid}`,
@@ -275,6 +270,16 @@ class ApiService {
       supportingDocumentsFor: supportingDocumentsCode,
       attachments: finalAttachments,
     };
+
+    // Mock live API in Dev mode
+    if (import.meta.env.VITE_MOCK_SUBMIT_API === "true") {
+      console.log("Development Mode: Mock submitClaimsForm API");
+      console.log("payload:", jsonPayload);
+      return Promise.resolve({
+        data: { returnCode: "success" },
+      });
+    }
+
     const headers = this._getHeaders(captchaToken);
 
     return this._sendPostRequest(
@@ -290,6 +295,15 @@ class ApiService {
 
     const url = `${SUBMIT_ATTACHMENT_URL}/${captchaStore.applicationUuid}/attachments/${image.uuid}?programarea=${programArea}&attachmentDocumentType=${docType}&contentType=image/jpeg&imageSize=${image.size}`;
     const headers = this._getAttachmentHeaders(captchaStore.captchaToken);
+
+    if (import.meta.env.VITE_MOCK_SUBMIT_API === "true") {
+      console.log("Development Mode: Mock sendAttachment API");
+      console.log("Data Size: ", image.size);
+      return Promise.resolve({
+        data: { returnCode: "0" },
+      });
+    }
+
     let blob;
 
     //the file uploader component stores the uploaded image data in the Vue store data as a JSON string
@@ -297,21 +311,8 @@ class ApiService {
 
     if (image && typeof image.source === "string") {
       const binary = atob(image.source.split(",")[1]);
-      const chars = [];
-      for (let i = 0; i < binary.length; i++) {
-        chars.push(binary.charCodeAt(i));
-      }
-      blob = new Blob([new Uint8Array(chars)], {
+      blob = new Blob([Uint8Array.from(binary, (c) => c.charCodeAt(0))], {
         type: "image/jpeg",
-      });
-    }
-
-    if (import.meta.env.VITE_MOCK_SUBMIT_API === "true") {
-      console.log("Development Mode: Mock sendAttachment API");
-      console.log("Data Size: ", blob.size);
-      console.log("Data Type: ", blob.type);
-      return Promise.resolve({
-        data: { returnCode: "0" },
       });
     }
 
