@@ -234,7 +234,14 @@ export default {
       this.isSystemUnavailable = false;
 
       apiService
-        .submitOverAgeForm(this.store.formFields, this.captchaStore, declarations.overAge)
+        .submitOverAgeForm(
+          this.store.formFields.practitioner,
+          this.store.formFields.claimsInformation,
+          this.store.formFields.claimsInformation.claimSupportDocuments,
+          this.store.formFields.claimsInformation.individuals,
+          this.captchaStore,
+          declarations.overAge
+        )
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
