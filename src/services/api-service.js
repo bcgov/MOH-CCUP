@@ -109,15 +109,20 @@ class ApiService {
   /**
    * Submit inProv claims
    *
-   * @param {*} practitioner
-   * @param {*} patient
-   * @param {*} medicalInfo
-   * @param {*} documents consultation report images
+   * @param {Object} formData
+   * @param {*} formData.practitioner
+   * @param {*} formData.patient
+   * @param {*} formData.medicalInfo
+   * @param {*} formData.documents consultation report images
    * @param {*} captchaStore
    * @param {*} declarations
    * @returns
    */
-  submitAuthInProvForm(practitioner, patient, medicalInfo, documents, captchaStore, declarations) {
+  submitAuthInProvForm(
+    { practitioner, patient, medicalInfo, documents },
+    captchaStore,
+    declarations
+  ) {
     const captchaToken = captchaStore.captchaToken;
     const attachments = this._formatAttachments(documents);
 
@@ -166,15 +171,20 @@ class ApiService {
   /**
    * Submit OverAge claims
    *
-   * @param {*} practitioner
-   * @param {*} claimsInfo
-   * @param {*} documents claim support document images
-   * @param {*} individuals
+   * @param {Object} formData
+   * @param {*} formData.practitioner
+   * @param {*} formData.claimsInfo
+   * @param {*} formData.documents claim support document images
+   * @param {*} formData.individuals
    * @param {*} captchaStore
    * @param {*} declarations
    * @returns
    */
-  submitOverAgeForm(practitioner, claimsInfo, documents, individuals, captchaStore, declarations) {
+  submitOverAgeForm(
+    { practitioner, claimsInfo, documents, individuals },
+    captchaStore,
+    declarations
+  ) {
     const captchaToken = captchaStore.captchaToken;
 
     const attachments = this._formatAttachments(documents);
@@ -238,14 +248,15 @@ class ApiService {
   /*
    * Submit Pre-auth & Regular Claims
    *
-   * @param {*} practitioner
-   * @param {*} patient
-   * @param {*} documents patient support document images
+   * @param {Object} formData
+   * @param {*} formData.practitioner
+   * @param {*} formData.patient
+   * @param {*} formData.documents patient support document images
    * @param {*} captchaStore
    * @param {*} declarations
    * @returns
    */
-  submitClaimsForm(practitioner, patient, documents, captchaStore, declarations) {
+  submitClaimsForm({ practitioner, patient, documents }, captchaStore, declarations) {
     const captchaToken = captchaStore.captchaToken;
 
     //the database stored procedure checks for these two keywords in order to sort documents

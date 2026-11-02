@@ -233,12 +233,15 @@ export default {
       this.isLoading = true;
       this.isSystemUnavailable = false;
 
+      const { practitioner, claimsInformation } = this.store.formFields;
       apiService
         .submitOverAgeForm(
-          this.store.formFields.practitioner,
-          this.store.formFields.claimsInformation,
-          this.store.formFields.claimsInformation.claimSupportDocuments,
-          this.store.formFields.claimsInformation.individuals,
+          {
+            practitioner,
+            claimsInfo: claimsInformation,
+            documents: claimsInformation.claimSupportDocuments,
+            individuals: claimsInformation.individuals,
+          },
           this.captchaStore,
           declarations.overAge
         )

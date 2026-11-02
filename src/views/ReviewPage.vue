@@ -211,11 +211,10 @@ export default {
     submitForm() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
+      const { practitioner, patient, upload } = this.store.formFields;
       apiService
         .submitClaimsForm(
-          this.store.formFields.practitioner,
-          this.store.formFields.patient,
-          this.store.formFields.upload.patientSupportDocuments,
+          { practitioner, patient, documents: upload.patientSupportDocuments },
           this.captchaStore,
           declarations.claims
         )

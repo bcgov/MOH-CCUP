@@ -192,10 +192,7 @@ export default {
 
       apiService
         .submitAuthInProvForm(
-          practitioner,
-          patient,
-          medicalInfo,
-          documents,
+          { practitioner, patient, medicalInfo, documents },
           this.captchaStore,
           declarations.authInProv
         )
