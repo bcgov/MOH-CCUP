@@ -109,16 +109,25 @@ class ApiService {
   /**
    * Submit inProv claims
    *
-   * @param {*} data from form
-   * @param {*} captcha
+   * @param {Object} formData
+   * @param {*} formData.practitioner
+   * @param {*} formData.patient
+   * @param {*} formData.medicalInfo
+   * @param {*} formData.documents consultation report images
+   * @param {*} captchaStore
+   * @param {*} declarations
    * @returns
    */
-  submitAuthInProvForm(patient, practitioner, info, documents, captcha, declarations) {
-    const captchaToken = captcha.captchaToken;
+  submitAuthInProvForm(
+    { practitioner, patient, medicalInfo, documents },
+    captchaStore,
+    declarations
+  ) {
+    const captchaToken = captchaStore.captchaToken;
     const attachments = this._formatAttachments(documents);
 
     const payload = {
-      applicationId: captcha.applicationUuid,
+      applicationId: captchaStore.applicationUuid,
       submissionDate: formatISODate(new Date()),
 
       patientFirstName: patient.patientFirstInitial,
@@ -130,11 +139,11 @@ class ApiService {
       practitionerLastName: practitioner.pracLastName,
       practitionerNumber: practitioner.pracNumber,
 
-      feeItems: info.feeItems || undefined,
-      proposedSurgicalProcedure: info.proposedProcedure || undefined,
-      previousSurgeryDate: formatISODate(info.previousSurgeryDate),
-      traumaDate: formatISODate(info.traumaDate),
-      consulatationReportDescription: info.description || undefined,
+      feeItems: medicalInfo.feeItems || undefined,
+      proposedSurgicalProcedure: medicalInfo.proposedProcedure || undefined,
+      previousSurgeryDate: formatISODate(medicalInfo.previousSurgeryDate),
+      traumaDate: formatISODate(medicalInfo.traumaDate),
+      consulatationReportDescription: medicalInfo.description || undefined,
 
       declaration: declarations?.declarationAccuracy,
 
@@ -153,7 +162,7 @@ class ApiService {
 
     const headers = this._getHeaders(captchaToken);
     return this._sendPostRequest(
-      `${SUBMIT_INPROV_FORM_URL}/${captcha.applicationUuid}`,
+      `${SUBMIT_INPROV_FORM_URL}/${captchaStore.applicationUuid}`,
       payload,
       headers
     );
@@ -162,51 +171,60 @@ class ApiService {
   /**
    * Submit OverAge claims
    *
-   * @param {*} formStore
-   * @param {*} captcha
+   * @param {Object} formData
+   * @param {*} formData.practitioner
+   * @param {*} formData.claimsInfo
+   * @param {*} formData.documents claim support document images
+   * @param {*} formData.individuals
+   * @param {*} captchaStore
+   * @param {*} declarations
    * @returns
    */
-  submitOverAgeForm(data, captcha, declarations) {
-    const captchaToken = captcha.captchaToken;
+  submitOverAgeForm(
+    { practitioner, claimsInfo, documents, individuals },
+    captchaStore,
+    declarations
+  ) {
+    const captchaToken = captchaStore.captchaToken;
 
-    const attachments = this._formatAttachments(data.claimsInformation.claimSupportDocuments);
-    const individuals = this._formatIndividuals(data.claimsInformation.individuals);
+    const attachments = this._formatAttachments(documents);
+    const formattedIndividuals = this._formatIndividuals(individuals);
 
-    const dateType = data.claimsInformation.dateType;
-    let claimFromDate = formatISODate(data.claimsInformation.claimFromDate) || null;
-    let claimToDate = formatISODate(data.claimsInformation.claimToDate) || null;
-    const claimServiceDate = formatISODate(data.claimsInformation.claimServiceDate);
+    const dateType = claimsInfo.dateType;
+    let claimFromDate = formatISODate(claimsInfo.claimFromDate) || null;
+    let claimToDate = formatISODate(claimsInfo.claimToDate) || null;
+    const claimServiceDate = formatISODate(claimsInfo.claimServiceDate);
     claimFromDate = dateType == "date" ? claimServiceDate : claimFromDate;
     claimToDate = dateType == "date" ? claimServiceDate : claimToDate;
 
     const payload = {
-      applicationId: captcha.applicationUuid,
+      applicationId: captchaStore.applicationUuid,
       submissionDate: formatISODate(new Date()),
 
-      practitionerFirstName: data.practitioner.pracFirstName,
-      practitionerLastName: data.practitioner.pracLastName,
-      practitionerNumber: data.practitioner.pracNumber,
-      practitionerPayeeNumber: data.practitioner.payeeNumber,
-      dataCenterNumber: data.practitioner.dataCenterNumber || undefined,
-      contactPhoneNumber: stripPhoneFormatting(data.practitioner.contactPhoneNumber) || undefined,
-      preferredContactMethod: data.practitioner.preferredContactMethod || undefined,
-      faxNumber: stripPhoneFormatting(data.practitioner.faxNumber) || undefined,
+      practitionerFirstName: practitioner.pracFirstName,
+      practitionerLastName: practitioner.pracLastName,
+      practitionerNumber: practitioner.pracNumber,
+      practitionerPayeeNumber: practitioner.payeeNumber,
+      dataCenterNumber: practitioner.dataCenterNumber || undefined,
+      contactPhoneNumber: stripPhoneFormatting(practitioner.contactPhoneNumber) || undefined,
+      preferredContactMethod: practitioner.preferredContactMethod || undefined,
+      faxNumber: stripPhoneFormatting(practitioner.faxNumber) || undefined,
 
-      dateType: data.claimsInformation.dateType || undefined,
+      dateType: claimsInfo.dateType || undefined,
       claimFromDate,
       claimToDate,
 
-      approximateClaimNumber: data.claimsInformation.approximateClaimNumber || undefined,
-      approximateDollarValue: data.claimsInformation.approximateDollarValue || undefined,
-      feeItems: data.claimsInformation.feeItems || undefined,
-      detailedExplanation: data.claimsInformation.detailedExplanation || undefined,
+      approximateClaimNumber: claimsInfo.approximateClaimNumber || undefined,
+      approximateDollarValue: claimsInfo.approximateDollarValue || undefined,
+      feeItems: claimsInfo.feeItems || undefined,
+      detailedExplanation: claimsInfo.detailedExplanation || undefined,
 
       declaration1: declarations?.declarationAccuracy,
       declaration2: declarations?.declarationValidity,
       signature: "Y",
       supportingDocumentsFor: "OVERAGE",
 
-      individuals,
+      individuals: formattedIndividuals,
       attachments,
     };
 
@@ -221,7 +239,7 @@ class ApiService {
 
     const headers = this._getHeaders(captchaToken);
     return this._sendPostRequest(
-      `${SUBMIT_OVERAGE_FORM_URL}/${captcha.applicationUuid}`,
+      `${SUBMIT_OVERAGE_FORM_URL}/${captchaStore.applicationUuid}`,
       payload,
       headers
     );
@@ -230,39 +248,41 @@ class ApiService {
   /*
    * Submit Pre-auth & Regular Claims
    *
-   * @param {*} formStore
+   * @param {Object} formData
+   * @param {*} formData.practitioner
+   * @param {*} formData.patient
+   * @param {*} formData.documents patient support document images
    * @param {*} captchaStore
+   * @param {*} declarations
    * @returns
    */
-  submitClaimsForm(formStore, captcha, declarations) {
-    const captchaToken = captcha.captchaToken;
+  submitClaimsForm({ practitioner, patient, documents }, captchaStore, declarations) {
+    const captchaToken = captchaStore.captchaToken;
 
     //the database stored procedure checks for these two keywords in order to sort documents
     //so the API payloads need to match them exactly
     let supportingDocumentsCode;
-    if (formStore.formFields.patient.documentsCategory === "pre-auth") {
+    if (patient.documentsCategory === "pre-auth") {
       supportingDocumentsCode = "PREAUTHORIZATION";
     } else {
       supportingDocumentsCode = "CORRESPONDENCE";
     }
 
-    const finalAttachments = this._formatAttachments(
-      formStore.formFields.upload.patientSupportDocuments
-    );
+    const finalAttachments = this._formatAttachments(documents);
 
     const jsonPayload = {
-      applicationId: captcha.applicationUuid,
+      applicationId: captchaStore.applicationUuid,
       submissionDate: formatISODate(new Date()),
-      practitionerFirstName: formStore.formFields.practitioner.pracFirstName,
-      practitionerLastName: formStore.formFields.practitioner.pracLastName,
-      practitionerNumber: formStore.formFields.practitioner.pracNumber,
-      practitionerPayeeNumber: formStore.formFields.practitioner.payeeNumber,
-      patientFirstInitial: formStore.formFields.patient.patientFirstInitial[0],
-      patientLastName: formStore.formFields.patient.patientLastName,
-      patientPhn: stripSpaces(formStore.formFields.patient.patientPhn),
-      patientBirthDate: formatISODate(formStore.formFields.patient.patientBirthdate),
-      adjudicatorFirstName: formStore.formFields.patient.adjFirstName,
-      adjudicatorLastName: formStore.formFields.patient.adjLastName,
+      practitionerFirstName: practitioner.pracFirstName,
+      practitionerLastName: practitioner.pracLastName,
+      practitionerNumber: practitioner.pracNumber,
+      practitionerPayeeNumber: practitioner.payeeNumber,
+      patientFirstInitial: patient.patientFirstInitial[0],
+      patientLastName: patient.patientLastName,
+      patientPhn: stripSpaces(patient.patientPhn),
+      patientBirthDate: formatISODate(patient.patientBirthdate),
+      adjudicatorFirstName: patient.adjFirstName,
+      adjudicatorLastName: patient.adjLastName,
 
       declaration1: declarations?.declarationAccuracy,
       declaration2: declarations?.declarationValidity,
@@ -283,7 +303,7 @@ class ApiService {
     const headers = this._getHeaders(captchaToken);
 
     return this._sendPostRequest(
-      `${SUBMIT_FORM_URL}/${captcha.applicationUuid}`,
+      `${SUBMIT_FORM_URL}/${captchaStore.applicationUuid}`,
       jsonPayload,
       headers
     );

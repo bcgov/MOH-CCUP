@@ -211,8 +211,13 @@ export default {
     submitForm() {
       this.isLoading = true;
       this.isSystemUnavailable = false;
+      const { practitioner, patient, upload } = this.store.formFields;
       apiService
-        .submitClaimsForm(this.store, this.captchaStore, declarations.claims)
+        .submitClaimsForm(
+          { practitioner, patient, documents: upload.patientSupportDocuments },
+          this.captchaStore,
+          declarations.claims
+        )
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
