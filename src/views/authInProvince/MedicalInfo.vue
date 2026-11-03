@@ -312,12 +312,7 @@ export default {
   },
   methods: {
     validatePage() {
-      if (!this.consultationReport || this.consultationReport.length == 0) {
-        // show error message
-        scrollToError();
-      } else {
-        this.store.updateFormField("medicalInfo", "consultationReport", this.consultationReport);
-      }
+      this.store.updateFormField("medicalInfo", "consultationReport", this.consultationReport);
 
       this.v$.$touch();
       if (!this.v$.$error) {
