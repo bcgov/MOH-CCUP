@@ -63,7 +63,6 @@
 import { PageContent, CheckboxComponent, ValidationMessage, PrintPage } from "common-lib-vue";
 // import ReviewTable from "../components/ReviewTable.vue";
 import { formatDateDisplay } from "@/helpers/date.js";
-import pageStateService from "@/services/page-state-service.js";
 import logService from "@/services/log-service.js";
 import { routes } from "@/router/index.js";
 import { useCaptchaStore } from "@/stores/captchaStore";
@@ -134,26 +133,6 @@ export default {
   },
 
   methods: {
-    nextPage() {
-      // Clear patient data so it's ready for the next person
-      this.store.clearPatient();
-      // Reset captcha token so the database doesn't receive duplicate submission uuids
-      this.captchaStore.resetCaptchaToken();
-
-      // Reset page history so navigation happens correctly
-      pageStateService.setPageUnvisited(routes.UPLOAD_DOCUMENTS.path);
-      pageStateService.setPageUnvisited(routes.REVIEW_PAGE.path);
-      pageStateService.setPageUnvisited(routes.SUBMISSION_PAGE.path);
-      pageStateService.setPageIncomplete(routes.UPLOAD_DOCUMENTS.path);
-      pageStateService.setPageIncomplete(routes.REVIEW_PAGE.path);
-      pageStateService.setPageIncomplete(routes.SUBMISSION_PAGE.path);
-      const toPath = routes.PATIENT_INFO.path;
-      pageStateService.setPageComplete(toPath);
-      pageStateService.visitPage(toPath);
-
-      // Navigate to next path.
-      this.$router.push(toPath);
-    },
     printPage() {
       window.print();
     },

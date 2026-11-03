@@ -295,7 +295,6 @@ export default {
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
       scrollTo(0);
-      this.v$.$validate();
     },
     handleAPIValidationReset() {
       this.isAPIValidationErrorShown = false;

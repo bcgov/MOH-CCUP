@@ -197,11 +197,6 @@ export default {
     },
 
     handleAttachments() {
-      if (!this.submitForm) {
-        // for dev debugging only
-        return this.submitForm();
-      }
-
       this.isLoading = true;
       this.isSystemUnavailable = false;
       this.isAPIValidationErrorShown = false;

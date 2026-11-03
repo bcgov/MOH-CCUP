@@ -221,32 +221,34 @@ export default {
         .then((response) => {
           this.isLoading = false;
           const returnCode = response.data.returnCode;
-          switch (returnCode) {
-            case "success": // Successfully submitted form
-              this.store.updateFormField("review", "referenceNumber", response.data.refNumber);
-              logService.logInfo(this.captchaStore.applicationUuid, {
-                event: "submission success (submitForm)",
-                response: response.data,
-              });
-              this.nextPage();
-              break;
-            case "failure": // Submission failure, eg. API didn't recognize a field
-              this.isAPIValidationErrorShown = true;
-              logService.logError(this.captchaStore.applicationUuid, {
-                event: "submission failure (submitForm)",
-                response: response.data,
-              });
-              scrollToError();
-              break;
-            default: // Default error handler
-              this.isSystemUnavailable = true;
-              logService.logError(this.captchaStore.applicationUuid, {
-                event: "submission failure (submitForm endpoint unavailable)",
-                response: response.data,
-              });
-              scrollToError();
-              break;
+
+          // "Normal" submission errors, eg. API didn't recognize a field
+          if (returnCode === "-1" || returnCode === "failure") {
+            this.isAPIValidationErrorShown = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: "submission failure (submitForm)",
+              response: response.data,
+            });
+            return scrollToError();
           }
+
+          // Anything else is unexpected
+          if (returnCode !== "success") {
+            this.isSystemUnavailable = true;
+            logService.logError(this.captchaStore.applicationUuid, {
+              event: "submission failure (submitForm endpoint unavailable)",
+              response: response.data,
+            });
+            return scrollToError();
+          }
+
+          // Happy path - Submission success
+          this.store.updateFormField("review", "referenceNumber", response.data.refNumber);
+          logService.logInfo(this.captchaStore.applicationUuid, {
+            event: "submission success (submitForm)",
+            response: response.data,
+          });
+          this.nextPage();
         })
         .catch((error) => {
           // all other errors, eg. if the server is down
