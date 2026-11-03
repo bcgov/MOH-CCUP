@@ -357,7 +357,6 @@ export default {
       pageStateService.visitPage(toPath);
       this.$router.push(toPath);
       scrollTo(0);
-      this.v$.$validate();
     },
     assignDataFromStore() {
       this.proposedProcedure = this.store.formFields[this.formFieldParent]["proposedProcedure"];

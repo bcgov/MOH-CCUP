@@ -97,7 +97,6 @@
 <script setup>
 import { PageContent, CheckboxComponent, ValidationMessage, PrintPage } from "common-lib-vue";
 import { formatDateDisplay } from "@/helpers/date.js";
-import { useCaptchaStore } from "@/stores/captchaStore";
 import { useAuthInProvinceStore } from "@/stores/authInProvinceStore";
 import beforeRouteLeaveHandler from "@/helpers/beforeRouteLeaveHandler.js";
 import AuthInProvReviewTable from "@/components/AuthInProvReviewTable.vue";
@@ -111,7 +110,6 @@ export default {
   },
   data() {
     return {
-      captchaStore: useCaptchaStore(),
       store: useAuthInProvinceStore(),
       formFieldPractitioner: "practitionerInfo",
       isDeclarationAccuracy: null,
@@ -146,12 +144,6 @@ export default {
   },
 
   methods: {
-    nextPage() {
-      // Reset captcha token so the database doesn't receive duplicate submission uuids
-      this.captchaStore.resetCaptchaToken();
-
-      // TODO: Add resetting all of the pages
-    },
     printPage() {
       window.print();
     },
