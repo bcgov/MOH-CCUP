@@ -4,11 +4,13 @@ import pageStateService from "../services/page-state-service";
 export const PRE_AUTH_AND_CLAIMS_BASE_URL = "/pre-auth-and-claims";
 export const OVER_AGE_BASE_URL = "/over-age";
 export const AUTH_IN_PROV_BASE_URL = "/auth-in-province";
+export const NITAOP_BASE_URL = "/nitaop";
 export const CCUP_TITLE = "Claims Correspondence Upload Portal";
 export const PRE_AUTH_AND_CLAIMS_TITLE = "Documents to support pre-authorization and claims";
 export const OVER_AGE_TITLE = "Request for approval of over-age claims (HLTH 2943)";
 export const AUTH_IN_PROV_TITLE =
   "Application for pre-authorization of payment: surgery for alteration of appearance (HLTH 2769)";
+export const NITAOP_TITLE = "Northern & Isolation Travel Assistance Outreach Program (NITAOP)";
 
 export const routes = {
   GET_STARTED: {
@@ -101,6 +103,36 @@ export const routes = {
     name: "AuthInProvinceSubmission",
     component: () => import("@/views/authInProvince/SubmissionPage.vue"),
   },
+  NITAOP_PRACTITIONER_INFO: {
+    path: "/nitaop/practitioner-info",
+    title: "Practitioner information",
+    name: "NitaopPractitionerInfo",
+    component: () => import("@/views/nitaop/PractitionerInfo.vue"),
+  },
+  NITAOP_STEP_2: {
+    path: "/nitaop/step-2",
+    title: "Step 2",
+    name: "NitaopStep2",
+    component: () => import("@/views/nitaop/PlaceholderPage.vue"),
+  },
+  NITAOP_STEP_3: {
+    path: "/nitaop/step-3",
+    title: "Step 3",
+    name: "NitaopStep3",
+    component: () => import("@/views/nitaop/PlaceholderPage.vue"),
+  },
+  NITAOP_REVIEW_PAGE: {
+    path: "/nitaop/review",
+    title: "Review and declaration",
+    name: "NitaopReview",
+    component: () => import("@/views/nitaop/PlaceholderPage.vue"),
+  },
+  NITAOP_SUBMISSION: {
+    path: "/nitaop/submission",
+    title: "Submission",
+    name: "NitaopSubmission",
+    component: () => import("@/views/nitaop/PlaceholderPage.vue"),
+  },
   MAINTENANCE_PAGE: {
     path: "/maintenance-page",
     title: "Maintenance Page",
@@ -130,6 +162,14 @@ export const authInProvRoutes = [
   { ...routes.AUTH_IN_PROV_PRACTITIONER_INFO },
   { ...routes.AUTH_IN_PROV_REVIEW_PAGE },
   { ...routes.AUTH_IN_PROV_SUBMISSION },
+];
+
+export const nitaopRoutes = [
+  { ...routes.NITAOP_PRACTITIONER_INFO },
+  { ...routes.NITAOP_STEP_2 },
+  { ...routes.NITAOP_STEP_3 },
+  { ...routes.NITAOP_REVIEW_PAGE },
+  { ...routes.NITAOP_SUBMISSION },
 ];
 
 export const routeStepOrder = [
@@ -241,6 +281,31 @@ const router = createRouter({
       title: "Pre-authorization of Payment Submission",
       name: "AuthInProvinceSubmission",
       component: () => import("@/views/authInProvince/SubmissionPage.vue"),
+    },
+    {
+      path: "/nitaop/practitioner-info",
+      name: "NitaopPractitionerInfo",
+      component: () => import("@/views/nitaop/PractitionerInfo.vue"),
+    },
+    {
+      path: "/nitaop/step-2",
+      name: "NitaopStep2",
+      component: () => import("@/views/nitaop/PlaceholderPage.vue"),
+    },
+    {
+      path: "/nitaop/step-3",
+      name: "NitaopStep3",
+      component: () => import("@/views/nitaop/PlaceholderPage.vue"),
+    },
+    {
+      path: "/nitaop/review",
+      name: "NitaopReview",
+      component: () => import("@/views/nitaop/PlaceholderPage.vue"),
+    },
+    {
+      path: "/nitaop/submission",
+      name: "NitaopSubmission",
+      component: () => import("@/views/nitaop/PlaceholderPage.vue"),
     },
     {
       path: "/maintenance-page",

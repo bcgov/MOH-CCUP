@@ -131,6 +131,21 @@ export default {
             ],
           ],
         },
+        {
+          id: "upload-portal-nitaop",
+          label:
+            "Northern and isolation travel assistance outreach program (NITAOPS): Application for expenses (HLTH 2804):",
+          value: "nitaop",
+          points: [
+            [
+              "Before submitting an application, review the summary of requirements on pg. 2 of the print form ",
+              {
+                text: "https://www2.gov.bc.ca/assets/gov/health/forms/2804fil.pdf",
+                url: "https://www2.gov.bc.ca/assets/gov/health/forms/2804fil.pdf",
+              },
+            ],
+          ],
+        },
       ];
     },
   },
@@ -158,6 +173,8 @@ export default {
         toPath = routes.OVER_AGE_PRACTITIONER_PAGE.path;
       } else if (this.uploadPortalOptions === "auth-in-prov") {
         toPath = routes.AUTH_IN_PROV_PATIENT_INFO.path;
+      } else if (this.uploadPortalOptions === "nitaop") {
+        toPath = routes.NITAOP_PRACTITIONER_INFO.path;
       }
       //Navigate to the corresponding page
       pageStateService.setPageComplete(toPath);

@@ -9,6 +9,16 @@ export const nameValidator = (value) => {
   return criteria.test(value);
 };
 
+export const emailValidator = (value) => {
+  const criteria = /^[A-Za-z0-9._+-]+@([A-Za-z0-9-]+\.)+[A-Za-z]{2,}$/;
+  return criteria.test(value);
+};
+
+export const postalCodeFormatValidator = (value) => {
+  const criteria = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/;
+  return criteria.test(value);
+};
+
 export const birthDateValidator = (_, vm) => {
   const data = vm.patientBirthdate;
   if (data instanceof Date && !isNaN(data)) {

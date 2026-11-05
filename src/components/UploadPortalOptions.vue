@@ -240,4 +240,9 @@ export default {
 ul {
   padding-left: 50px;
 }
+
+/* Lets long URL link text wrap on narrow screens. */
+a {
+  overflow-wrap: anywhere;
+}
 </style>
