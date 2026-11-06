@@ -30,10 +30,12 @@ import {
   PRE_AUTH_AND_CLAIMS_BASE_URL,
   OVER_AGE_BASE_URL,
   AUTH_IN_PROV_BASE_URL,
+  NITAOP_BASE_URL,
   CCUP_TITLE,
   PRE_AUTH_AND_CLAIMS_TITLE,
   OVER_AGE_TITLE,
   AUTH_IN_PROV_TITLE,
+  NITAOP_TITLE,
 } from "@/router/index.js";
 import pageStateService from "@/services/page-state-service.js";
 
@@ -96,6 +98,8 @@ export default {
         return OVER_AGE_TITLE;
       } else if (currPath.includes(AUTH_IN_PROV_BASE_URL)) {
         return AUTH_IN_PROV_TITLE;
+      } else if (currPath.includes(NITAOP_BASE_URL)) {
+        return NITAOP_TITLE;
       } else if (currPath.includes(PRE_AUTH_AND_CLAIMS_BASE_URL)) {
         return PRE_AUTH_AND_CLAIMS_TITLE;
       } else {
