@@ -26,3 +26,13 @@ body.no-scroll {
   color: #606060;
   border: 1px solid #606060;
 }
+
+.nitaop-page label,
+.nitaop-page legend {
+  font-weight: bold;
+}
+
+/* Radio option labels stay normal weight; md-radio is the RadioComponent class in common-lib-vue. */
+.nitaop-page .md-radio label {
+  font-weight: normal;
+}
