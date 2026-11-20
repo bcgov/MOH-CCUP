@@ -128,3 +128,22 @@ export const reportOrDescriptionValidator = (value, vm) => {
   }
   return false;
 };
+
+//two digits, 00 to 12; 00 is accepted on purpose for now (may be used for 24-hour times)
+export const hourValidator = (value) => {
+  return /^(0[0-9]|1[0-2])$/.test(value);
+};
+
+//two digits, 00 to 59
+export const minuteValidator = (value) => {
+  return /^[0-5][0-9]$/.test(value);
+};
+
+export const yearRangeValidator = (value) => {
+  if (value instanceof Date && !isNaN(value)) {
+    const year = value.getFullYear();
+    return year >= 1900 && year <= new Date().getFullYear();
+  }
+  //not a valid date, dateDataValidator reports it
+  return true;
+};

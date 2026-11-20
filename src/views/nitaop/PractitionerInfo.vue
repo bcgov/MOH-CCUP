@@ -4,318 +4,272 @@
     :current-path="$route.path"
   />
   <PageContent>
-    <main class="container pt-3 pt-sm-5 mb-5">
+    <main class="container nitaop-page pt-3 pt-sm-5 mb-5">
       <h1 class="mb-0">Practitioner information</h1>
       <hr class="mt-0" />
-      <h2>Practitioner</h2>
-      <p class="mb-0">Please provide the necessary information about the practitioner.</p>
-      <hr class="mt-0" />
-      <InputComponent
-        id="prac-first-name"
-        v-model="pracFirstName"
-        cypress-id="prac-first-name"
-        label="First name"
-        :maxlength="nitaopNameMaxLength"
-        :required="true"
-        class="mt-3"
-        :input-style="mediumStyles"
-        @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.pracFirstName, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.pracFirstName.$dirty && v$.pracFirstName.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        {{
-          v$.pracFirstName.required.$invalid
-            ? "First name is required."
-            : v$.pracFirstName.nameValidator.$invalid
-              ? `First name must begin with a letter and cannot include special
+      <section class="ps-md-5">
+        <h2>Practitioner</h2>
+        <p class="mb-0">Please provide the necessary information about the practitioner.</p>
+        <hr class="mt-0" />
+        <div class="ms-md-3">
+          <InputComponent
+            id="prac-first-name"
+            v-model="pracFirstName"
+            cypress-id="prac-first-name"
+            label="First name"
+            :maxlength="nitaopNameMaxLength"
+            :required="true"
+            class="mt-3"
+            :input-style="mediumStyles"
+            @input="handleAPIValidationReset"
+            @blur="handleChangeField(v$.pracFirstName, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.pracFirstName.$dirty && v$.pracFirstName.$invalid">
+            {{
+              v$.pracFirstName.required.$invalid
+                ? "First name is required."
+                : v$.pracFirstName.nameValidator.$invalid
+                  ? `First name must begin with a letter and cannot include special
               characters except hyphens, periods, apostrophes and blank characters.`
-              : null
-        }}
-      </div>
-      <InputComponent
-        id="prac-last-name"
-        v-model="pracLastName"
-        cypress-id="prac-last-name"
-        label="Last name"
-        :maxlength="nitaopNameMaxLength"
-        :required="true"
-        class="mt-3"
-        :input-style="mediumStyles"
-        @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.pracLastName, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.pracLastName.$dirty && v$.pracLastName.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        {{
-          v$.pracLastName.required.$invalid
-            ? "Last name is required."
-            : v$.pracLastName.nameValidator.$invalid
-              ? `Last name must begin with a letter and cannot include special
+                  : null
+            }}
+          </FieldError>
+          <InputComponent
+            id="prac-last-name"
+            v-model="pracLastName"
+            cypress-id="prac-last-name"
+            label="Last name"
+            :maxlength="nitaopNameMaxLength"
+            :required="true"
+            class="mt-3"
+            :input-style="mediumStyles"
+            @input="handleAPIValidationReset"
+            @blur="handleChangeField(v$.pracLastName, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.pracLastName.$dirty && v$.pracLastName.$invalid">
+            {{
+              v$.pracLastName.required.$invalid
+                ? "Last name is required."
+                : v$.pracLastName.nameValidator.$invalid
+                  ? `Last name must begin with a letter and cannot include special
               characters except hyphens, periods, apostrophes and blank characters.`
-              : null
-        }}
-      </div>
+                  : null
+            }}
+          </FieldError>
 
-      <PractitionerNumberInput
-        id="prac-number"
-        v-model="pracNumber"
-        cypress-id="prac-number"
-        label="MSP practitioner number"
-        :required="true"
-        class="mt-3"
-        :input-style="extraSmallStyles"
-        @input="handleAPIValidationReset"
-        @blur="handleChangeField(v$.pracNumber, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.pracNumber.$dirty && v$.pracNumber.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        {{
-          v$.pracNumber.required.$invalid
-            ? "MSP practitioner number is required."
-            : v$.pracNumber.valueLengthValidator.$invalid
-              ? "MSP practitioner number must be 5 characters long."
-              : null
-        }}
-      </div>
+          <PractitionerNumberInput
+            id="prac-number"
+            v-model="pracNumber"
+            cypress-id="prac-number"
+            label="MSP practitioner number"
+            :required="true"
+            class="mt-3"
+            :input-style="extraSmallStyles"
+            @input="handleAPIValidationReset"
+            @blur="handleChangeField(v$.pracNumber, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.pracNumber.$dirty && v$.pracNumber.$invalid">
+            {{
+              v$.pracNumber.required.$invalid
+                ? "MSP practitioner number is required."
+                : v$.pracNumber.valueLengthValidator.$invalid
+                  ? "MSP practitioner number must be 5 characters long."
+                  : null
+            }}
+          </FieldError>
 
-      <PractitionerNumberInput
-        id="payment-number"
-        v-model="paymentNumber"
-        cypress-id="payment-number"
-        label="MSP payment number"
-        :required="true"
-        class="mt-3"
-        :input-style="extraSmallStyles"
-        @blur="handleChangeField(v$.paymentNumber, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.paymentNumber.$dirty && v$.paymentNumber.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        {{
-          v$.paymentNumber.required.$invalid
-            ? "MSP payment number is required."
-            : v$.paymentNumber.valueLengthValidator.$invalid
-              ? "MSP payment number must be 5 characters long."
-              : null
-        }}
-      </div>
+          <PractitionerNumberInput
+            id="payment-number"
+            v-model="paymentNumber"
+            cypress-id="payment-number"
+            label="MSP payment number"
+            :required="true"
+            class="mt-3"
+            :input-style="extraSmallStyles"
+            @blur="handleChangeField(v$.paymentNumber, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.paymentNumber.$dirty && v$.paymentNumber.$invalid">
+            {{
+              v$.paymentNumber.required.$invalid
+                ? "MSP payment number is required."
+                : v$.paymentNumber.valueLengthValidator.$invalid
+                  ? "MSP payment number must be 5 characters long."
+                  : null
+            }}
+          </FieldError>
 
-      <InputComponent
-        id="specialty"
-        v-model="specialty"
-        cypress-id="specialty"
-        :maxlength="'100'"
-        label="Specialty (if applicable)"
-        class="mt-3"
-        :input-style="mediumStyles"
-        @blur="handleChangeField(v$.specialty, $event, formFieldParent, store)"
-      />
+          <InputComponent
+            id="specialty"
+            v-model="specialty"
+            cypress-id="specialty"
+            :maxlength="'100'"
+            label="Specialty (if applicable)"
+            class="mt-3"
+            :input-style="mediumStyles"
+            @blur="handleChangeField(v$.specialty, $event, formFieldParent, store)"
+          />
 
-      <PhoneNumberInput
-        id="contact-phone-number"
-        v-model="contactPhoneNumber"
-        cypress-id="contact-phone-number"
-        label="Contact phone number"
-        :required="true"
-        class="mt-3"
-        :input-style="smallStyles"
-        @blur="handleChangeField(v$.contactPhoneNumber, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.contactPhoneNumber.$dirty && v$.contactPhoneNumber.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        {{
-          v$.contactPhoneNumber.required.$invalid
-            ? "Contact phone number is required."
-            : v$.contactPhoneNumber.phoneValidator.$invalid
-              ? "Contact phone number does not appear to be valid."
-              : null
-        }}
-      </div>
+          <PhoneNumberInput
+            id="contact-phone-number"
+            v-model="contactPhoneNumber"
+            cypress-id="contact-phone-number"
+            label="Contact phone number"
+            :required="true"
+            class="mt-3"
+            :input-style="smallStyles"
+            @blur="handleChangeField(v$.contactPhoneNumber, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.contactPhoneNumber.$dirty && v$.contactPhoneNumber.$invalid">
+            {{
+              v$.contactPhoneNumber.required.$invalid
+                ? "Contact phone number is required."
+                : v$.contactPhoneNumber.phoneValidator.$invalid
+                  ? "Contact phone number does not appear to be valid."
+                  : null
+            }}
+          </FieldError>
 
-      <InputComponent
-        id="email"
-        v-model="email"
-        cypress-id="email"
-        :maxlength="'254'"
-        label="Email address"
-        :required="true"
-        class="mt-3"
-        :input-style="mediumStyles"
-        @blur="handleChangeField(v$.email, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.email.$dirty && v$.email.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        {{
-          v$.email.required.$invalid
-            ? "Email address is required."
-            : v$.email.emailValidator.$invalid
-              ? "Email address does not appear to be valid."
-              : null
-        }}
-      </div>
-
-      <h2 class="mt-5">Address</h2>
-      <p class="mb-0">
-        Enter the departure address - that's the address from which your trip departed.
-      </p>
-      <hr class="mt-0" />
-      <Textarea
-        id="street-address"
-        v-model="streetAddress"
-        cypress-id="street-address"
-        label="Full street address"
-        :maxlength="'254'"
-        :required="true"
-        class="mt-3"
-        :input-style="largeStyles"
-        @blur="handleChangeField(v$.streetAddress, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.streetAddress.$dirty && v$.streetAddress.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        Full street address is required.
-      </div>
-
-      <InputComponent
-        id="city"
-        v-model="city"
-        cypress-id="city"
-        :maxlength="'100'"
-        label="City"
-        :required="true"
-        class="mt-3"
-        :input-style="mediumStyles"
-        @blur="handleChangeField(v$.city, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.city.$dirty && v$.city.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        City is required.
-      </div>
-
-      <InputComponent
-        id="province"
-        v-model="province"
-        cypress-id="province"
-        :maxlength="'100'"
-        label="Province"
-        :required="true"
-        class="mt-3"
-        :input-style="mediumStyles"
-        @blur="handleChangeField(v$.province, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.province.$dirty && v$.province.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        Province is required.
-      </div>
-
-      <PostalCodeInput
-        id="postal-code"
-        v-model="postalCode"
-        cypress-id="postal-code"
-        label="Postal code"
-        :required="true"
-        class="mt-3"
-        :input-style="smallStyles"
-        @blur="handleChangeField(v$.postalCode, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.postalCode.$dirty && v$.postalCode.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        {{
-          v$.postalCode.required.$invalid
-            ? "Postal code is required."
-            : v$.postalCode.postalCodeFormatValidator.$invalid
-              ? "Postal code does not appear to be valid."
-              : null
-        }}
-      </div>
-
-      <RadioComponent
-        id="has-other-funding"
-        v-model="hasOtherFunding"
-        class="mt-3"
-        label="Are you receiving funding for travel expenses or time from any other source for this visit or for providing service under the rural locum programs?"
-        name="has-other-funding"
-        :required="true"
-        :items="yesNoOptions"
-        cypress-id="has-other-funding"
-        @change="handleChangeField(v$.hasOtherFunding, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.hasOtherFunding.$dirty && v$.hasOtherFunding.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        Select Yes or No.
-      </div>
-
-      <div v-if="isOtherFundingYes">
-        <Textarea
-          id="other-funding-source"
-          v-model="otherFundingSource"
-          cypress-id="other-funding-source"
-          :label="'If &quot;Yes&quot;, from where? (e.g. RGPLP, RSLP, RGPALP, APP, HA)'"
-          :maxlength="'254'"
-          :required="true"
-          class="mt-3"
-          :input-style="largeStyles"
-          @blur="handleChangeField(v$.otherFundingSource, $event, formFieldParent, store)"
-        />
-        <div
-          v-if="v$.otherFundingSource.$dirty && v$.otherFundingSource.$invalid"
-          class="text-danger error"
-          aria-live="assertive"
-        >
-          Funding source is required.
+          <InputComponent
+            id="email"
+            v-model="email"
+            cypress-id="email"
+            :maxlength="'254'"
+            label="Email address"
+            :required="true"
+            class="mt-3"
+            :input-style="mediumStyles"
+            @blur="handleChangeField(v$.email, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.email.$dirty && v$.email.$invalid">
+            {{
+              v$.email.required.$invalid
+                ? "Email address is required."
+                : v$.email.emailValidator.$invalid
+                  ? "Email address does not appear to be valid."
+                  : null
+            }}
+          </FieldError>
         </div>
-      </div>
+      </section>
 
-      <RadioComponent
-        id="is-on-call"
-        v-model="isOnCall"
-        class="mt-3"
-        label="Are you scheduled to be on call?"
-        name="is-on-call"
-        :required="true"
-        :items="yesNoOptions"
-        cypress-id="is-on-call"
-        @change="handleChangeField(v$.isOnCall, $event, formFieldParent, store)"
-      />
-      <div
-        v-if="v$.isOnCall.$dirty && v$.isOnCall.$invalid"
-        class="text-danger error"
-        aria-live="assertive"
-      >
-        Select Yes or No.
-      </div>
+      <section class="ps-md-5">
+        <h2 class="mt-5">Address</h2>
+        <p class="mb-0">
+          Enter the departure address - that's the address from which your trip departed.
+        </p>
+        <hr class="mt-0" />
+        <div class="ms-md-3">
+          <Textarea
+            id="street-address"
+            v-model="streetAddress"
+            cypress-id="street-address"
+            label="Full street address"
+            :maxlength="'254'"
+            :required="true"
+            class="mt-3"
+            :input-style="largeStyles"
+            @blur="handleChangeField(v$.streetAddress, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.streetAddress.$dirty && v$.streetAddress.$invalid">
+            Full street address is required.
+          </FieldError>
+
+          <InputComponent
+            id="city"
+            v-model="city"
+            cypress-id="city"
+            :maxlength="'100'"
+            label="City"
+            :required="true"
+            class="mt-3"
+            :input-style="mediumStyles"
+            @blur="handleChangeField(v$.city, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.city.$dirty && v$.city.$invalid"> City is required. </FieldError>
+
+          <InputComponent
+            id="province"
+            v-model="province"
+            cypress-id="province"
+            :maxlength="'100'"
+            label="Province"
+            :required="true"
+            class="mt-3"
+            :input-style="mediumStyles"
+            @blur="handleChangeField(v$.province, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.province.$dirty && v$.province.$invalid">
+            Province is required.
+          </FieldError>
+
+          <PostalCodeInput
+            id="postal-code"
+            v-model="postalCode"
+            cypress-id="postal-code"
+            label="Postal code"
+            :required="true"
+            class="mt-3"
+            :input-style="smallStyles"
+            @blur="handleChangeField(v$.postalCode, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.postalCode.$dirty && v$.postalCode.$invalid">
+            {{
+              v$.postalCode.required.$invalid
+                ? "Postal code is required."
+                : v$.postalCode.postalCodeFormatValidator.$invalid
+                  ? "Postal code does not appear to be valid."
+                  : null
+            }}
+          </FieldError>
+
+          <RadioComponent
+            id="has-other-funding"
+            v-model="hasOtherFunding"
+            class="mt-3"
+            label="Are you receiving funding for travel expenses or time from any other source for this visit or for providing service under the rural locum programs?"
+            name="has-other-funding"
+            :required="true"
+            :items="yesNoOptions"
+            cypress-id="has-other-funding"
+            @change="handleChangeField(v$.hasOtherFunding, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.hasOtherFunding.$dirty && v$.hasOtherFunding.$invalid">
+            Select Yes or No.
+          </FieldError>
+
+          <div v-if="isOtherFundingYes">
+            <Textarea
+              id="other-funding-source"
+              v-model="otherFundingSource"
+              cypress-id="other-funding-source"
+              :label="'If &quot;Yes&quot;, from where? (e.g. RGPLP, RSLP, RGPALP, APP, HA)'"
+              :maxlength="'254'"
+              :required="true"
+              class="mt-3"
+              :input-style="largeStyles"
+              @blur="handleChangeField(v$.otherFundingSource, $event, formFieldParent, store)"
+            />
+            <FieldError :show="v$.otherFundingSource.$dirty && v$.otherFundingSource.$invalid">
+              Funding source is required.
+            </FieldError>
+          </div>
+
+          <RadioComponent
+            id="is-on-call"
+            v-model="isOnCall"
+            class="mt-3"
+            label="Are you scheduled to be on call?"
+            name="is-on-call"
+            :required="true"
+            :items="yesNoOptions"
+            cypress-id="is-on-call"
+            @change="handleChangeField(v$.isOnCall, $event, formFieldParent, store)"
+          />
+          <FieldError :show="v$.isOnCall.$dirty && v$.isOnCall.$invalid">
+            Select Yes or No.
+          </FieldError>
+        </div>
+      </section>
 
       <div
         v-if="isSystemUnavailable"
@@ -369,18 +323,21 @@ import {
 } from "@/helpers/validators.js";
 import { nitaopRoutes, routes } from "@/router/index.js";
 import ProgressBar from "@/components/ProgressBar.vue";
+import FieldError from "@/components/FieldError.vue";
 import pageStateService from "@/services/page-state-service.js";
 import { scrollTo, scrollToError } from "@/helpers/scroll";
 import apiService from "@/services/api-service";
 import logService from "@/services/log-service.js";
+
+const yesNoOptions = [
+  { id: "yes", label: "Yes", value: "yes" },
+  { id: "no", label: "No", value: "no" },
+];
 </script>
 
 <script>
 export default {
   name: "NitaopPractitionerInfo",
-  components: {
-    ProgressBar,
-  },
   data() {
     return {
       v$: useVuelidate(),
@@ -407,14 +364,17 @@ export default {
     };
   },
   computed: {
-    yesNoOptions() {
-      return [
-        { id: "yes", label: "Yes", value: "yes" },
-        { id: "no", label: "No", value: "no" },
-      ];
-    },
     isOtherFundingYes() {
       return this.hasOtherFunding === "yes";
+    },
+  },
+  watch: {
+    //a "No" answer must not keep a funding source typed earlier
+    hasOtherFunding(value) {
+      if (value !== "no") return;
+      this.otherFundingSource = "";
+      this.store.updateFormField(this.formFieldParent, "otherFundingSource", "");
+      this.v$.otherFundingSource.$reset();
     },
   },
   created() {
