@@ -1,4 +1,4 @@
-import { subDays, subMonths, startOfToday, isAfter, isBefore, isEqual } from "date-fns";
+import { subDays, subMonths, startOfToday, startOfDay, isAfter, isBefore, isEqual } from "date-fns";
 
 export const valueLengthValidator = (value) => {
   return value.length == 5;
@@ -146,4 +146,54 @@ export const yearRangeValidator = (value) => {
   }
   //not a valid date, dateDataValidator reports it
   return true;
+};
+
+//true when the trip date is a real date inside the allowed year range
+const hasValidTripDate = (date) => {
+  return dateDataValidator(date) && yearRangeValidator(date);
+};
+
+//minutes since midnight from a 12-hour time; hour 00 and 12 both mean hour 0 of the meridiem
+const toMinutes = (hour, minute, meridiem) => {
+  return ((Number(hour) % 12) + (meridiem === "PM" ? 12 : 0)) * 60 + Number(minute);
+};
+
+//minutes for a time whose parts all pass the per-field rules, otherwise null
+const validTimeMinutes = (hour, minute, meridiem) => {
+  if (hourValidator(hour) && minuteValidator(minute) && (meridiem === "AM" || meridiem === "PM")) {
+    return toMinutes(hour, minute, meridiem);
+  }
+  return null;
+};
+
+//trip date is not earlier than the previous trip date (same day is allowed);
+//valid when either date is missing or invalid, those have their own messages
+export const tripDateOrderValidator = (value, vm) => {
+  const previous = vm.previousTrip;
+  if (!previous || !hasValidTripDate(value) || !hasValidTripDate(previous.date)) {
+    return true;
+  }
+  return !isBefore(startOfDay(value), startOfDay(previous.date));
+};
+
+//on the same day, departure is not earlier than the previous trip arrival (equal is allowed);
+//valid when either date or either time is missing or invalid
+export const tripTimeOrderValidator = (value, vm) => {
+  const previous = vm.previousTrip;
+  if (!previous || !hasValidTripDate(vm.date) || !hasValidTripDate(previous.date)) {
+    return true;
+  }
+  if (!isEqual(startOfDay(vm.date), startOfDay(previous.date))) {
+    return true;
+  }
+  const departure = validTimeMinutes(vm.departureHour, vm.departureMinute, vm.departureMeridiem);
+  const previousArrival = validTimeMinutes(
+    previous.arrivalHour,
+    previous.arrivalMinute,
+    previous.arrivalMeridiem
+  );
+  if (departure === null || previousArrival === null) {
+    return true;
+  }
+  return departure >= previousArrival;
 };

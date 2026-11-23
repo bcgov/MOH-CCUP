@@ -8,11 +8,7 @@
     @process-date="v$.date.$touch()"
   />
   <FieldError :show="v$.date.$dirty && v$.date.$invalid">
-    {{
-      v$.date.dateDataValidator.$invalid
-        ? "Date must be a valid date."
-        : `Year must be between 1900 and ${currentYear}.`
-    }}
+    {{ dateMessage }}
   </FieldError>
 
   <InputComponent
@@ -72,8 +68,11 @@
   <FieldError :show="v$.departureMinute.$dirty && v$.departureMinute.$invalid">
     Departure minute must be 00 to 59.
   </FieldError>
-  <FieldError :show="v$.departureMeridiem.$dirty && v$.departureMeridiem.$invalid">
+  <FieldError :show="v$.departureMeridiem.$dirty && v$.departureMeridiem.required.$invalid">
     Select AM or PM for departure time.
+  </FieldError>
+  <FieldError :show="showDepartureOrderError">
+    Departure time must not be earlier than the arrival time of Trip # {{ index }}.
   </FieldError>
 
   <InputComponent
@@ -178,13 +177,14 @@ import {
   yearRangeValidator,
   hourValidator,
   minuteValidator,
+  tripDateOrderValidator,
+  tripTimeOrderValidator,
 } from "@/helpers/validators.js";
 
 const meridiemOptions = [
   { id: "am", label: "AM", value: "AM" },
   { id: "pm", label: "PM", value: "PM" },
 ];
-const currentYear = new Date().getFullYear();
 </script>
 
 <script>
@@ -217,6 +217,27 @@ export default {
     };
   },
   computed: {
+    //the trip before this one in list order, or undefined for the first trip
+    previousTrip() {
+      return this.store.formFields.travel.trips[this.index - 1];
+    },
+    dateMessage() {
+      if (this.v$.date.dateDataValidator.$invalid) {
+        return "Date must be a valid date.";
+      }
+      if (this.v$.date.yearRangeValidator.$invalid) {
+        return `Year must be between 1900 and ${new Date().getFullYear()}.`;
+      }
+      return `Date must not be earlier than the date of Trip # ${this.index}.`;
+    },
+    //shown once every departure field is touched; the validator already passes when a time part is missing or invalid
+    showDepartureOrderError() {
+      const { departureHour, departureMinute, departureMeridiem } = this.v$;
+      return (
+        [departureHour, departureMinute, departureMeridiem].every((f) => f.$dirty) &&
+        departureMeridiem.tripTimeOrderValidator.$invalid
+      );
+    },
     date: tripField("date"),
     communityDeparted: tripField("communityDeparted"),
     departureHour: tripField("departureHour"),
@@ -230,11 +251,11 @@ export default {
   },
   validations() {
     return {
-      date: { dateDataValidator, yearRangeValidator },
+      date: { dateDataValidator, yearRangeValidator, tripDateOrderValidator },
       communityDeparted: { required },
       departureHour: { hourValidator },
       departureMinute: { minuteValidator },
-      departureMeridiem: { required },
+      departureMeridiem: { required, tripTimeOrderValidator },
       communityArrived: { required },
       arrivalHour: { hourValidator },
       arrivalMinute: { minuteValidator },

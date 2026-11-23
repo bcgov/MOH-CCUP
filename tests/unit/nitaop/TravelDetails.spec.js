@@ -11,6 +11,10 @@ const scrollSpy = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
 
 const HEALTH_AUTHORITY_ERROR = "Health authority is required.";
 const DATE_ERROR = "Date must be a valid date.";
+const DEPARTURE_REQUIRED_ERROR = "Select AM or PM for departure time.";
+const dateOrderError = (n) => `Date must not be earlier than the date of Trip # ${n}.`;
+const timeOrderError = (n) =>
+  `Departure time must not be earlier than the arrival time of Trip # ${n}.`;
 const currentYear = new Date().getFullYear();
 
 const VALID_TRIP = {
@@ -382,7 +386,11 @@ describe("NITAOP TravelDetails.vue", () => {
       await selectAuthority("fha");
       await clickAdd();
       await fillTrip(0);
-      await fillTrip(1, { ...VALID_TRIP, communityDeparted: "Terrace" });
+      await fillTrip(1, {
+        ...VALID_TRIP,
+        date: { ...VALID_TRIP.date, day: "16" },
+        communityDeparted: "Terrace",
+      });
 
       await clickContinue(wrapper);
 
@@ -395,7 +403,11 @@ describe("NITAOP TravelDetails.vue", () => {
       await selectAuthority("fha");
       await clickAdd();
       await fillTrip(0);
-      await fillTrip(1, { ...VALID_TRIP, arrivalHour: "13" });
+      await fillTrip(1, {
+        ...VALID_TRIP,
+        date: { ...VALID_TRIP.date, day: "16" },
+        arrivalHour: "13",
+      });
 
       await clickContinue(wrapper);
 
@@ -422,6 +434,444 @@ describe("NITAOP TravelDetails.vue", () => {
       }
       expect(pushSpy).not.toHaveBeenCalled();
       expect(scrollSpy).toHaveBeenCalledWith({ top: 325, behavior: "smooth" });
+    });
+  });
+
+  describe("AC8 trip order", () => {
+    //VALID_TRIP arrives at 12:59 PM on day 15, so same-day departures are measured against that
+    const onDay = (day, overrides = {}) => ({
+      ...VALID_TRIP,
+      date: { ...VALID_TRIP.date, day },
+      ...overrides,
+    });
+    const departing = (hour, minute, meridiem, day = "15") =>
+      onDay(day, {
+        departureHour: hour,
+        departureMinute: minute,
+        departureMeridiem: meridiem,
+      });
+    const toggle = (i) => wrapper.find(`[data-cy="toggle-trip-${i}"]`);
+    //the date is only committed to the store when the year input is blurred
+    const setDay = async (i, day) => {
+      await wrapper.find(`#trip-date-${i}-day`).setValue(day);
+      await wrapper.find(`#trip-date-${i}-year`).trigger("blur");
+    };
+
+    describe("date", () => {
+      it("shows the order error under Trip # 2 when its date is before Trip # 1", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, onDay("14"));
+
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(1)]);
+      });
+
+      it("allows the same day and a later day", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, departing("01", "00", "pm"));
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await setDay(1, "16");
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("names the trip before it, comparing Trip # 3 with Trip # 2 and not Trip # 1", async () => {
+        await addTrips(2);
+        await fillTrip(0, onDay("10"));
+        await fillTrip(1, onDay("20", { arrivalHour: "01", arrivalMeridiem: "am" }));
+        await fillTrip(2, onDay("15", { arrivalHour: "01", arrivalMeridiem: "am" }));
+
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(2)]);
+      });
+
+      it("never shows the order error on Trip # 1", async () => {
+        await fillTrip(0, onDay("01"));
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("shows the valid-date message and not the order message for an impossible date", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillDate(1, { month: 1, day: "31", year: "2024" });
+
+        expect(errorTexts(wrapper)).toEqual([DATE_ERROR]);
+      });
+
+      it("shows the year message and not the order message for a year before the previous trip", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillDate(1, { month: 5, day: "14", year: "1899" });
+
+        expect(errorTexts(wrapper)).toEqual([`Year must be between 1900 and ${currentYear}.`]);
+      });
+
+      it("shows the order message once an out-of-range year is corrected to an earlier date", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillDate(1, { month: 5, day: "14", year: "1899" });
+        await blurValue(wrapper, "#trip-date-1-year", "2024");
+
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(1)]);
+      });
+
+      it("shows no order error while Trip # 1 has no valid date", async () => {
+        await clickAdd();
+        await fillDate(1, { month: 5, day: "14", year: "2024" });
+
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+    });
+
+    describe("departure time", () => {
+      it("shows the order error when departure is before the previous arrival on the same day", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, departing("12", "58", "pm"));
+
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+      });
+
+      it("allows a departure equal to the previous arrival and one minute after it", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, departing("12", "59", "pm"));
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await blurValue(wrapper, "#trip-departure-hour-1", "01");
+        await blurValue(wrapper, "#trip-departure-minute-1", "00");
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("does not apply the time rule when Trip # 2 is on a later day", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, departing("01", "00", "am", "16"));
+
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("names the trip before it", async () => {
+        await addTrips(2);
+        await fillTrip(0);
+        await fillTrip(1, departing("01", "00", "pm"));
+        await fillTrip(2, departing("01", "00", "pm", "15"));
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await blurValue(wrapper, "#trip-departure-hour-2", "12");
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(2)]);
+      });
+
+      it("does not show the AM or PM required message for an order error", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, departing("09", "30", "am"));
+
+        expect(errorTexts(wrapper)).toContain(timeOrderError(1));
+        expect(errorTexts(wrapper)).not.toContain(DEPARTURE_REQUIRED_ERROR);
+      });
+
+      it("shows only the AM or PM required message when no meridiem is selected", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillDate(1, VALID_TRIP.date);
+        await blurValue(wrapper, "#trip-departure-hour-1", "09");
+        await blurValue(wrapper, "#trip-departure-minute-1", "30");
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await clickContinue(wrapper);
+
+        expect(errorTexts(wrapper)).toContain(DEPARTURE_REQUIRED_ERROR);
+        expect(errorTexts(wrapper)).not.toContain(timeOrderError(1));
+      });
+
+      it("waits until hour, minute and AM or PM have all been touched", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillDate(1, VALID_TRIP.date);
+        await blurValue(wrapper, "#trip-departure-hour-1", "09");
+        await blurValue(wrapper, "#trip-departure-minute-1", "30");
+        expect(errorTexts(wrapper)).not.toContain(timeOrderError(1));
+
+        await wrapper.find("#trip-departure-meridiem-1-am").setValue();
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+      });
+
+      it.each([
+        ["hour", "#trip-departure-minute-1", "#trip-departure-hour-1"],
+        ["minute", "#trip-departure-hour-1", "#trip-departure-minute-1"],
+      ])("waits for the departure %s to be touched", async (_part, touchedFirst, touchedLast) => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillDate(1, VALID_TRIP.date);
+        store.updateTrip(1, "departureHour", "09");
+        store.updateTrip(1, "departureMinute", "30");
+        await wrapper.find("#trip-departure-meridiem-1-am").setValue();
+        await wrapper.find(touchedFirst).trigger("blur");
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await wrapper.find(touchedLast).trigger("blur");
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+      });
+
+      it("waits for the AM or PM to be touched", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillDate(1, VALID_TRIP.date);
+        await blurValue(wrapper, "#trip-departure-hour-1", "09");
+        store.updateTrip(1, "departureMeridiem", "AM");
+        await blurValue(wrapper, "#trip-departure-minute-1", "30");
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await wrapper.find("#trip-departure-meridiem-1-am").trigger("change");
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+      });
+
+      it.each([
+        ["hour", "#trip-departure-hour-1", "13", "Departure hour must be 00 to 12."],
+        ["minute", "#trip-departure-minute-1", "60", "Departure minute must be 00 to 59."],
+      ])(
+        "shows only the invalid %s message when the other parts would be out of order",
+        async (_part, selector, bad, message) => {
+          await clickAdd();
+          await fillTrip(0);
+          await fillTrip(1, departing("09", "30", "am"));
+          expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+
+          await blurValue(wrapper, selector, bad);
+
+          expect(errorTexts(wrapper)).toEqual([message]);
+        }
+      );
+
+      it("reads 12 AM as midnight and 12 PM as noon", async () => {
+        await clickAdd();
+        await fillTrip(0, onDay("15", { arrivalHour: "12", arrivalMinute: "00" }));
+        await fillTrip(1, departing("12", "00", "pm"));
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await wrapper.find("#trip-departure-meridiem-1-am").setValue();
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+      });
+
+      it("reads 00 AM as midnight, equal to 12 AM", async () => {
+        await clickAdd();
+        await fillTrip(
+          0,
+          onDay("15", { arrivalHour: "12", arrivalMinute: "00", arrivalMeridiem: "am" })
+        );
+        await fillTrip(1, departing("00", "00", "am"));
+
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("reads 00 PM as noon, equal to 12 PM", async () => {
+        await clickAdd();
+        await fillTrip(
+          0,
+          onDay("15", { arrivalHour: "12", arrivalMinute: "00", arrivalMeridiem: "pm" })
+        );
+        await fillTrip(1, departing("00", "00", "pm"));
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await blurValue(wrapper, "#trip-arrival-minute-0", "01");
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+      });
+    });
+
+    describe("re-evaluation", () => {
+      it("creates and clears Trip # 2's date error as Trip # 1's date is edited", async () => {
+        await clickAdd();
+        await fillTrip(0, onDay("10"));
+        await fillTrip(1, departing("01", "00", "pm", "12"));
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await setDay(0, "20");
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(1)]);
+
+        await setDay(0, "12");
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("creates and clears Trip # 2's time error as Trip # 1's arrival is edited", async () => {
+        await clickAdd();
+        await fillTrip(
+          0,
+          onDay("15", { arrivalHour: "10", arrivalMinute: "00", arrivalMeridiem: "am" })
+        );
+        await fillTrip(1, departing("10", "30", "am"));
+        expect(errorTexts(wrapper)).toEqual([]);
+
+        await blurValue(wrapper, "#trip-arrival-minute-0", "31");
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+
+        await blurValue(wrapper, "#trip-arrival-minute-0", "30");
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("clears the time error when Trip # 1 is moved to the day before", async () => {
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, departing("09", "30", "am"));
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+
+        await setDay(0, "14");
+
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("drops the error when deleting the trip it was measured against", async () => {
+        await addTrips(2);
+        await fillTrip(0, onDay("10"));
+        await fillTrip(1, onDay("25"));
+        await fillTrip(2, onDay("20"));
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(2)]);
+
+        await wrapper.find('[data-cy="delete-trip-1"]').trigger("click");
+
+        expect(wrapper.findAll("h3").map((h) => h.text())).toEqual(["Trip # 1", "Trip # 2"]);
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("raises an error when deleting the middle trip leaves a later trip before its new predecessor", async () => {
+        await addTrips(2);
+        await fillTrip(0, onDay("20"));
+        await fillTrip(1, onDay("10"));
+        await fillTrip(2, onDay("15"));
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(1)]);
+
+        await wrapper.find('[data-cy="delete-trip-1"]').trigger("click");
+
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(1)]);
+        expect(wrapper.findAll("h3").map((h) => h.text())).toEqual(["Trip # 1", "Trip # 2"]);
+        expect(store.formFields.travel.trips.map((t) => t.date.getDate())).toEqual([20, 15]);
+      });
+
+      it("drops the first trip's error when the trip before it is deleted", async () => {
+        await addTrips(1);
+        await fillTrip(0, onDay("20"));
+        await fillTrip(1, onDay("10"));
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(1)]);
+
+        await wrapper.find('[data-cy="delete-trip-0"]').trigger("click");
+
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("re-evaluates the time error when the middle trip is deleted", async () => {
+        await addTrips(2);
+        await fillTrip(
+          0,
+          onDay("15", { arrivalHour: "08", arrivalMinute: "00", arrivalMeridiem: "am" })
+        );
+        await fillTrip(1, departing("08", "30", "am"));
+        await fillTrip(2, departing("09", "00", "am"));
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(2)]);
+
+        await wrapper.find('[data-cy="delete-trip-1"]').trigger("click");
+
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+    });
+
+    describe("Continue", () => {
+      it("blocks Continue on a date order error and shows it once", async () => {
+        await selectAuthority("fha");
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, onDay("14"));
+
+        await clickContinue(wrapper);
+
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(1)]);
+        expect(pushSpy).not.toHaveBeenCalled();
+      });
+
+      it("blocks Continue on a time order error", async () => {
+        await selectAuthority("fha");
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, departing("09", "30", "am"));
+
+        await clickContinue(wrapper);
+
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+        expect(pushSpy).not.toHaveBeenCalled();
+      });
+
+      it("shows a time order error on Continue even if the departure fields were never blurred", async () => {
+        await selectAuthority("fha");
+        await clickAdd();
+        await fillTrip(0);
+        await fillDate(1, VALID_TRIP.date);
+        await wrapper.find("#trip-departure-hour-1").setValue("09");
+        await wrapper.find("#trip-departure-minute-1").setValue("30");
+        await wrapper.find("#trip-departure-meridiem-1-am").setValue();
+        await blurValue(wrapper, "#trip-community-departed-1", "Terrace");
+        await blurValue(wrapper, "#trip-community-arrived-1", "Fort St. John");
+        await blurValue(wrapper, "#trip-arrival-hour-1", "01");
+        await blurValue(wrapper, "#trip-arrival-minute-1", "00");
+        await wrapper.find("#trip-arrival-meridiem-1-pm").setValue();
+        await blurValue(wrapper, "#trip-patients-seen-1", "0");
+
+        await clickContinue(wrapper);
+
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+        expect(pushSpy).not.toHaveBeenCalled();
+      });
+
+      it("re-opens a collapsed trip with an order error and does not navigate", async () => {
+        await selectAuthority("fha");
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, onDay("14"));
+        await toggle(1).trigger("click");
+        expect(toggle(1).attributes("aria-expanded")).toBe("false");
+
+        await clickContinue(wrapper);
+
+        expect(toggle(1).attributes("aria-expanded")).toBe("true");
+        expect(wrapper.find("#trip-date-1-day").isVisible()).toBe(true);
+        expect(errorTexts(wrapper)).toEqual([dateOrderError(1)]);
+        expect(pushSpy).not.toHaveBeenCalled();
+      });
+
+      it("scrolls to the order error", async () => {
+        await selectAuthority("fha");
+        await clickAdd();
+        await fillTrip(0);
+        await fillTrip(1, onDay("14"));
+        const rectSpy = vi
+          .spyOn(Element.prototype, "getBoundingClientRect")
+          .mockImplementation(function () {
+            return { top: this.textContent.includes(dateOrderError(1)) ? 400 : 100 };
+          });
+        vi.useFakeTimers();
+
+        try {
+          await clickContinue(wrapper);
+          vi.runAllTimers();
+        } finally {
+          vi.useRealTimers();
+          rectSpy.mockRestore();
+        }
+
+        expect(scrollSpy).toHaveBeenCalledWith({ top: 325, behavior: "smooth" });
+      });
+
+      it("goes to step 3 for ordered trips, including a same-day departure equal to the previous arrival", async () => {
+        await selectAuthority("fha");
+        await addTrips(2);
+        await fillTrip(0);
+        await fillTrip(1, departing("12", "59", "pm", "15"));
+        await fillTrip(2, onDay("16", { departureHour: "01", departureMeridiem: "am" }));
+
+        await clickContinue(wrapper);
+
+        expect(errorTexts(wrapper)).toEqual([]);
+        expect(pushSpy).toHaveBeenCalledTimes(1);
+        expect(pushSpy).toHaveBeenCalledWith(routes.NITAOP_STEP_3.path);
+      });
     });
   });
 });
