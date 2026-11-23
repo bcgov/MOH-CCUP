@@ -39,9 +39,7 @@
             :key="trip.id"
             class="trip"
           >
-            <div
-              class="trip-header d-flex flex-wrap align-items-center gap-2 ps-3 pe-3 pe-md-5 py-2"
-            >
+            <div class="trip-header d-flex align-items-start gap-2 ps-3 pe-3 pe-md-5 py-2">
               <button
                 type="button"
                 class="btn btn-light btn-sm trip-toggle"
@@ -53,16 +51,26 @@
               >
                 <IconChevronDown :class="{ 'chevron-up': isTripExpanded(trip.id) }" />
               </button>
-              <h3 class="mb-0 ms-2">Trip # {{ index + 1 }}</h3>
-              <ButtonComponent
-                v-if="trips.length > 1"
-                :cypress-id="`delete-trip-${index}`"
-                label="Delete"
-                :aria-label="`Delete Trip # ${index + 1}`"
-                class="ms-auto"
-                :color="'white'"
-                @click="store.deleteTrip(index)"
-              />
+              <div
+                v-if="!isTripExpanded(trip.id)"
+                class="ms-2"
+              >
+                <h3 class="trip-label mb-1">Trip # {{ index + 1 }}</h3>
+                <p
+                  class="trip-summary mb-2"
+                  :data-cy="`trip-summary-${index}`"
+                >
+                  {{ tripSummary(trip) }}
+                </p>
+                <ButtonComponent
+                  :cypress-id="`edit-trip-${index}`"
+                  class="trip-button"
+                  label="Edit"
+                  :aria-label="`Edit Trip # ${index + 1}`"
+                  :color="'white'"
+                  @click="editTrip(trip.id, index)"
+                />
+              </div>
             </div>
             <!-- v-show, not v-if: a collapsed trip stays mounted so it is still validated -->
             <div
@@ -70,6 +78,18 @@
               :id="`trip-body-${trip.id}`"
               class="trip-body pb-4"
             >
+              <div class="d-flex align-items-center justify-content-between pe-3 pe-md-5">
+                <h3 class="mb-0">Trip # {{ index + 1 }}</h3>
+                <ButtonComponent
+                  v-if="trips.length > 1"
+                  :cypress-id="`delete-trip-${index}`"
+                  class="trip-button"
+                  label="Delete"
+                  :aria-label="`Delete Trip # ${index + 1}`"
+                  :color="'white'"
+                  @click="store.deleteTrip(index)"
+                />
+              </div>
               <NitaopTrip
                 :prop-data="trip"
                 :index="index"
@@ -82,7 +102,8 @@
           v-if="trips.length < MAX_TRIPS"
           cypress-id="add-trip"
           label="Add community"
-          class="mt-4 ms-md-3"
+          class="trip-button mt-4 ms-md-3"
+          :color="'white'"
           @click="store.addTrip()"
         />
       </section>
@@ -103,6 +124,7 @@ import {
   ButtonComponent,
   IconChevronDown,
 } from "common-lib-vue";
+import { format, isValid } from "date-fns";
 import { useVuelidate } from "@vuelidate/core";
 import { handleChangeField } from "@/helpers/handler.js";
 import { MAX_TRIPS, useNitaopStore } from "@/stores/nitaopStore";
@@ -172,6 +194,21 @@ export default {
         ? [...this.collapsedTripIds, tripId]
         : this.collapsedTripIds.filter((id) => id !== tripId);
     },
+    //only the parts that exist, joined with " - "; "Date - From (right arrow) To - N Patients"
+    tripSummary(trip) {
+      const departed = trip.communityDeparted?.trim();
+      const arrived = trip.communityArrived?.trim();
+      const route = departed && arrived ? `${departed} \u2192 ${arrived}` : departed || arrived;
+      const patients = /^\d+$/.test(trip.patientsSeen) ? `${trip.patientsSeen} Patients` : "";
+      const date =
+        trip.date instanceof Date && isValid(trip.date) ? format(trip.date, "MMM d, yyyy") : "";
+      return [date, route, patients].filter(Boolean).join(" - ");
+    },
+    async editTrip(tripId, index) {
+      this.collapsedTripIds = this.collapsedTripIds.filter((id) => id !== tripId);
+      await this.$nextTick();
+      document.getElementById(`trip-date-${index}-month`)?.focus();
+    },
     nextPage() {
       const toPath = routes.NITAOP_STEP_3.path;
       pageStateService.setPageComplete(toPath);
@@ -199,6 +236,23 @@ export default {
 }
 .trip-toggle {
   width: 2rem;
+}
+.trip-label,
+.trip-summary {
+  font-size: 0.875rem;
+}
+/* compact Edit, Delete and Add community, smaller than the library default (150px by 40px) to match the design */
+.trip-button {
+  min-width: 6rem;
+  min-height: 0;
+  padding: 0.125rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+/* navy border as in the design; the library grey border is below 3:1 contrast on white */
+.trip-button,
+.trip-button:hover {
+  border-color: var(--bs-primary-nav);
 }
 @media (min-width: 768px) {
   .trip-body {

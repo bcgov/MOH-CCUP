@@ -215,21 +215,13 @@ describe("NITAOP TravelDetails.vue", () => {
       expect(body(0).isVisible()).toBe(true);
     });
 
-    it("keeps Delete visible and usable on a collapsed trip", async () => {
+    it("hides Delete on a collapsed trip while the open trip keeps it", async () => {
       await clickAdd();
-      await blurValue(wrapper, "#trip-community-departed-0", "Alpha");
-      await blurValue(wrapper, "#trip-community-departed-1", "Bravo");
       await toggle(0).trigger("click");
+
       expect(body(0).isVisible()).toBe(false);
-
-      const del = wrapper.find('[data-cy="delete-trip-0"]');
-      expect(del.isVisible()).toBe(true);
-      expect(del.attributes("aria-label")).toBe("Delete Trip # 1");
-
-      await del.trigger("click");
-
-      expect(wrapper.findAll("h3").length).toBe(1);
-      expect(wrapper.find("#trip-community-departed-0").element.value).toBe("Bravo");
+      expect(wrapper.find('[data-cy="delete-trip-0"]').isVisible()).toBe(false);
+      expect(wrapper.find('[data-cy="delete-trip-1"]').isVisible()).toBe(true);
     });
 
     it("opens a collapsed trip that has errors on Continue and does not navigate", async () => {
@@ -258,6 +250,207 @@ describe("NITAOP TravelDetails.vue", () => {
       expect(wrapper.find("#trip-community-departed-1").element.value).toBe("Charlie");
       expect(toggle(1).attributes("aria-expanded")).toBe("true");
       expect(body(1).isVisible()).toBe(true);
+    });
+  });
+
+  describe("AC2 trip accordion", () => {
+    const toggle = (i) => wrapper.find(`[data-cy="toggle-trip-${i}"]`);
+    const body = (i) => wrapper.find(`#trip-body-${store.formFields.travel.trips[i].id}`);
+    const summary = (i) => wrapper.find(`[data-cy="trip-summary-${i}"]`);
+    const edit = (i) => wrapper.find(`[data-cy="edit-trip-${i}"]`);
+    const del = (i) => wrapper.find(`[data-cy="delete-trip-${i}"]`);
+    const DESIGN_TRIP = {
+      date: { month: 8, day: "10", year: "2026" },
+      communityDeparted: "Falls Creek",
+      communityArrived: "Jordan River",
+      patientsSeen: "10",
+    };
+    const fillSummaryParts = async (i, values) => {
+      if (values.date) {
+        await fillDate(i, values.date);
+      }
+      if (values.communityDeparted !== undefined) {
+        await blurValue(wrapper, `#trip-community-departed-${i}`, values.communityDeparted);
+      }
+      if (values.communityArrived !== undefined) {
+        await blurValue(wrapper, `#trip-community-arrived-${i}`, values.communityArrived);
+      }
+      if (values.patientsSeen !== undefined) {
+        await blurValue(wrapper, `#trip-patients-seen-${i}`, values.patientsSeen);
+      }
+    };
+
+    it("shows the chevron, a small Trip label, the summary and Edit on a collapsed trip", async () => {
+      await fillSummaryParts(0, DESIGN_TRIP);
+      await toggle(0).trigger("click");
+
+      expect(toggle(0).attributes("aria-expanded")).toBe("false");
+      expect(wrapper.find(".trip-header h3").text()).toBe("Trip # 1");
+      expect(summary(0).text()).toBe(
+        "Sep 10, 2026 - Falls Creek \u2192 Jordan River - 10 Patients"
+      );
+      expect(edit(0).isVisible()).toBe(true);
+      expect(edit(0).text()).toBe("Edit");
+      expect(edit(0).attributes("aria-label")).toBe("Edit Trip # 1");
+    });
+
+    it("shows no Delete anywhere visible on a collapsed trip even with several trips", async () => {
+      await addTrips(2);
+      await toggle(0).trigger("click");
+      await toggle(1).trigger("click");
+
+      for (const i of [0, 1]) {
+        expect(edit(i).isVisible()).toBe(true);
+        expect(del(i).isVisible()).toBe(false);
+      }
+      expect(del(2).isVisible()).toBe(true);
+    });
+
+    it("shows no summary and no Edit on an open trip", () => {
+      expect(toggle(0).attributes("aria-expanded")).toBe("true");
+      expect(summary(0).exists()).toBe(false);
+      expect(edit(0).exists()).toBe(false);
+      expect(wrapper.find(".trip-header h3").exists()).toBe(false);
+    });
+
+    it("shows Delete inside the body of an open trip when there is more than one trip", async () => {
+      await clickAdd();
+
+      for (const i of [0, 1]) {
+        const button = body(i).find(`[data-cy="delete-trip-${i}"]`);
+        expect(button.exists()).toBe(true);
+        expect(button.isVisible()).toBe(true);
+        expect(button.attributes("aria-label")).toBe(`Delete Trip # ${i + 1}`);
+        expect(body(i).find("h3").text()).toBe(`Trip # ${i + 1}`);
+      }
+    });
+
+    it("shows no Delete on an open trip when it is the only one", () => {
+      expect(body(0).find("h3").text()).toBe("Trip # 1");
+      expect(del(0).exists()).toBe(false);
+    });
+
+    it("shows Edit on a collapsed trip even when it is the only one", async () => {
+      await toggle(0).trigger("click");
+
+      expect(edit(0).isVisible()).toBe(true);
+      expect(del(0).exists()).toBe(false);
+    });
+
+    it.each([
+      ["no date", { ...DESIGN_TRIP, date: null }, "Falls Creek \u2192 Jordan River - 10 Patients"],
+      ["only the departure community", { communityDeparted: "Falls Creek" }, "Falls Creek"],
+      ["only the arrival community", { communityArrived: "Jordan River" }, "Jordan River"],
+      [
+        "0 patients",
+        { ...DESIGN_TRIP, patientsSeen: "0" },
+        "Sep 10, 2026 - Falls Creek \u2192 Jordan River - 0 Patients",
+      ],
+      ["only a date", { date: DESIGN_TRIP.date }, "Sep 10, 2026"],
+      ["only patients", { patientsSeen: "7" }, "7 Patients"],
+      [
+        "a non-numeric patients value",
+        { ...DESIGN_TRIP, patientsSeen: "abc" },
+        "Sep 10, 2026 - Falls Creek \u2192 Jordan River",
+      ],
+      [
+        "an impossible date",
+        { ...DESIGN_TRIP, date: { month: 1, day: "31", year: "2026" } },
+        "Falls Creek \u2192 Jordan River - 10 Patients",
+      ],
+      ["a one-digit day", { date: { month: 8, day: "5", year: "2026" } }, "Sep 5, 2026"],
+      [
+        "a patients value that only contains a digit",
+        { ...DESIGN_TRIP, patientsSeen: "1a" },
+        "Sep 10, 2026 - Falls Creek \u2192 Jordan River",
+      ],
+      ["nothing set", {}, ""],
+    ])("summarises a trip with %s", async (_label, values, expected) => {
+      await fillSummaryParts(0, values);
+      await toggle(0).trigger("click");
+
+      expect(summary(0).text()).toBe(expected);
+    });
+
+    //values the inputs normally prevent, written to the store directly
+    it.each([
+      ["an invalid Date", { date: new Date("nope") }, ""],
+      [
+        "padded communities",
+        { communityDeparted: " Alpha ", communityArrived: " Bravo " },
+        "Alpha \u2192 Bravo",
+      ],
+      ["blank communities", { communityDeparted: "  ", communityArrived: " " }, ""],
+      [
+        "a blank departure and a real arrival",
+        { communityDeparted: " ", communityArrived: "Bravo" },
+        "Bravo",
+      ],
+    ])("summarises a store value of %s", async (_label, fields, expected) => {
+      for (const [field, value] of Object.entries(fields)) {
+        store.updateTrip(0, field, value);
+      }
+      await toggle(0).trigger("click");
+
+      expect(summary(0).text()).toBe(expected);
+    });
+
+    it("opens the trip with Edit, sets aria-expanded and focuses the Month select", async () => {
+      await addTrips(1);
+      await toggle(0).trigger("click");
+      await toggle(1).trigger("click");
+      expect(toggle(1).attributes("aria-expanded")).toBe("false");
+
+      await edit(1).trigger("click");
+
+      expect(toggle(1).attributes("aria-expanded")).toBe("true");
+      expect(body(1).isVisible()).toBe(true);
+      expect(edit(1).exists()).toBe(false);
+      expect(toggle(0).attributes("aria-expanded")).toBe("false");
+      expect(document.activeElement).toBe(wrapper.find("#trip-date-1-month").element);
+    });
+
+    it("focuses the Month select of the edited trip's own index", async () => {
+      await addTrips(2);
+      await toggle(0).trigger("click");
+
+      await edit(0).trigger("click");
+
+      expect(document.activeElement).toBe(wrapper.find("#trip-date-0-month").element);
+    });
+
+    it("deletes the open trip and keeps the other trips with their own values", async () => {
+      await addTrips(2);
+      await blurValue(wrapper, "#trip-community-departed-0", "Alpha");
+      await blurValue(wrapper, "#trip-community-departed-1", "Bravo");
+      await blurValue(wrapper, "#trip-community-departed-2", "Charlie");
+      await toggle(0).trigger("click");
+      await toggle(2).trigger("click");
+
+      await del(1).trigger("click");
+
+      expect(store.formFields.travel.trips.map((t) => t.communityDeparted)).toEqual([
+        "Alpha",
+        "Charlie",
+      ]);
+      expect(toggle(0).attributes("aria-expanded")).toBe("false");
+      expect(toggle(1).attributes("aria-expanded")).toBe("false");
+      expect(summary(0).text()).toBe("Alpha");
+      expect(summary(1).text()).toBe("Charlie");
+    });
+
+    it("deletes a trip that was reopened with Edit", async () => {
+      await clickAdd();
+      await blurValue(wrapper, "#trip-community-departed-0", "Alpha");
+      await blurValue(wrapper, "#trip-community-departed-1", "Bravo");
+      await toggle(0).trigger("click");
+      expect(del(0).isVisible()).toBe(false);
+
+      await edit(0).trigger("click");
+      await del(0).trigger("click");
+
+      expect(store.formFields.travel.trips.map((t) => t.communityDeparted)).toEqual(["Bravo"]);
+      expect(wrapper.find("#trip-community-departed-0").element.value).toBe("Bravo");
     });
   });
 
@@ -302,13 +495,25 @@ describe("NITAOP TravelDetails.vue", () => {
 
   describe("AC5 times", () => {
     it.each([
-      ["departure", "12", "13", "Departure hour must be 00 to 12."],
-      ["arrival", "12", "13", "Arrival hour must be 00 to 12."],
-    ])("%s hour %s is ok and %s is an error", async (kind, ok, bad, message) => {
-      await blurValue(wrapper, `#trip-${kind}-hour-0`, ok);
-      expect(errorTexts(wrapper)).toEqual([]);
-      await blurValue(wrapper, `#trip-${kind}-hour-0`, bad);
-      expect(errorTexts(wrapper)).toEqual([message]);
+      ["departure", "Departure hour must be 1 to 12."],
+      ["arrival", "Arrival hour must be 1 to 12."],
+    ])("%s hour accepts 1 to 12 with or without a leading zero", async (kind) => {
+      for (const ok of ["1", "01", "9", "09", "10", "12"]) {
+        await blurValue(wrapper, `#trip-${kind}-hour-0`, ok);
+        expect(errorTexts(wrapper), `hour ${ok}`).toEqual([]);
+      }
+    });
+
+    it.each([
+      ["departure", "Departure hour must be 1 to 12."],
+      ["arrival", "Arrival hour must be 1 to 12."],
+    ])("%s hour rejects 0, 00, 13 and empty with its message", async (kind, message) => {
+      for (const bad of ["0", "00", "13", ""]) {
+        await blurValue(wrapper, `#trip-${kind}-hour-0`, "7");
+        expect(errorTexts(wrapper)).toEqual([]);
+        await blurValue(wrapper, `#trip-${kind}-hour-0`, bad);
+        expect(errorTexts(wrapper), `hour "${bad}"`).toEqual([message]);
+      }
     });
 
     it.each([
@@ -322,19 +527,18 @@ describe("NITAOP TravelDetails.vue", () => {
     });
 
     it.each([
-      ["departure-hour", "Departure hour must be 00 to 12."],
       ["departure-minute", "Departure minute must be 00 to 59."],
-      ["arrival-hour", "Arrival hour must be 00 to 12."],
       ["arrival-minute", "Arrival minute must be 00 to 59."],
     ])("a single digit in %s is an error", async (field, message) => {
       await blurValue(wrapper, `#trip-${field}-0`, "5");
       expect(errorTexts(wrapper)).toEqual([message]);
     });
 
-    it("accepts 00 for hour and minute", async () => {
-      await blurValue(wrapper, "#trip-departure-hour-0", "00");
+    it("accepts 00 for the minute but not for the hour", async () => {
       await blurValue(wrapper, "#trip-departure-minute-0", "00");
       expect(errorTexts(wrapper)).toEqual([]);
+      await blurValue(wrapper, "#trip-departure-hour-0", "00");
+      expect(errorTexts(wrapper)).toEqual(["Departure hour must be 1 to 12."]);
     });
 
     it("shows the AM or PM errors on Continue when neither is selected", async () => {
@@ -411,7 +615,7 @@ describe("NITAOP TravelDetails.vue", () => {
 
       await clickContinue(wrapper);
 
-      expect(errorTexts(wrapper)).toEqual(["Arrival hour must be 00 to 12."]);
+      expect(errorTexts(wrapper)).toEqual(["Arrival hour must be 1 to 12."]);
       expect(pushSpy).not.toHaveBeenCalled();
     });
 
@@ -628,7 +832,7 @@ describe("NITAOP TravelDetails.vue", () => {
       });
 
       it.each([
-        ["hour", "#trip-departure-hour-1", "13", "Departure hour must be 00 to 12."],
+        ["hour", "#trip-departure-hour-1", "13", "Departure hour must be 1 to 12."],
         ["minute", "#trip-departure-minute-1", "60", "Departure minute must be 00 to 59."],
       ])(
         "shows only the invalid %s message when the other parts would be out of order",
@@ -654,28 +858,32 @@ describe("NITAOP TravelDetails.vue", () => {
         expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
       });
 
-      it("reads 00 AM as midnight, equal to 12 AM", async () => {
+      it("reads single-digit hours: 9:29 AM is before a 9:30 AM arrival and 9:30 is not", async () => {
+        await clickAdd();
+        await fillTrip(
+          0,
+          onDay("15", { arrivalHour: "9", arrivalMinute: "30", arrivalMeridiem: "am" })
+        );
+        await fillTrip(1, departing("9", "29", "am"));
+        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+
+        await blurValue(wrapper, "#trip-departure-minute-1", "30");
+        expect(errorTexts(wrapper)).toEqual([]);
+      });
+
+      it("shows the hour message and not the order message for a departure hour of 0 or 00", async () => {
         await clickAdd();
         await fillTrip(
           0,
           onDay("15", { arrivalHour: "12", arrivalMinute: "00", arrivalMeridiem: "am" })
         );
-        await fillTrip(1, departing("00", "00", "am"));
-
-        expect(errorTexts(wrapper)).toEqual([]);
-      });
-
-      it("reads 00 PM as noon, equal to 12 PM", async () => {
-        await clickAdd();
-        await fillTrip(
-          0,
-          onDay("15", { arrivalHour: "12", arrivalMinute: "00", arrivalMeridiem: "pm" })
-        );
-        await fillTrip(1, departing("00", "00", "pm"));
+        await fillTrip(1, departing("12", "00", "am"));
         expect(errorTexts(wrapper)).toEqual([]);
 
-        await blurValue(wrapper, "#trip-arrival-minute-0", "01");
-        expect(errorTexts(wrapper)).toEqual([timeOrderError(1)]);
+        for (const bad of ["0", "00"]) {
+          await blurValue(wrapper, "#trip-departure-hour-1", bad);
+          expect(errorTexts(wrapper), `hour "${bad}"`).toEqual(["Departure hour must be 1 to 12."]);
+        }
       });
     });
 

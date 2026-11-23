@@ -63,7 +63,7 @@
     </div>
   </fieldset>
   <FieldError :show="v$.departureHour.$dirty && v$.departureHour.$invalid">
-    Departure hour must be 00 to 12.
+    Departure hour must be 1 to 12.
   </FieldError>
   <FieldError :show="v$.departureMinute.$dirty && v$.departureMinute.$invalid">
     Departure minute must be 00 to 59.
@@ -127,7 +127,7 @@
     </div>
   </fieldset>
   <FieldError :show="v$.arrivalHour.$dirty && v$.arrivalHour.$invalid">
-    Arrival hour must be 00 to 12.
+    Arrival hour must be 1 to 12.
   </FieldError>
   <FieldError :show="v$.arrivalMinute.$dirty && v$.arrivalMinute.$invalid">
     Arrival minute must be 00 to 59.

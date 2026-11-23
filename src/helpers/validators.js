@@ -129,9 +129,9 @@ export const reportOrDescriptionValidator = (value, vm) => {
   return false;
 };
 
-//two digits, 00 to 12; 00 is accepted on purpose for now (may be used for 24-hour times)
+//12-hour clock hour, 1 to 12, with or without a leading zero; 0 and 00 are not valid
 export const hourValidator = (value) => {
-  return /^(0[0-9]|1[0-2])$/.test(value);
+  return /^(0?[1-9]|1[0-2])$/.test(value);
 };
 
 //two digits, 00 to 59
@@ -153,7 +153,7 @@ const hasValidTripDate = (date) => {
   return dateDataValidator(date) && yearRangeValidator(date);
 };
 
-//minutes since midnight from a 12-hour time; hour 00 and 12 both mean hour 0 of the meridiem
+//minutes since midnight from a 12-hour time; 12 AM is midnight and 12 PM is noon
 const toMinutes = (hour, minute, meridiem) => {
   return ((Number(hour) % 12) + (meridiem === "PM" ? 12 : 0)) * 60 + Number(minute);
 };

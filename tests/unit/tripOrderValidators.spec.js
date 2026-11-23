@@ -100,18 +100,17 @@ describe("tripTimeOrderValidator", () => {
     expect(timeOrder(departsAt("11", "59", "AM"), arrivesAt("12", "00", "PM"))).toBe(false);
   });
 
-  it("treats 00 AM the same as 12 AM", () => {
-    expect(timeOrder(departsAt("00", "00", "AM"), arrivesAt("12", "00", "AM"))).toBe(true);
-    expect(timeOrder(departsAt("12", "00", "AM"), arrivesAt("00", "00", "AM"))).toBe(true);
-    expect(timeOrder(departsAt("00", "00", "AM"), arrivesAt("00", "01", "AM"))).toBe(false);
-    expect(timeOrder(departsAt("00", "00", "AM"), arrivesAt("01", "00", "AM"))).toBe(false);
+  it("reads a one-digit hour the same as its two-digit form", () => {
+    expect(timeOrder(departsAt("9", "29", "AM"), arrivesAt("9", "30", "AM"))).toBe(false);
+    expect(timeOrder(departsAt("9", "30", "AM"), arrivesAt("9", "30", "AM"))).toBe(true);
+    expect(timeOrder(departsAt("9", "30", "AM"), arrivesAt("09", "30", "AM"))).toBe(true);
+    expect(timeOrder(departsAt("09", "29", "AM"), arrivesAt("9", "30", "AM"))).toBe(false);
   });
 
-  it("treats 00 PM the same as 12 PM", () => {
-    expect(timeOrder(departsAt("00", "00", "PM"), arrivesAt("12", "00", "PM"))).toBe(true);
-    expect(timeOrder(departsAt("12", "00", "PM"), arrivesAt("00", "00", "PM"))).toBe(true);
-    expect(timeOrder(departsAt("00", "00", "PM"), arrivesAt("12", "01", "PM"))).toBe(false);
-    expect(timeOrder(departsAt("00", "00", "PM"), arrivesAt("11", "59", "AM"))).toBe(true);
+  it("orders single-digit hours against 12 AM, 12 PM and PM", () => {
+    expect(timeOrder(departsAt("9", "00", "AM"), arrivesAt("12", "00", "AM"))).toBe(true);
+    expect(timeOrder(departsAt("1", "00", "PM"), arrivesAt("12", "00", "PM"))).toBe(true);
+    expect(timeOrder(departsAt("1", "00", "AM"), arrivesAt("1", "00", "PM"))).toBe(false);
   });
 
   it("keeps 12 PM after 12 AM, so noon is not read as midnight", () => {
@@ -148,13 +147,16 @@ describe("tripTimeOrderValidator", () => {
     ],
     ["the departure hour is empty", { departureHour: "" }, {}],
     ["the departure hour is out of range", { departureHour: "13" }, {}],
-    ["the departure hour is one digit", { departureHour: "1" }, {}],
+    ["the departure hour is 0", { departureHour: "0" }, {}],
+    ["the departure hour is 00", { departureHour: "00" }, {}],
     ["the departure minute is empty", { departureMinute: "" }, {}],
     ["the departure minute is out of range", { departureMinute: "60" }, {}],
     ["the departure meridiem is empty", { departureMeridiem: "" }, {}],
     ["the departure meridiem is unrecognised", { departureMeridiem: "XM" }, {}],
     ["the previous arrival hour is empty", {}, { arrivalHour: "" }],
     ["the previous arrival hour is out of range", {}, { arrivalHour: "13" }],
+    ["the previous arrival hour is 0", {}, { arrivalHour: "0" }],
+    ["the previous arrival hour is 00", {}, { arrivalHour: "00" }],
     ["the previous arrival minute is empty", {}, { arrivalMinute: "" }],
     ["the previous arrival minute is out of range", {}, { arrivalMinute: "60" }],
     ["the previous arrival meridiem is empty", {}, { arrivalMeridiem: "" }],
