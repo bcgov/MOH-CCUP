@@ -1,20 +1,14 @@
 import Page from "@/views/nitaop/PractitionerInfo.vue";
 import { mount } from "@vue/test-utils";
-import { createRouter, createMemoryHistory } from "vue-router";
 import { setActivePinia, createPinia } from "pinia";
 import { vi } from "vitest";
 import logService from "@/services/log-service";
 import { routes } from "@/router/index.js";
 import apiService from "@/services/api-service";
+import { useNitaopStore } from "@/stores/nitaopStore";
+import { createStubRouter, errorTexts, blurValue, clickContinue } from "./helpers";
 
-const stub = { template: `<span style="display: none;"></span>` };
-const router = createRouter({
-  history: createMemoryHistory(),
-  routes: [
-    { ...routes.NITAOP_PRACTITIONER_INFO, component: stub },
-    { ...routes.NITAOP_STEP_2, component: stub },
-  ],
-});
+const router = createStubRouter(routes.NITAOP_PRACTITIONER_INFO, routes.NITAOP_STEP_2);
 
 vi.mock("axios");
 vi.mock("@/services/api-service", () => ({
@@ -57,21 +51,13 @@ describe("NITAOP PractitionerInfo.vue", () => {
   let wrapper = null;
   let pushSpy = null;
 
-  const errorTexts = () => wrapper.findAll(".text-danger").map((e) => e.text());
-  const fill = async (id, value) => {
-    const input = wrapper.find(`#${id}`);
-    await input.setValue(value);
-    await input.trigger("blur");
-  };
+  const fill = (id, value) => blurValue(wrapper, `#${id}`, value);
   const fillAllValid = async () => {
     for (const [id, value] of Object.entries(VALID_VALUES)) {
       await fill(id, value);
     }
     await wrapper.find("#has-other-funding-no").setValue();
     await wrapper.find("#is-on-call-no").setValue();
-  };
-  const clickContinue = async () => {
-    await wrapper.find('button[data-cy="continue-bar"]').trigger("click");
   };
 
   beforeEach(async () => {
@@ -130,9 +116,9 @@ describe("NITAOP PractitionerInfo.vue", () => {
   );
 
   it("shows every required-field error and does not navigate when empty", async () => {
-    await clickContinue();
+    await clickContinue(wrapper);
 
-    expect(errorTexts()).toEqual([
+    expect(errorTexts(wrapper)).toEqual([
       ...Object.values(REQUIRED_MESSAGES),
       "Select Yes or No.",
       "Select Yes or No.",
@@ -156,7 +142,7 @@ describe("NITAOP PractitionerInfo.vue", () => {
   ])("shows a format error for %s = %j", async (id, value, message) => {
     await fill(id, value);
 
-    const errors = errorTexts();
+    const errors = errorTexts(wrapper);
     expect(errors.length).toBe(1);
     expect(errors[0].replace(/\s+/g, " ")).toMatch(message);
   });
@@ -167,14 +153,28 @@ describe("NITAOP PractitionerInfo.vue", () => {
     await wrapper.find("#has-other-funding-yes").setValue();
     expect(wrapper.find("#other-funding-source").exists()).toBe(true);
 
-    await clickContinue();
-    expect(errorTexts()).toContain("Funding source is required.");
+    await clickContinue(wrapper);
+    expect(errorTexts(wrapper)).toContain("Funding source is required.");
 
     await wrapper.find("#has-other-funding-no").setValue();
     expect(wrapper.find("#other-funding-source").exists()).toBe(false);
 
-    await clickContinue();
-    expect(errorTexts()).not.toContain("Funding source is required.");
+    await clickContinue(wrapper);
+    expect(errorTexts(wrapper)).not.toContain("Funding source is required.");
+  });
+
+  it("clears the funding source from the field and store when switching to No, with no error on returning to Yes", async () => {
+    const store = useNitaopStore();
+    await wrapper.find("#has-other-funding-yes").setValue();
+    await blurValue(wrapper, "#other-funding-source", "RGPLP");
+    expect(store.formFields.practitioner.otherFundingSource).toBe("RGPLP");
+
+    await wrapper.find("#has-other-funding-no").setValue();
+    expect(store.formFields.practitioner.otherFundingSource).toBe("");
+
+    await wrapper.find("#has-other-funding-yes").setValue();
+    expect(wrapper.find("#other-funding-source").element.value).toBe("");
+    expect(errorTexts(wrapper)).not.toContain("Funding source is required.");
   });
 
   it.each([
@@ -183,7 +183,7 @@ describe("NITAOP PractitionerInfo.vue", () => {
   ])("accepts the valid value %s for %s", async (value, id) => {
     await fill(id, value);
 
-    expect(errorTexts()).toEqual([]);
+    expect(errorTexts(wrapper)).toEqual([]);
   });
 
   it("limits the name inputs to 30 characters via the maxlength attribute", () => {
@@ -194,7 +194,7 @@ describe("NITAOP PractitionerInfo.vue", () => {
   it('navigates to step 2 when validatePractitioner returns code "0"', async () => {
     apiService.validatePractitioner.mockResolvedValue({ data: { returnCode: "0" } });
     await fillAllValid();
-    await clickContinue();
+    await clickContinue(wrapper);
 
     expect(apiService.validatePractitioner).toHaveBeenCalledTimes(1);
     expect(apiService.validatePractitioner).toHaveBeenCalledWith(
@@ -205,7 +205,7 @@ describe("NITAOP PractitionerInfo.vue", () => {
       }),
       expect.anything()
     );
-    expect(errorTexts()).toEqual([]);
+    expect(errorTexts(wrapper)).toEqual([]);
     expect(pushSpy).toHaveBeenCalledTimes(1);
     expect(pushSpy).toHaveBeenCalledWith(routes.NITAOP_STEP_2.path);
   });
@@ -229,9 +229,9 @@ describe("NITAOP PractitionerInfo.vue", () => {
   ])("stays on the page when validatePractitioner returns %s", async (_, arrange, message) => {
     arrange();
     await fillAllValid();
-    await clickContinue();
+    await clickContinue(wrapper);
 
-    expect(errorTexts()).toEqual([message]);
+    expect(errorTexts(wrapper)).toEqual([message]);
     expect(pushSpy).not.toHaveBeenCalled();
   });
 });

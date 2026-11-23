@@ -110,10 +110,10 @@ export const routes = {
     component: () => import("@/views/nitaop/PractitionerInfo.vue"),
   },
   NITAOP_STEP_2: {
-    path: "/nitaop/step-2",
-    title: "Step 2",
+    path: "/nitaop/travel-details",
+    title: "Travel details",
     name: "NitaopStep2",
-    component: () => import("@/views/nitaop/PlaceholderPage.vue"),
+    component: () => import("@/views/nitaop/TravelDetails.vue"),
   },
   NITAOP_STEP_3: {
     path: "/nitaop/step-3",
@@ -288,9 +288,9 @@ const router = createRouter({
       component: () => import("@/views/nitaop/PractitionerInfo.vue"),
     },
     {
-      path: "/nitaop/step-2",
+      path: "/nitaop/travel-details",
       name: "NitaopStep2",
-      component: () => import("@/views/nitaop/PlaceholderPage.vue"),
+      component: () => import("@/views/nitaop/TravelDetails.vue"),
     },
     {
       path: "/nitaop/step-3",
